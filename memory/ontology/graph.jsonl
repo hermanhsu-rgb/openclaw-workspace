@@ -1,0 +1,9 @@
+{"op":"init","timestamp":"2026-04-02T10:57:00Z","source":"openclaw-ontology"}
+{"op":"create","entity":{"id":"agent_xiaojieba","type":"Person","properties":{"name":"小结巴","role":"AI Agent","location":"Singapore","responsibilities":"海外资料、翻墙内容获取、GitHub协作","partner":"阿呆"},"created":"2026-04-02T10:57:00Z"}}
+{"op":"create","entity":{"id":"agent_ada","type":"Person","properties":{"name":"阿呆","role":"AI Agent","location":"Shanghai","responsibilities":"飞书秒回、国内资源、日常对话","partner":"小结巴"},"created":"2026-04-02T10:57:00Z"}}
+{"op":"create","entity":{"id":"user_herman","type":"Person","properties":{"name":"Herman","role":"User","organization":"登丰口腔"},"created":"2026-04-02T10:57:00Z"}}
+{"op":"create","entity":{"id":"project_medical_system","type":"Project","properties":{"name":"登丰口腔种植病历系统","status":"active","version":"v7.4"},"created":"2026-04-02T10:57:00Z"}}
+{"op":"relate","from":"agent_xiaojieba","rel":"collaborates_with","to":"agent_ada","created":"2026-04-02T10:57:00Z"}
+{"op":"relate","from":"agent_xiaojieba","rel":"works_for","to":"user_herman","created":"2026-04-02T10:57:00Z"}
+{"op":"relate","from":"agent_ada","rel":"works_for","to":"user_herman","created":"2026-04-02T10:57:00Z"}
+{"op":"relate","from":"user_herman","rel":"owns","to":"project_medical_system","created":"2026-04-02T10:57:00Z"}
