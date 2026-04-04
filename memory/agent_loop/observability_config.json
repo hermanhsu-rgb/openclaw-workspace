@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "tracing": {
+    "enabled": true,
+    "exporter": "sqlite",
+    "sampling_rate": 1.0,
+    "include_payloads": true,
+    "retention_days": 30
+  },
+  "metrics": {
+    "enabled": true,
+    "collectors": [
+      "tool_latency",
+      "llm_tokens",
+      "error_rate",
+      "session_duration",
+      "step_count"
+    ],
+    "export_interval_seconds": 60
+  },
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "outputs": ["file", "sqlite"]
+  }
+}

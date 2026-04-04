@@ -1,0 +1,27 @@
+{
+  "compactable_tools": ["tavily-search", "web-search", "github-search", "file-read", "file-list"],
+  "strategies": {
+    "search": {
+      "max_results": 5,
+      "fields": ["title", "url"],
+      "truncate_content": 200,
+      "remove_duplicates": true
+    },
+    "file": {
+      "max_lines": 50,
+      "max_chars": 3000,
+      "show_line_numbers": true,
+      "ellipsis": "... (truncated)"
+    },
+    "json": {
+      "max_depth": 3,
+      "max_array_items": 10,
+      "summarize_large_arrays": true
+    }
+  },
+  "token_limits": {
+    "warning": 4000,
+    "critical": 6000,
+    "max": 8000
+  }
+}

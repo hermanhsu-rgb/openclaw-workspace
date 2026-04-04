@@ -1,0 +1,58 @@
+{
+  "name": "agent-swarm",
+  "version": "1.0.0",
+  "description": "OpenClaw Multi-Agent Swarm - 基于 Claude Code 架构",
+  "agents": {
+    "coordinator": {
+      "role": "协调器",
+      "description": "接收用户请求，分发给专项 Agent",
+      "skills": ["routing", "delegation", "synthesis"]
+    },
+    "researcher": {
+      "role": "研究员",
+      "description": "信息收集和搜索",
+      "skills": ["tavily-search", "web-search", "github-search", "arxiv-search"],
+      "tools": ["openclaw-tavily-search", "web-tools-guide"]
+    },
+    "infrastructure": {
+      "role": "系统管理员",
+      "description": "系统管理和运维",
+      "skills": ["tencent-cloud", "lighthouse", "cos", "monitoring"],
+      "tools": ["tencentcloud-lighthouse-skill", "tencent-cos-skill"]
+    },
+    "content_creator": {
+      "role": "内容创作者",
+      "description": "内容生成和优化",
+      "skills": ["summarize", "humanize", "translate", "pdf-generation"],
+      "tools": ["summarize", "humanizer", "nano-pdf"]
+    },
+    "scheduler": {
+      "role": "调度员",
+      "description": "定时任务和提醒",
+      "skills": ["cron", "notifications", "reminders"],
+      "tools": ["agent_loop"]
+    }
+  },
+  "communication": {
+    "mode": "message_passing",
+    "protocol": "jsonrpc",
+    "shared_context": "redis|sqlite|memory_files"
+  },
+  "execution_models": {
+    "fork": {
+      "description": "继承父上下文，独立执行",
+      "use_case": "并行任务处理",
+      "context_inheritance": "copy-on-write"
+    },
+    "teammate": {
+      "description": "协作模式，共享上下文",
+      "use_case": "多 Agent 协作完成复杂任务",
+      "context_sharing": "full"
+    },
+    "worktree": {
+      "description": "独立工作目录",
+      "use_case": "隔离环境执行",
+      "isolation": "complete"
+    }
+  }
+}

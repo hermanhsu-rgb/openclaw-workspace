@@ -1,0 +1,29 @@
+{
+  "name": "agent-loop",
+  "version": "1.0.0",
+  "description": "OpenClaw Agent Loop - 基于 Claude Code 架构",
+  "author": "OpenClaw",
+  "capabilities": [
+    "multi-step-execution",
+    "tool-loop",
+    "context-management",
+    "human-in-the-loop"
+  ],
+  "config": {
+    "max_iterations": 10,
+    "context_window_limit": 8000,
+    "compactable_tools": [
+      "tavily-search",
+      "web-search",
+      "file-read",
+      "file-list"
+    ]
+  },
+  "hooks": {
+    "before_tool_call": [],
+    "after_tool_result": [],
+    "before_llm_call": [],
+    "on_completion": [],
+    "on_error": []
+  }
+}
