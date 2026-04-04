@@ -193,3 +193,11 @@
 [2026-04-05 07:16:54] [health_check] [INFO] Skills 数量: 24
 [2026-04-05 07:21:54] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
 [2026-04-05 07:21:54] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 07:26:55] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 07:26:55] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 07:31:56] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 07:31:56] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 07:36:57] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 07:36:57] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 07:41:57] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 07:41:57] [health_check] [INFO] Skills 数量: 24
