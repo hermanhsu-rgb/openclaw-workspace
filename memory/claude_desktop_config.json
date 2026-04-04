@@ -1,0 +1,66 @@
+{
+  "mcpServers": {
+    "openclaw-tavily-search": {
+      "command": "python3",
+      "args": ["~/.openclaw/workspace/skills/openclaw-tavily-search/scripts/tavily_search.py"],
+      "env": {
+        "TAVILY_API_KEY": "${TAVILY_API_KEY}"
+      },
+      "description": "Tavily search integration for OpenClaw",
+      "tools": [
+        {
+          "name": "search",
+          "description": "Search the web using Tavily",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "description": "Search query"
+              },
+              "max_results": {
+                "type": "integer",
+                "description": "Maximum number of results",
+                "default": 5
+              }
+            },
+            "required": ["query"]
+          }
+        }
+      ]
+    },
+    "openclaw-system": {
+      "command": "bash",
+      "args": ["~/.openclaw/agent_loop/mcp_server.sh"],
+      "description": "OpenClaw system management",
+      "tools": [
+        {
+          "name": "execute_skill",
+          "description": "Execute an OpenClaw skill",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "skill_name": {
+                "type": "string",
+                "description": "Name of the skill to execute"
+              },
+              "arguments": {
+                "type": "object",
+                "description": "Arguments for the skill"
+              }
+            },
+            "required": ["skill_name"]
+          }
+        },
+        {
+          "name": "list_skills",
+          "description": "List all available skills",
+          "inputSchema": {
+            "type": "object",
+            "properties": {}
+          }
+        }
+      ]
+    }
+  }
+}
