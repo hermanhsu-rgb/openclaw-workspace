@@ -1,0 +1,36 @@
+[Thu Apr  2 11:25:01 PM CST 2026] 待发送消息给 heng-kaihsu
+[Sat Apr  4 01:42:01 PM CST 2026] 处理消息文件: /root/.openclaw/proactive_messages/dental_1775174401.txt
+[Sat Apr  4 01:42:01 PM CST 2026] 发送 dental 消息到企业微信
+[Sat Apr  4 01:42:01 PM CST 2026] ⚠️ 发送失败，请检查 OpenClaw Gateway 是否运行
+[Sat Apr  4 01:42:01 PM CST 2026] ✅ dental 消息已发送
+---
+[Sat Apr  4 01:42:01 PM CST 2026] 处理消息文件: /root/.openclaw/proactive_messages/dental_1775260801.txt
+[Sat Apr  4 01:42:01 PM CST 2026] 发送 dental 消息到企业微信
+[Sat Apr  4 01:42:01 PM CST 2026] ⚠️ 发送失败，请检查 OpenClaw Gateway 是否运行
+[Sat Apr  4 01:42:01 PM CST 2026] ✅ dental 消息已发送
+---
+[Sat Apr  4 01:42:01 PM CST 2026] 处理消息文件: /root/.openclaw/proactive_messages/memory_1775178061.txt
+[Sat Apr  4 01:42:01 PM CST 2026] 发送 memory 消息到企业微信
+[Sat Apr  4 01:42:01 PM CST 2026] ⚠️ 发送失败，请检查 OpenClaw Gateway 是否运行
+[Sat Apr  4 01:42:01 PM CST 2026] ✅ memory 消息已发送
+---
+[Sat Apr  4 01:42:01 PM CST 2026] 处理消息文件: /root/.openclaw/proactive_messages/memory_1775264461.txt
+[Sat Apr  4 01:42:01 PM CST 2026] 发送 memory 消息到企业微信
+[Sat Apr  4 01:42:01 PM CST 2026] ⚠️ 发送失败，请检查 OpenClaw Gateway 是否运行
+[Sat Apr  4 01:42:01 PM CST 2026] ✅ memory 消息已发送
+---
+[Sat Apr  4 01:42:01 PM CST 2026] 处理消息文件: /root/.openclaw/proactive_messages/test_1775162988.txt
+[Sat Apr  4 01:42:01 PM CST 2026] 发送 test 消息到企业微信
+[Sat Apr  4 01:42:01 PM CST 2026] ⚠️ 发送失败，请检查 OpenClaw Gateway 是否运行
+[Sat Apr  4 01:42:01 PM CST 2026] ✅ test 消息已发送
+---
+[Sat Apr  4 01:42:01 PM CST 2026] 处理消息文件: /root/.openclaw/proactive_messages/weather_1775178001.txt
+[Sat Apr  4 01:42:01 PM CST 2026] 发送 weather 消息到企业微信
+[Sat Apr  4 01:42:01 PM CST 2026] ⚠️ 发送失败，请检查 OpenClaw Gateway 是否运行
+[Sat Apr  4 01:42:01 PM CST 2026] ✅ weather 消息已发送
+---
+[Sat Apr  4 01:42:01 PM CST 2026] 处理消息文件: /root/.openclaw/proactive_messages/weather_1775264401.txt
+[Sat Apr  4 01:42:01 PM CST 2026] 发送 weather 消息到企业微信
+[Sat Apr  4 01:42:01 PM CST 2026] ⚠️ 发送失败，请检查 OpenClaw Gateway 是否运行
+[Sat Apr  4 01:42:01 PM CST 2026] ✅ weather 消息已发送
+---

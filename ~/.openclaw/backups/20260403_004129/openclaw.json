@@ -1,0 +1,378 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.3.28",
+    "lastTouchedAt": "2026-04-02T15:45:39.878Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-03-31T04:13:08.066Z",
+    "lastRunVersion": "2026.3.28",
+    "lastRunCommand": "onboard",
+    "lastRunMode": "local"
+  },
+  "browser": {
+    "enabled": true,
+    "executablePath": "/root/.cache/ms-playwright/chromium-1208/chrome-linux64/chrome",
+    "noSandbox": true,
+    "defaultProfile": "user",
+    "profiles": {
+      "user": {
+        "cdpUrl": "http://localhost:9222",
+        "userDataDir": "/root/.openclaw/browser-existing-session",
+        "driver": "existing-session",
+        "attachOnly": true,
+        "color": "#4285F4"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "tencentcodingplan": {
+        "baseUrl": "https://api.lkeap.cloud.tencent.com/coding/v3",
+        "apiKey": "sk-sp-t0whyPBBmYIXqSrGFtUcnr0kexFQFKors9oeg57oztpoRymC",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "tc-code-latest",
+            "name": "自动",
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "hunyuan-2.0-instruct",
+            "name": "Tencent HY 2.0 Instruct"
+          },
+          {
+            "id": "hunyuan-2.0-thinking",
+            "name": "Tencent HY 2.0 Think"
+          },
+          {
+            "id": "hunyuan-t1",
+            "name": "Hunyuan-T1"
+          },
+          {
+            "id": "hunyuan-turbos",
+            "name": "Hunyuan-TurboS"
+          },
+          {
+            "id": "minimax-m2.5",
+            "name": "MiniMax-M2.5"
+          },
+          {
+            "id": "kimi-k2.5",
+            "name": "Kimi-K2.5",
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "glm-5",
+            "name": "GLM-5"
+          }
+        ]
+      },
+      "gemini": {
+        "baseUrl": "https://generativelanguage.googleapis.com/v1beta",
+        "apiKey": "AIzaSyBUezxGx6gIh0wufe4rBM-UzuTAcLkZGys",
+        "api": "google-generative-ai",
+        "models": [
+          {
+            "id": "gemini-3.1-pro-preview",
+            "name": "Gemini 3.1 Pro Preview"
+          },
+          {
+            "id": "gemini-3.1-flash-preview",
+            "name": "Gemini 3.1 Flash Preview"
+          },
+          {
+            "id": "gemini-3.1-flash-lite-preview",
+            "name": "Gemini 3.1 Flash Lite Preview"
+          },
+          {
+            "id": "gemini-3-pro-preview",
+            "name": "Gemini 3 Pro Preview"
+          },
+          {
+            "id": "gemini-3-flash-preview",
+            "name": "Gemini 3 Flash Preview"
+          },
+          {
+            "id": "gemini-2.5-pro",
+            "name": "Gemini 2.5 Pro"
+          },
+          {
+            "id": "gemini-2.5-flash",
+            "name": "Gemini 2.5 Flash"
+          },
+          {
+            "id": "gemini-2.5-flash-lite",
+            "name": "Gemini 2.5 Flash Lite"
+          },
+          {
+            "id": "gemini-2.0-flash",
+            "name": "Gemini 2.0 Flash"
+          },
+          {
+            "id": "gemini-2.0-pro",
+            "name": "Gemini 2.0 Pro"
+          },
+          {
+            "id": "gemini-1.5-flash",
+            "name": "Gemini 1.5 Flash"
+          },
+          {
+            "id": "gemini-1.5-pro",
+            "name": "Gemini 1.5 Pro"
+          },
+          {
+            "id": "gemini-flash-latest",
+            "name": "Gemini Flash Latest"
+          },
+          {
+            "id": "gemini-pro-latest",
+            "name": "Gemini Pro Latest"
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "tencentcodingplan/kimi-k2.5"
+      },
+      "workspace": "/root/.openclaw/workspace",
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "sandbox": {
+        "browser": {
+          "enabled": false
+        }
+      }
+    }
+  },
+  "tools": {
+    "profile": "full"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "channels": {
+    "wecom": {
+      "enabled": true,
+      "bot": {
+        "connectionMode": "websocket",
+        "botId": "aib8sXkRRdjaqNVHGsRrhremKNtYxcllcXY",
+        "secret": "cuf4byjgXDnYom5HNVNV6gMBgmwcxCSIJF2UVfwK8EE",
+        "streamPlaceholderContent": "正在思考...",
+        "welcomeText": "你好！我是 AI 助手",
+        "dm": {
+          "policy": "open"
+        }
+      }
+    },
+    "feishu": {
+      "enabled": true,
+      "appId": "cli_a934c4d3a3389cb5",
+      "appSecret": "FggXjKKhsfF1vOtfcF1DGeWcvqtyGYha",
+      "domain": "feishu",
+      "groupPolicy": "open",
+      "connectionMode": "websocket",
+      "webhookPath": "/feishu/events",
+      "dmPolicy": "pairing",
+      "reactionNotifications": "own",
+      "typingIndicator": true,
+      "resolveSenderNames": true
+    },
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "botToken": "8759301931:AAHhZ_gXgM0Dpv8Swl4nKR4bu_wSBpc-NGw",
+      "groupPolicy": "allowlist",
+      "streaming": "partial"
+    },
+    "lightclawbot": {
+      "enabled": true,
+      "apiKeys": [
+        "heng-kaihsu-key",
+        "915aff0c1a78dc7438c9699c476eba2ee587078d"
+      ],
+      "dmPolicy": "open"
+    },
+    "openclaw-weixin": {
+      "accounts": {}
+    }
+  },
+  "gateway": {
+    "port": 38768,
+    "mode": "local",
+    "bind": "loopback",
+    "controlUi": {
+      "basePath": "/yaylsi",
+      "allowedOrigins": [
+        "http://43.134.118.198:38768"
+      ],
+      "allowInsecureAuth": false,
+      "dangerouslyDisableDeviceAuth": false
+    },
+    "auth": {
+      "mode": "token",
+      "token": "1349afd51426f489ff8023174b9e8c5e6924d125a5395473"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    }
+  },
+  "skills": {
+    "install": {
+      "nodeManager": "npm"
+    }
+  },
+  "plugins": {
+    "entries": {
+      "memory-tdai": {
+        "enabled": true,
+        "config": {}
+      },
+      "openclaw-qqbot": {
+        "enabled": false
+      },
+      "ddingtalk": {
+        "enabled": false
+      },
+      "wecom": {
+        "enabled": true,
+        "config": {}
+      },
+      "adp-openclaw": {
+        "enabled": false
+      },
+      "openclaw-plugin-yuanbao": {
+        "enabled": false
+      },
+      "openclaw-weixin": {
+        "enabled": true,
+        "config": {}
+      },
+      "lightclawbot": {
+        "enabled": true,
+        "config": {}
+      },
+      "feishu": {
+        "enabled": true,
+        "config": {}
+      }
+    },
+    "installs": {
+      "memory-tdai": {
+        "source": "npm",
+        "spec": "@tdai/memory-tdai@latest",
+        "installPath": "/root/.openclaw/extensions/memory-tdai",
+        "version": "0.1.2",
+        "resolvedName": "@tdai/memory-tdai",
+        "resolvedVersion": "0.1.2",
+        "resolvedSpec": "@tdai/memory-tdai@0.1.2",
+        "integrity": "sha512-TOrv+qMGxk9yLuu3eCPlPayTt3B9IjjPmHT7NfyqQk0MiOu/HN5LuE3UxTGscPIdGUoLfAd3SCM1R/fNm34cAQ==",
+        "shasum": "0f9ad8d345a0802fa7b3f0a9f84789269ed920d7",
+        "resolvedAt": "2026-03-31T04:13:19.895Z",
+        "installedAt": "2026-03-31T04:13:44.249Z"
+      },
+      "openclaw-qqbot": {
+        "source": "npm",
+        "spec": "@tencent-connect/openclaw-qqbot@latest",
+        "installPath": "/root/.openclaw/extensions/openclaw-qqbot",
+        "version": "1.6.7",
+        "resolvedName": "@tencent-connect/openclaw-qqbot",
+        "resolvedVersion": "1.6.7",
+        "resolvedSpec": "@tencent-connect/openclaw-qqbot@1.6.7",
+        "integrity": "sha512-0SynvYuS+/QZ5nmX1mTw46zR07Hiqzeo9SZqZPy2T39gLpxbg2Ifey01BfZDhM+KbRzIG+M0k2/R8jj0OzFxVA==",
+        "shasum": "3f2c4e9bff86f0708e694fe2097d5439df253759",
+        "resolvedAt": "2026-03-31T04:13:50.770Z",
+        "installedAt": "2026-03-31T04:14:45.649Z"
+      },
+      "ddingtalk": {
+        "source": "npm",
+        "spec": "@largezhou/ddingtalk@latest",
+        "installPath": "/root/.openclaw/extensions/ddingtalk",
+        "version": "2.0.1",
+        "resolvedName": "@largezhou/ddingtalk",
+        "resolvedVersion": "2.0.1",
+        "resolvedSpec": "@largezhou/ddingtalk@2.0.1",
+        "integrity": "sha512-qKDndqVb6nj1CJ+IX+9DF86qhxrjvJYerk3ooir+TfiQD7RI8/HminvGzXf5g8SRsFF/wWP8vF/Gha5HCNfTJQ==",
+        "shasum": "9a8c22c264691f8a7bd6966cab998847c95dfd4d",
+        "resolvedAt": "2026-03-31T04:14:50.748Z",
+        "installedAt": "2026-03-31T04:15:14.480Z"
+      },
+      "wecom": {
+        "source": "npm",
+        "spec": "@mocrane/wecom@latest",
+        "installPath": "/root/.openclaw/extensions/wecom",
+        "version": "2026.3.24",
+        "resolvedName": "@mocrane/wecom",
+        "resolvedVersion": "2026.3.24",
+        "resolvedSpec": "@mocrane/wecom@2026.3.24",
+        "integrity": "sha512-RXpA5N6FXxm/4Awwqkqsa54XR9hLjyfg7adr28SWBFczqSDJAjVx+EN66NdpjP+UMR/q9QILMTq3ZhgEAHcHbA==",
+        "shasum": "90a291cd60ce789b52c30b9746c76363a8aa150c",
+        "resolvedAt": "2026-03-31T04:15:59.243Z",
+        "installedAt": "2026-03-31T04:16:42.492Z"
+      },
+      "adp-openclaw": {
+        "source": "npm",
+        "spec": "adp-openclaw@latest",
+        "installPath": "/root/.openclaw/extensions/adp-openclaw",
+        "version": "0.0.77",
+        "resolvedName": "adp-openclaw",
+        "resolvedVersion": "0.0.77",
+        "resolvedSpec": "adp-openclaw@0.0.77",
+        "integrity": "sha512-BwHDHAXE7xACepqWk3Uo4KS6yUhDa09myvGZyu1etz5m1iAdCWAaU+ycUOamCi8k58RoPMogq68n8QvnAV3Elw==",
+        "shasum": "e4e98ee7b743a8a2d195584610dde3849885863c",
+        "resolvedAt": "2026-03-31T04:16:49.482Z",
+        "installedAt": "2026-03-31T04:16:54.315Z"
+      },
+      "openclaw-plugin-yuanbao": {
+        "source": "npm",
+        "spec": "openclaw-plugin-yuanbao@latest",
+        "installPath": "/root/.openclaw/extensions/openclaw-plugin-yuanbao",
+        "version": "2.4.0",
+        "resolvedName": "openclaw-plugin-yuanbao",
+        "resolvedVersion": "2.4.0",
+        "resolvedSpec": "openclaw-plugin-yuanbao@2.4.0",
+        "integrity": "sha512-s5Loktba18A62S8hog9glFEBpbGanKRWTYFYk2If317qKt/Z8JBGX/z1PNf0bkIdSqvhB8OpfHciFiXJMcaquA==",
+        "shasum": "babf452f305e3965c9bcf681772b0a5efff959ca",
+        "resolvedAt": "2026-03-31T04:16:59.422Z",
+        "installedAt": "2026-03-31T04:17:52.809Z"
+      },
+      "openclaw-weixin": {
+        "source": "npm",
+        "spec": "@tencent-weixin/openclaw-weixin@latest",
+        "installPath": "/root/.openclaw/extensions/openclaw-weixin",
+        "version": "2.1.1",
+        "resolvedName": "@tencent-weixin/openclaw-weixin",
+        "resolvedVersion": "2.1.1",
+        "resolvedSpec": "@tencent-weixin/openclaw-weixin@2.1.1",
+        "integrity": "sha512-lSiTI+9eQQuvZXehuteNps3Ia4/ih5zml6QEgICwA2+9xT1sd5z8C+ldgRfrYd8lZTxYWC8ffkLtG0EVo2E7Ag==",
+        "shasum": "574c53a912986bc6b97ae672c1af0327f8be2fcb",
+        "resolvedAt": "2026-03-31T04:18:00.052Z",
+        "installedAt": "2026-03-31T04:18:14.512Z"
+      },
+      "lightclawbot": {
+        "source": "npm",
+        "spec": "lightclawbot",
+        "installPath": "/root/.openclaw/extensions/lightclawbot",
+        "version": "1.1.1",
+        "installedAt": "2026-04-02T15:42:39.000Z"
+      }
+    }
+  }
+}
