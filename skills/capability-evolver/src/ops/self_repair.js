@@ -6,7 +6,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const { getWorkspaceRoot } = require('../gep/paths');
 
-var LOCK_MAX_AGE_MS = 10 * 60 * 1000; // 10 minutes
+var LOCK_MAX_AGE_MS = require('../config').LOCK_MAX_AGE_MS;
 
 function repair(gitRoot) {
     var root = gitRoot || getWorkspaceRoot();

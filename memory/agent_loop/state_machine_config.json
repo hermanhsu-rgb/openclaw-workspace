@@ -1,0 +1,75 @@
+{
+  "name": "agent-state-machine",
+  "version": "1.0.0",
+  "description": "OpenClaw Agent State Machine - 基于 Claude Code 架构",
+  "states": {
+    "IDLE": {
+      "description": "空闲状态，等待用户输入",
+      "allowed_transitions": ["PENDING", "RUNNING"],
+      "on_enter": "clear_context",
+      "on_exit": "prepare_session"
+    },
+    "PENDING": {
+      "description": "待处理，已接收请求但未开始执行",
+      "allowed_transitions": ["RUNNING", "CANCELLED"],
+      "on_enter": "validate_request",
+      "timeout_seconds": 300
+    },
+    "RUNNING": {
+      "description": "执行中，正在处理任务",
+      "allowed_transitions": ["WAITING", "COMPLETED", "ERROR", "PAUSED"],
+      "on_enter": "start_execution",
+      "on_exit": "save_checkpoint",
+      "timeout_seconds": 3600
+    },
+    "WAITING": {
+      "description": "等待中，需要用户输入或外部事件",
+      "allowed_transitions": ["RUNNING", "CANCELLED"],
+      "on_enter": "notify_user",
+      "timeout_seconds": 86400
+    },
+    "PAUSED": {
+      "description": "暂停状态，可恢复执行",
+      "allowed_transitions": ["RUNNING", "CANCELLED"],
+      "on_enter": "save_state",
+      "on_exit": "restore_state"
+    },
+    "COMPLETED": {
+      "description": "已完成",
+      "allowed_transitions": ["IDLE"],
+      "on_enter": "cleanup_session",
+      "final": true
+    },
+    "ERROR": {
+      "description": "执行出错",
+      "allowed_transitions": ["RUNNING", "RETRYING", "CANCELLED"],
+      "on_enter": "log_error",
+      "retry_count": 3
+    },
+    "RETRYING": {
+      "description": "重试中",
+      "allowed_transitions": ["RUNNING", "ERROR"],
+      "on_enter": "increment_retry"
+    },
+    "CANCELLED": {
+      "description": "已取消",
+      "allowed_transitions": ["IDLE"],
+      "on_enter": "cleanup_session",
+      "final": true
+    }
+  },
+  "transitions": {
+    "start": { "from": "IDLE", "to": "PENDING", "condition": "has_request" },
+    "execute": { "from": "PENDING", "to": "RUNNING", "condition": "is_valid" },
+    "wait": { "from": "RUNNING", "to": "WAITING", "condition": "needs_input" },
+    "resume": { "from": "WAITING", "to": "RUNNING", "condition": "has_input" },
+    "pause": { "from": "RUNNING", "to": "PAUSED", "condition": "user_request" },
+    "unpause": { "from": "PAUSED", "to": "RUNNING", "condition": "user_request" },
+    "complete": { "from": "RUNNING", "to": "COMPLETED", "condition": "task_done" },
+    "fail": { "from": "RUNNING", "to": "ERROR", "condition": "has_error" },
+    "retry": { "from": "ERROR", "to": "RETRYING", "condition": "can_retry" },
+    "retry_execute": { "from": "RETRYING", "to": "RUNNING", "condition": "retry_allowed" },
+    "cancel": { "from": ["PENDING", "RUNNING", "WAITING", "PAUSED", "ERROR"], "to": "CANCELLED", "condition": "user_cancel" },
+    "reset": { "from": ["COMPLETED", "CANCELLED"], "to": "IDLE", "condition": "always" }
+  }
+}

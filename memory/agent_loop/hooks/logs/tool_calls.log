@@ -1,0 +1,2 @@
+[2026-04-04 23:09:31] [before_tool_call] Session: test-session-123, Tool: tavily-search
+[2026-04-04 23:11:44] [before_tool_call] Session: test-session-123, Tool: tavily-search

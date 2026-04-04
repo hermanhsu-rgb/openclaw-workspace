@@ -1,0 +1,103 @@
+{
+  "name": "agent-hooks-system",
+  "version": "1.0.0",
+  "description": "OpenClaw Agent Event Hooks System - 基于 Claude Code 架构",
+  "hooks": {
+    "before_session_start": {
+      "description": "会话开始前触发",
+      "arguments": ["session_id", "user_request"],
+      "can_cancel": true
+    },
+    "after_session_end": {
+      "description": "会话结束后触发",
+      "arguments": ["session_id", "final_state", "duration_ms"]
+    },
+    "before_state_transition": {
+      "description": "状态转换前触发",
+      "arguments": ["session_id", "from_state", "to_state"],
+      "can_cancel": true
+    },
+    "after_state_transition": {
+      "description": "状态转换后触发",
+      "arguments": ["session_id", "from_state", "to_state", "success"]
+    },
+    "before_tool_call": {
+      "description": "工具调用前触发",
+      "arguments": ["session_id", "tool_name", "arguments"],
+      "can_cancel": true
+    },
+    "after_tool_result": {
+      "description": "工具返回后触发",
+      "arguments": ["session_id", "tool_name", "result", "duration_ms"]
+    },
+    "before_llm_call": {
+      "description": "LLM 调用前触发",
+      "arguments": ["session_id", "prompt", "model"],
+      "can_cancel": true
+    },
+    "after_llm_response": {
+      "description": "LLM 返回后触发",
+      "arguments": ["session_id", "response", "tokens_used", "duration_ms"]
+    },
+    "on_checkpoint_save": {
+      "description": "检查点保存时触发",
+      "arguments": ["session_id", "checkpoint_id", "step_number"]
+    },
+    "on_checkpoint_restore": {
+      "description": "检查点恢复时触发",
+      "arguments": ["session_id", "checkpoint_id", "restored_state"]
+    },
+    "on_error": {
+      "description": "错误发生时触发",
+      "arguments": ["session_id", "error_type", "error_message", "context"]
+    },
+    "on_retry": {
+      "description": "重试时触发",
+      "arguments": ["session_id", "retry_count", "max_retries"]
+    },
+    "on_permission_request": {
+      "description": "权限请求时触发",
+      "arguments": ["session_id", "permission_type", "resource"],
+      "can_cancel": true
+    },
+    "on_context_change": {
+      "description": "上下文变更时触发",
+      "arguments": ["session_id", "change_type", "old_value", "new_value"]
+    },
+    "on_file_change": {
+      "description": "文件变化时触发（需要文件监控）",
+      "arguments": ["session_id", "file_path", "change_type"]
+    },
+    "before_compaction": {
+      "description": "上下文压缩前触发",
+      "arguments": ["session_id", "original_size", "target_size"],
+      "can_cancel": true
+    },
+    "after_compaction": {
+      "description": "上下文压缩后触发",
+      "arguments": ["session_id", "original_size", "compacted_size", "ratio"]
+    },
+    "on_metric_record": {
+      "description": "指标记录时触发",
+      "arguments": ["session_id", "metric_name", "metric_value", "labels"]
+    },
+    "on_user_interrupt": {
+      "description": "用户中断时触发",
+      "arguments": ["session_id", "interrupt_type"],
+      "can_cancel": true
+    },
+    "before_notification": {
+      "description": "通知发送前触发",
+      "arguments": ["session_id", "notification_type", "content"],
+      "can_cancel": true
+    },
+    "after_notification": {
+      "description": "通知发送后触发",
+      "arguments": ["session_id", "notification_type", "success"]
+    }
+  },
+  "execution_order": "fifo",
+  "timeout_seconds": 5,
+  "max_hooks_per_event": 10,
+  "enable_logging": true
+}

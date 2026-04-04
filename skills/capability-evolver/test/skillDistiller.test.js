@@ -14,6 +14,8 @@ const {
   shouldDistill,
   prepareDistillation,
   completeDistillation,
+  autoDistill,
+  synthesizeGeneFromPatterns,
   distillRequestPath,
   readDistillerState,
   writeDistillerState,
@@ -87,6 +89,10 @@ function writeGenes(genes) {
   );
 }
 
+function readJson(filePath) {
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+}
+
 // --- Tests ---
 
 describe('computeDataHash', () => {
@@ -137,7 +143,7 @@ describe('validateSynthesizedGene', () => {
   it('accepts a valid gene', () => {
     var gene = {
       type: 'Gene', id: 'gene_distilled_test', category: 'repair',
-      signals_match: ['error'], strategy: ['fix the bug'],
+      signals_match: ['error'], strategy: ['identify the root cause', 'apply the fix', 'verify the solution'],
       constraints: { max_files: 8, forbidden_paths: ['.git', 'node_modules'] },
     };
     var result = validateSynthesizedGene(gene, []);
@@ -211,6 +217,26 @@ describe('validateSynthesizedGene', () => {
     };
     var result = validateSynthesizedGene(gene, []);
     assert.deepEqual(result.gene.validation, ['node test.js', 'npm test']);
+  });
+
+  it('strips node -e and node --eval commands (consistent with policyCheck)', () => {
+    var gene = {
+      type: 'Gene', id: 'gene_distilled_eval_block', category: 'opt',
+      signals_match: ['test_signal'], strategy: ['step one', 'step two', 'step three'],
+      constraints: { forbidden_paths: ['.git', 'node_modules'] },
+      validation: [
+        'node scripts/validate-modules.js ./src/evolve',
+        'node -e "process.exit(0)"',
+        'node --eval "require(\'fs\')"',
+        'node -p "1+1"',
+        'npm test',
+      ],
+    };
+    var result = validateSynthesizedGene(gene, []);
+    assert.deepEqual(result.gene.validation, [
+      'node scripts/validate-modules.js ./src/evolve',
+      'npm test',
+    ]);
   });
 });
 
@@ -301,7 +327,7 @@ describe('buildDistillationPrompt', () => {
     var genes = [{ id: 'gene_a', signals_match: ['err'] }];
     var caps = [makeCapsule('c1', 'gene_a', 'success', 0.9)];
     var prompt = buildDistillationPrompt(analysis, genes, caps);
-    assert.ok(prompt.includes('actionable operations'));
+    assert.ok(prompt.includes('actionable'));
     assert.ok(prompt.includes('gene_distilled_'));
     assert.ok(prompt.includes('Gene synthesis engine'));
     assert.ok(prompt.includes('forbidden_paths'));
@@ -410,7 +436,7 @@ describe('prepareDistillation', () => {
 
     var llmResponse = JSON.stringify({
       type: 'Gene', id: 'gene_distilled_idem', category: 'repair',
-      signals_match: ['error'], strategy: ['fix it'],
+      signals_match: ['error'], strategy: ['identify root cause', 'apply targeted fix', 'verify correction'],
       constraints: { max_files: 5, forbidden_paths: ['.git', 'node_modules'] },
     });
     var complete = completeDistillation(llmResponse);
@@ -419,6 +445,71 @@ describe('prepareDistillation', () => {
     var second = prepareDistillation();
     assert.equal(second.ok, false);
     assert.equal(second.reason, 'idempotent_skip');
+  });
+});
+
+describe('synthesizeGeneFromPatterns', () => {
+  beforeEach(setupTempEnv);
+  afterEach(teardownTempEnv);
+
+  it('builds a conservative distilled gene from repeated successful capsules', () => {
+    writeCapsules([
+      makeCapsule('c1', 'gene_perf', 'success', 0.95, ['perf_bottleneck', 'latency'], 'Reduced latency in hot path'),
+      makeCapsule('c2', 'gene_perf', 'success', 0.92, ['perf_bottleneck', 'throughput'], 'Improved throughput under load'),
+      makeCapsule('c3', 'gene_perf', 'success', 0.91, ['perf_bottleneck'], 'Cut slow-path overhead'),
+      makeCapsule('c4', 'gene_perf', 'success', 0.93, ['perf_bottleneck'], 'Optimized repeated slow query'),
+      makeCapsule('c5', 'gene_perf', 'success', 0.94, ['perf_bottleneck'], 'Reduced performance regressions'),
+      makeCapsule('c6', 'gene_perf', 'success', 0.96, ['perf_bottleneck'], 'Stabilized latency under peak load'),
+      makeCapsule('c7', 'gene_perf', 'success', 0.97, ['perf_bottleneck'], 'Optimized hot path validation'),
+      makeCapsule('c8', 'gene_perf', 'success', 0.98, ['perf_bottleneck'], 'Minimized repeated bottleneck'),
+      makeCapsule('c9', 'gene_perf', 'success', 0.99, ['perf_bottleneck'], 'Improved repeated performance pattern'),
+      makeCapsule('c10', 'gene_perf', 'success', 0.91, ['perf_bottleneck'], 'Kept repeated success on perf fixes'),
+    ]);
+    writeGenes([{
+      type: 'Gene',
+      id: 'gene_perf',
+      category: 'optimize',
+      signals_match: ['perf_bottleneck'],
+      strategy: ['Profile the hot path', 'Apply the narrowest optimization', 'Run focused perf validation'],
+      constraints: { max_files: 8, forbidden_paths: ['.git', 'node_modules'] },
+      validation: ['node --test'],
+    }]);
+
+    var data = collectDistillationData();
+    var analysis = analyzePatterns(data);
+    var gene = synthesizeGeneFromPatterns(data, analysis, [{ id: 'gene_perf', category: 'optimize', signals_match: ['perf_bottleneck'] }]);
+    assert.ok(gene);
+    assert.ok(gene.id.startsWith('gene_distilled_'));
+    assert.equal(gene.category, 'optimize');
+    assert.ok(gene.signals_match.includes('perf_bottleneck'));
+  });
+});
+
+describe('autoDistill', () => {
+  beforeEach(setupTempEnv);
+  afterEach(teardownTempEnv);
+
+  it('writes a distilled gene automatically when enough successful capsules exist', () => {
+    var caps = [];
+    for (var i = 0; i < 10; i++) {
+      caps.push(makeCapsule('c' + i, 'gene_perf', 'success', 0.95, ['perf_bottleneck'], 'Reduce repeated latency regressions'));
+    }
+    writeCapsules(caps);
+    writeGenes([{
+      type: 'Gene',
+      id: 'gene_perf',
+      category: 'optimize',
+      signals_match: ['perf_bottleneck'],
+      strategy: ['Profile the slow path', 'Apply a targeted optimization', 'Run validation'],
+      constraints: { max_files: 8, forbidden_paths: ['.git', 'node_modules'] },
+      validation: ['node --test'],
+    }]);
+
+    var result = autoDistill();
+    assert.ok(result.ok, result.reason || 'autoDistill should succeed');
+    assert.ok(result.gene.id.startsWith('gene_distilled_'));
+    var genes = readJson(path.join(process.env.GEP_ASSETS_DIR, 'genes.json'));
+    assert.ok(genes.genes.some(function (g) { return g.id === result.gene.id; }));
   });
 });
 

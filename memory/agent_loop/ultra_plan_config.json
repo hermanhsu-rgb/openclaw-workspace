@@ -1,0 +1,106 @@
+{
+  "name": "ultra-plan-mode",
+  "version": "1.0.0",
+  "description": "OpenClaw Ultra Plan Mode - 基于 Claude Code 架构",
+  "enabled": true,
+  "planning": {
+    "depth": "comprehensive",
+    "max_subtasks": 20,
+    "dependency_analysis": true,
+    "risk_assessment": true,
+    "rollback_planning": true,
+    "checkpoint_frequency": "high"
+  },
+  "phases": {
+    "analyze": {
+      "description": "分析当前状态和上下文",
+      "tasks": [
+        "收集当前系统状态",
+        "识别相关资源和依赖",
+        "评估现有约束条件",
+        "分析历史类似任务"
+      ]
+    },
+    "decompose": {
+      "description": "任务分解",
+      "tasks": [
+        "识别主要目标",
+        "拆分为可执行子任务",
+        "估算每个子任务复杂度",
+        "识别潜在阻塞点"
+      ]
+    },
+    "dependencies": {
+      "description": "依赖关系分析",
+      "tasks": [
+        "构建任务依赖图",
+        "识别并行执行机会",
+        "确定关键路径",
+        "标注资源冲突"
+      ]
+    },
+    "schedule": {
+      "description": "执行计划生成",
+      "tasks": [
+        "生成执行序列",
+        "分配资源和时间",
+        "设置检查点",
+        "规划回滚点"
+      ]
+    },
+    "risk": {
+      "description": "风险评估",
+      "tasks": [
+        "识别潜在失败点",
+        "评估影响范围",
+        "制定缓解策略",
+        "准备应急预案"
+      ]
+    },
+    "execute": {
+      "description": "执行监控",
+      "tasks": [
+        "按计划执行任务",
+        "监控执行状态",
+        "记录实际结果",
+        "动态调整计划"
+      ]
+    },
+    "verify": {
+      "description": "结果验证",
+      "tasks": [
+        "验证目标达成",
+        "检查副作用",
+        "确认系统状态",
+        "生成就绪报告"
+      ]
+    }
+  },
+  "output_formats": {
+    "plan": {
+      "include_timeline": true,
+      "include_dependencies": true,
+      "include_risks": true,
+      "include_rollback": true,
+      "include_checkpoints": true
+    },
+    "visualization": {
+      "dependency_graph": true,
+      "gantt_chart": true,
+      "risk_matrix": true
+    }
+  },
+  "llm_prompts": {
+    "analyze": "作为任务规划专家，请深度分析以下任务:\n\n任务: {task}\n上下文: {context}\n\n请提供:\n1. 当前状态分析\n2. 相关资源识别\n3. 约束条件评估\n4. 潜在挑战预判\n\n以 JSON 格式返回分析结果",
+    "decompose": "将以下任务分解为详细的子任务:\n\n任务: {task}\n分析结果: {analysis}\n\n要求:\n1. 每个子任务应可独立执行\n2. 估算每个子任务的复杂度 (1-10)\n3. 识别子任务间的依赖关系\n4. 标注潜在的阻塞点\n\n以 JSON 数组格式返回子任务列表",
+    "dependencies": "分析以下子任务的依赖关系:\n\n子任务: {subtasks}\n\n请构建依赖图，识别:\n1. 必须串行的任务\n2. 可以并行的任务\n3. 关键路径\n4. 资源冲突\n\n返回依赖关系矩阵和优化建议",
+    "risk": "评估以下执行计划的风险:\n\n计划: {plan}\n\n请识别:\n1. 每个步骤的潜在失败点\n2. 失败的影响范围\n3. 缓解措施\n4. 应急方案\n\n返回风险评估矩阵"
+  },
+  "execution": {
+    "auto_execute_safe": false,
+    "confirm_each_step": true,
+    "pause_on_warning": true,
+    "save_checkpoints": true,
+    "allow_rollback": true
+  }
+}

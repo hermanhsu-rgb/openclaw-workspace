@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "genes": [
     {
       "type": "Gene",
@@ -30,8 +30,8 @@
         ]
       },
       "validation": [
-        "node scripts/validate-modules.js ./src/evolve ./src/gep/solidify",
-        "node scripts/validate-modules.js ./src/gep/selector ./src/gep/memoryGraph"
+        "node scripts/validate-modules.js ./src/evolve ./src/gep/solidify ./src/gep/policyCheck ./src/gep/selector ./src/gep/memoryGraph ./src/gep/assetStore",
+        "node scripts/validate-suite.js"
       ]
     },
     {
@@ -64,7 +64,8 @@
         ]
       },
       "validation": [
-        "node scripts/validate-modules.js ./src/evolve ./src/gep/prompt"
+        "node scripts/validate-modules.js ./src/evolve ./src/gep/prompt ./src/gep/contentHash ./src/gep/skillDistiller",
+        "node scripts/validate-suite.js"
       ]
     },
     {
@@ -100,7 +101,8 @@
         ]
       },
       "validation": [
-        "node scripts/validate-modules.js ./src/evolve ./src/gep/solidify"
+        "node scripts/validate-modules.js ./src/evolve ./src/gep/solidify ./src/gep/policyCheck ./src/gep/mutation ./src/gep/personality",
+        "node scripts/validate-suite.js"
       ]
     }
   ]

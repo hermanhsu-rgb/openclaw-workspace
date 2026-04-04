@@ -1,0 +1,93 @@
+{
+  "name": "permission-classifier",
+  "version": "1.0.0",
+  "description": "OpenClaw Permission Classifier - 基于 Claude Code 架构",
+  "risk_levels": {
+    "safe": {
+      "description": "安全操作，可自动执行",
+      "auto_execute": true,
+      "notification": false,
+      "color": "green"
+    },
+    "low": {
+      "description": "低风险操作，通常安全",
+      "auto_execute": true,
+      "notification": true,
+      "color": "blue"
+    },
+    "medium": {
+      "description": "中等风险，建议确认",
+      "auto_execute": false,
+      "requires_confirmation": true,
+      "confirmation_message": "此操作可能需要确认，是否继续？",
+      "color": "yellow"
+    },
+    "high": {
+      "description": "高风险操作，需要明确授权",
+      "auto_execute": false,
+      "requires_confirmation": true,
+      "requires_reason": true,
+      "confirmation_message": "⚠️ 高风险操作！请确认您了解此操作的影响。",
+      "color": "orange"
+    },
+    "critical": {
+      "description": "危险操作，强烈建议人工审核",
+      "auto_execute": false,
+      "requires_confirmation": true,
+      "requires_reason": true,
+      "requires_second_approval": true,
+      "confirmation_message": "🚨 危险操作！此操作可能造成不可逆影响，需要双重确认。",
+      "color": "red",
+      "blocked_commands": ["rm -rf /", "mkfs", "dd if=/dev/zero", "> /dev/sda"]
+    }
+  },
+  "classifiers": {
+    "bash_commands": {
+      "safe": ["ls", "cat", "echo", "grep", "head", "tail", "wc", "date", "pwd", "whoami", "ps", "top", "htop", "df", "du", "free", "uptime", "uname", "hostname", "id", "groups"],
+      "low": ["find", "locate", "which", "whereis", "file", "stat", "lsof", "netstat", "ss", "ping", "curl", "wget", "tar", "gzip", "gunzip", "zip", "unzip"],
+      "medium": ["cp", "mv", "mkdir", "touch", "chmod", "chown", "ln", "rsync", "scp", "git clone", "git pull", "git fetch", "npm install", "pip install"],
+      "high": ["rm -r", "rm -f", "dd", "fdisk", "parted", "mount", "umount", "systemctl restart", "service restart", "kill", "pkill", "iptables", "ufw"],
+      "critical": ["rm -rf /", "rm -rf /*", "mkfs", "mkfs.ext", "dd if=/dev/zero", "> /dev/sda", "> /dev/null", "shutdown", "reboot", "halt", "poweroff", ":(){ :|:& };:"]
+    },
+    "file_operations": {
+      "read_only": [".txt", ".md", ".json", ".xml", ".yaml", ".log", ".csv"],
+      "config_files": [".conf", ".config", ".ini", ".env", ".rc"],
+      "system_files": ["/etc/passwd", "/etc/shadow", "/etc/hosts", "/etc/fstab", "/boot", "/proc", "/sys"],
+      "protected_paths": ["~/.openclaw", "~/.ssh", "/etc", "/bin", "/sbin", "/usr/bin", "/usr/sbin", "/lib", "/lib64"]
+    },
+    "network_operations": {
+      "safe": ["ping", "curl", "wget", "nslookup", "dig", "host"],
+      "medium": ["ssh", "scp", "rsync", "sftp", "ftp"],
+      "high": ["nc", "netcat", "nmap", "telnet"],
+      "critical": ["iptables", "ufw", "firewall-cmd", "tcpdump", "wireshark"]
+    },
+    "scope_patterns": {
+      "single_file": {"risk_modifier": 0, "description": "单文件操作"},
+      "single_directory": {"risk_modifier": 0, "description": "单目录操作"},
+      "recursive": {"risk_modifier": 1, "description": "递归操作，影响范围更大"},
+      "wildcard": {"risk_modifier": 2, "description": "通配符操作，影响范围不确定"},
+      "system_wide": {"risk_modifier": 3, "description": "系统级操作，影响整个系统"}
+    }
+  },
+  "llm_analysis": {
+    "enabled": true,
+    "model": "gemini-2.5-flash",
+    "prompt_template": "Analyze the following command for risk level:\n\nCommand: {command}\nContext: {context}\n\nRespond with JSON:\n{{\n  \"risk_level\": \"safe|low|medium|high|critical\",\n  \"reasoning\": \"explanation of the risk assessment\",\n  \"suggested_alternatives\": [\"safer option 1\", \"safer option 2\"],\n  \"destructive\": true/false,\n  \"reversible\": true/false,\n  \"scope\": \"single_file|directory|recursive|system_wide\"\n}}",
+    "cache_results": true,
+    "cache_ttl_minutes": 60
+  },
+  "user_preferences": {
+    "auto_approve_safe": true,
+    "auto_approve_low": true,
+    "confirm_medium": true,
+    "confirm_high": true,
+    "block_critical": true,
+    "learning_mode": true
+  },
+  "audit_log": {
+    "enabled": true,
+    "log_all_classifications": true,
+    "log_decisions": true,
+    "retention_days": 90
+  }
+}

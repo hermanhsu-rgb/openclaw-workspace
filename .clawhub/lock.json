@@ -3,7 +3,7 @@
   "skills": {
     "openclaw-tavily-search": {
       "version": "0.1.0",
-      "installedAt": 1774930729900
+      "installedAt": 1775332870578
     },
     "summarize": {
       "version": "1.0.0",
@@ -78,8 +78,8 @@
       "installedAt": 1775127807299
     },
     "capability-evolver": {
-      "version": "1.31.0",
-      "installedAt": 1775127883700
+      "version": "1.41.0",
+      "installedAt": 1775331076103
     },
     "nano-banana-pro": {
       "version": "1.0.1",

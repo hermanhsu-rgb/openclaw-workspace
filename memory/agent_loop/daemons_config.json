@@ -1,0 +1,85 @@
+{
+  "name": "agent-daemons",
+  "version": "1.0.0",
+  "description": "OpenClaw Background Daemons - 基于 Claude Code 架构",
+  "daemons": {
+    "file_watcher": {
+      "description": "监控文件系统变化",
+      "enabled": true,
+      "watch_paths": ["~/.openclaw/workspace", "~/workspace"],
+      "ignore_patterns": [".git", "node_modules", "__pycache__", "*.log", "*.tmp"],
+      "events": ["create", "modify", "delete", "move"],
+      "debounce_ms": 500,
+      "on_change": "notify_agent"
+    },
+    "memory_extractor": {
+      "description": "后台提取和整理记忆",
+      "enabled": true,
+      "schedule": "0 */6 * * *",
+      "batch_size": 100,
+      "extract_types": ["facts", "preferences", "decisions", "tasks"],
+      "on_extract": "update_memory_graph"
+    },
+    "indexer": {
+      "description": "代码和文档索引",
+      "enabled": true,
+      "watch_paths": ["~/.openclaw/workspace/skills", "~/.openclaw/agent_loop"],
+      "index_types": ["skills", "tools", "sessions", "logs"],
+      "update_interval": 3600,
+      "on_index": "update_search_index"
+    },
+    "health_check": {
+      "description": "系统健康检查",
+      "enabled": true,
+      "interval_seconds": 300,
+      "checks": ["disk_space", "memory_usage", "api_connectivity", "skills_health"],
+      "thresholds": {
+        "disk_warning": 80,
+        "disk_critical": 90,
+        "memory_warning": 80,
+        "memory_critical": 90
+      },
+      "on_alert": "send_notification"
+    },
+    "sync_daemon": {
+      "description": "同步远程状态",
+      "enabled": true,
+      "sync_targets": ["github", "memory_backup"],
+      "interval_seconds": 3600,
+      "on_sync": "log_sync_status"
+    },
+    "scheduler": {
+      "description": "定时任务调度器",
+      "enabled": true,
+      "timezone": "Asia/Shanghai",
+      "jobs": [
+        {
+          "name": "morning_push",
+          "schedule": "0 8 * * *",
+          "command": "~/.openclaw/agent_loop_morning_push.sh"
+        },
+        {
+          "name": "skills_update_batch1",
+          "schedule": "30 3 * * *",
+          "command": "~/.openclaw/skills_auto_update.sh batch1"
+        },
+        {
+          "name": "skills_update_batch2",
+          "schedule": "0 4 * * *",
+          "command": "~/.openclaw/skills_auto_update.sh batch2"
+        },
+        {
+          "name": "auto_backup",
+          "schedule": "0 3 * * *",
+          "command": "~/.openclaw/auto_updater.sh"
+        }
+      ]
+    }
+  },
+  "logging": {
+    "level": "info",
+    "rotation": "daily",
+    "retention_days": 7
+  },
+  "pid_file": "~/.openclaw/agent_loop/daemons/daemons.pid"
+}

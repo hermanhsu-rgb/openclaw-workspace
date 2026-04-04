@@ -266,6 +266,7 @@ function buildGepPrompt({
   recentHistory,
   failedCapsules,
   hubLessons,
+  strategyPolicy,
 }) {
   const parentValue = parentEventId ? `"${parentEventId}"` : 'null';
   const selectedGeneId = selectedGene && selectedGene.id ? selectedGene.id : 'gene_<name>';
@@ -289,6 +290,15 @@ ACTIVE STRATEGY (Generic):
 3. Apply minimal, safe changes.
 4. Validate changes strictly.
 5. Solidify knowledge.
+`.trim();
+  }
+  let strategyPolicyBlock = '';
+  if (strategyPolicy && Array.isArray(strategyPolicy.directives) && strategyPolicy.directives.length > 0) {
+    strategyPolicyBlock = `
+ADAPTIVE STRATEGY POLICY:
+${strategyPolicy.directives.map((s, i) => `${i + 1}. ${s}`).join('\n')}
+${strategyPolicy.forceInnovate ? 'You MUST prefer INNOVATE unless a critical blocking error is present.' : ''}
+${strategyPolicy.cautiousExecution ? 'You MUST reduce blast radius and avoid broad refactors in this cycle.' : ''}
 `.trim();
   }
   
@@ -384,6 +394,7 @@ II. Directives & Logic
 
 2. Selection: Selected Gene "${selectedGeneId}".
 ${strategyBlock}
+${strategyPolicyBlock ? '\n' + strategyPolicyBlock : ''}
 
 3. Execution: Apply changes (tool calls). Repair/Optimize: small/reversible. Innovate: new skills in \`skills/<name>/\`.
 4. Validation: Run gene's validation steps. Fail = ROLLBACK.
@@ -464,8 +475,18 @@ When creating a new skill in skills/<name>/:
 5. EXPORT VERIFICATION: Every exported function must be importable.
    Run: node -e "const s = require('./skills/<name>'); console.log(Object.keys(s))"
    If this fails, the skill is broken. Fix before solidify.
-6. NO HARDCODED SECRETS: Never embed API keys, tokens, or secrets in code.
-   Use process.env or .env references. Hardcoded App ID, App Secret, Bearer tokens = FAILED.
+6. SENSITIVE DATA PARAMETERIZATION (MANDATORY):
+   Before outputting any code, config, or command, you MUST parameterize all sensitive data:
+   a) Replace ALL hardcoded API keys, tokens, and secrets with process.env.<SERVICE>_API_KEY
+   b) Replace ALL local filesystem paths (/home/<user>/, /Users/<user>/, C:\Users\<user>\)
+      with path.join(process.env.HOME || process.cwd(), ...) or process.env.WORKSPACE_ROOT
+   c) Replace ALL database connection strings (mongodb://, postgres://, mysql://, redis://)
+      with process.env.DATABASE_URL or process.env.<SERVICE>_URL
+   d) Replace ALL internal IP addresses / hostnames with process.env.<SERVICE>_HOST
+   e) Replace ALL usernames in paths, configs, or comments with generic references
+   f) Replace ALL hardcoded passwords with process.env.PASSWORD or process.env.<SERVICE>_PASSWORD
+   If the current environment's actual values appear in your output, you MUST replace them.
+   Hardcoded App ID, App Secret, Bearer tokens, private keys, connection strings = FAILED.
 7. TEST BEFORE SOLIDIFY: Actually run the skill's core function to verify it works:
    node -e "require('./skills/<name>').main ? require('./skills/<name>').main() : console.log('ok')"
    Scripts in scripts/ must also be tested by executing them.
@@ -538,15 +559,9 @@ Preferred path: evolver core auto-writes it during solidify.
 The wrapper will handle reporting AFTER git push.
 If core write is unavailable for any reason, create fallback status JSON manually.
 
-Write a JSON file with your status:
+Write a JSON file with your status (cross-platform):
 \`\`\`bash
-cat > ${process.env.WORKSPACE_DIR || '.'}/logs/status_${cycleId}.json << 'STATUSEOF'
-{
-  "result": "success|failed",
-  "en": "Status: [INTENT] <describe what you did in 1-2 sentences, in English>",
-  "zh": "状态: [意图] <用中文描述你做了什么，1-2句>"
-}
-STATUSEOF
+node -e "require('fs').mkdirSync('${(process.env.WORKSPACE_DIR || '.').replace(/\\/g, '/')}/logs',{recursive:true});require('fs').writeFileSync('${(process.env.WORKSPACE_DIR || '.').replace(/\\/g, '/')}/logs/status_${cycleId}.json',JSON.stringify({result:'success',en:'Status: [INTENT] ...',zh:'...'},null,2))"
 \`\`\`
 
 Rules:

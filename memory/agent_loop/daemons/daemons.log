@@ -1,0 +1,173 @@
+[2026-04-04 23:35:35] [health_check] [INFO] Health Check Daemon 启动
+[2026-04-04 23:35:35] [scheduler] [INFO] Scheduler Daemon 启动
+[2026-04-04 23:35:35] [scheduler] [INFO] 定时任务调度器运行中...
+[2026-04-04 23:35:35] [health_check] [INFO] 检查间隔: 300秒
+[2026-04-04 23:35:35] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-04 23:35:35] [health_check] [INFO] Skills 数量: 24
+[2026-04-04 23:40:36] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-04 23:40:36] [health_check] [INFO] Skills 数量: 24
+[2026-04-04 23:45:37] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-04 23:45:37] [health_check] [INFO] Skills 数量: 24
+[2026-04-04 23:50:38] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-04 23:50:38] [health_check] [INFO] Skills 数量: 24
+[2026-04-04 23:55:38] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-04 23:55:38] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 00:00:39] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 00:00:39] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 00:05:40] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 00:05:40] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 00:10:41] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 00:10:41] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 00:15:41] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 00:15:41] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 00:20:42] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 00:20:42] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 00:25:43] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 00:25:43] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 00:30:44] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 00:30:44] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 00:35:44] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 00:35:44] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 00:40:45] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 00:40:45] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 00:45:46] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 00:45:46] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 00:50:47] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 00:50:47] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 00:55:48] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 00:55:48] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 01:00:48] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 01:00:48] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 01:05:49] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 01:05:49] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 01:10:50] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 01:10:50] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 01:15:51] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 01:15:51] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 01:20:51] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 01:20:51] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 01:25:52] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 01:25:52] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 01:30:53] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 01:30:53] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 01:35:54] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 01:35:54] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 01:40:54] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 01:40:54] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 01:45:55] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 01:45:55] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 01:50:56] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 01:50:56] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 01:55:57] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 01:55:57] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 02:00:57] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 02:00:57] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 02:05:58] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 02:05:58] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 02:10:59] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 02:10:59] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 02:16:00] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 02:16:00] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 02:21:00] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 02:21:00] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 02:26:01] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 02:26:01] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 02:31:02] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 02:31:02] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 02:36:03] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 02:36:03] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 02:41:04] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 02:41:04] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 02:46:04] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 02:46:04] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 02:51:05] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 02:51:05] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 02:56:06] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 02:56:06] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 03:00:37] [scheduler] [INFO] 执行自动备份
+[2026-04-05 03:01:07] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 03:01:07] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 03:06:07] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 03:06:07] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 03:11:08] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 03:11:08] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 03:16:09] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 03:16:09] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 03:21:10] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 03:21:10] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 03:26:10] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 03:26:10] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 03:30:37] [scheduler] [INFO] 执行 Skills 更新 (Batch 1)
+[2026-04-05 03:31:11] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 03:31:11] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 03:36:12] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 03:36:12] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 03:41:13] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 03:41:13] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 03:46:14] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 03:46:14] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 03:51:14] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 03:51:14] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 03:56:15] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 03:56:15] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 04:00:37] [scheduler] [INFO] 执行 Skills 更新 (Batch 2)
+[2026-04-05 04:01:16] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 04:01:16] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 04:06:17] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 04:06:17] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 04:11:17] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 04:11:17] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 04:16:18] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 04:16:18] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 04:21:27] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 04:21:27] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 04:26:27] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 04:26:27] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 04:31:28] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 04:31:28] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 04:36:29] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 04:36:29] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 04:41:30] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 04:41:30] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 04:46:31] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 04:46:31] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 04:51:31] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 04:51:31] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 04:56:32] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 04:56:32] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 05:01:33] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 05:01:33] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 05:06:34] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 05:06:34] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 05:11:34] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 05:11:34] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 05:16:35] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 05:16:35] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 05:21:36] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 05:21:36] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 05:26:37] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 05:26:37] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 05:31:37] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 05:31:37] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 05:36:38] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 05:36:38] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 05:41:39] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 05:41:39] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 05:46:40] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 05:46:40] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 05:51:40] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 05:51:40] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 05:56:41] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 05:56:41] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 06:01:42] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 06:01:42] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 06:06:43] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 06:06:43] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 06:11:43] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 06:11:43] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 06:16:44] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 06:16:44] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 06:21:45] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 06:21:45] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 06:26:46] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 06:26:46] [health_check] [INFO] Skills 数量: 24

@@ -103,9 +103,9 @@ function buildMessage(params) {
   if (!params || typeof params !== 'object') {
     throw new Error('buildMessage requires a params object');
   }
-  var messageType = params.messageType;
-  var payload = params.payload;
-  var senderId = params.senderId;
+  const messageType = params.messageType;
+  const payload = params.payload;
+  const senderId = params.senderId;
   if (!VALID_MESSAGE_TYPES.includes(messageType)) {
     throw new Error('Invalid message type: ' + messageType + '. Valid: ' + VALID_MESSAGE_TYPES.join(', '));
   }
@@ -123,7 +123,7 @@ function buildMessage(params) {
 // --- Typed message builders ---
 
 function buildHello(opts) {
-  var o = opts || {};
+  const o = opts || {};
   return buildMessage({
     messageType: 'hello',
     senderId: o.nodeId,
@@ -137,15 +137,15 @@ function buildHello(opts) {
 }
 
 function buildPublish(opts) {
-  var o = opts || {};
-  var asset = o.asset;
+  const o = opts || {};
+  const asset = o.asset;
   if (!asset || !asset.type || !asset.id) {
     throw new Error('publish: asset must have type and id');
   }
   // Generate signature: HMAC-SHA256 of asset_id with node secret
-  var assetIdVal = asset.asset_id || computeAssetId(asset);
-  var nodeSecret = process.env.A2A_NODE_SECRET || getNodeId();
-  var signature = crypto.createHmac('sha256', nodeSecret).update(assetIdVal).digest('hex');
+  const assetIdVal = asset.asset_id || computeAssetId(asset);
+  const nodeSecret = process.env.A2A_NODE_SECRET || getNodeId();
+  const signature = crypto.createHmac('sha256', nodeSecret).update(assetIdVal).digest('hex');
   return buildMessage({
     messageType: 'publish',
     senderId: o.nodeId,
@@ -162,10 +162,10 @@ function buildPublish(opts) {
 // Build a bundle publish message containing Gene + Capsule (+ optional EvolutionEvent).
 // Hub requires payload.assets = [Gene, Capsule] since bundle enforcement was added.
 function buildPublishBundle(opts) {
-  var o = opts || {};
-  var gene = o.gene;
-  var capsule = o.capsule;
-  var event = o.event || null;
+  const o = opts || {};
+  const gene = o.gene;
+  const capsule = o.capsule;
+  const event = o.event || null;
   if (!gene || gene.type !== 'Gene' || !gene.id) {
     throw new Error('publishBundle: gene must be a valid Gene with type and id');
   }
@@ -178,12 +178,12 @@ function buildPublishBundle(opts) {
   }
   gene.asset_id = computeAssetId(gene);
   capsule.asset_id = computeAssetId(capsule);
-  var geneAssetId = gene.asset_id;
-  var capsuleAssetId = capsule.asset_id;
-  var nodeSecret = process.env.A2A_NODE_SECRET || getNodeId();
-  var signatureInput = [geneAssetId, capsuleAssetId].sort().join('|');
-  var signature = crypto.createHmac('sha256', nodeSecret).update(signatureInput).digest('hex');
-  var assets = [gene, capsule];
+  const geneAssetId = gene.asset_id;
+  const capsuleAssetId = capsule.asset_id;
+  const nodeSecret = process.env.A2A_NODE_SECRET || getNodeId();
+  const signatureInput = [geneAssetId, capsuleAssetId].sort().join('|');
+  const signature = crypto.createHmac('sha256', nodeSecret).update(signatureInput).digest('hex');
+  const assets = [gene, capsule];
   if (event && event.type === 'EvolutionEvent') {
     if (o.modelName && typeof o.modelName === 'string') {
       event.model_name = o.modelName;
@@ -191,7 +191,7 @@ function buildPublishBundle(opts) {
     event.asset_id = computeAssetId(event);
     assets.push(event);
   }
-  var publishPayload = {
+  const publishPayload = {
     assets: assets,
     signature: signature,
   };
@@ -206,8 +206,8 @@ function buildPublishBundle(opts) {
 }
 
 function buildFetch(opts) {
-  var o = opts || {};
-  var fetchPayload = {
+  const o = opts || {};
+  const fetchPayload = {
     asset_type: o.assetType || null,
     local_id: o.localId || null,
     content_hash: o.contentHash || null,
@@ -229,7 +229,7 @@ function buildFetch(opts) {
 }
 
 function buildReport(opts) {
-  var o = opts || {};
+  const o = opts || {};
   return buildMessage({
     messageType: 'report',
     senderId: o.nodeId,
@@ -242,8 +242,8 @@ function buildReport(opts) {
 }
 
 function buildDecision(opts) {
-  var o = opts || {};
-  var validDecisions = ['accept', 'reject', 'quarantine'];
+  const o = opts || {};
+  const validDecisions = ['accept', 'reject', 'quarantine'];
   if (!validDecisions.includes(o.decision)) {
     throw new Error('decision must be one of: ' + validDecisions.join(', '));
   }
@@ -260,7 +260,7 @@ function buildDecision(opts) {
 }
 
 function buildRevoke(opts) {
-  var o = opts || {};
+  const o = opts || {};
   return buildMessage({
     messageType: 'revoke',
     senderId: o.nodeId,
@@ -289,7 +289,7 @@ function unwrapAssetFromMessage(input) {
   if (!input || typeof input !== 'object') return null;
   // If it is a protocol message with a publish payload, extract the asset.
   if (input.protocol === PROTOCOL_NAME && input.message_type === 'publish') {
-    var p = input.payload;
+    const p = input.payload;
     if (p && p.asset && typeof p.asset === 'object') return p.asset;
     return null;
   }
@@ -305,7 +305,9 @@ function unwrapAssetFromMessage(input) {
 function ensureDir(dir) {
   try {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  } catch (e) {}
+  } catch (e) {
+    console.warn('[a2aProtocol] ensureDir failed:', dir, e && e.message || e);
+  }
 }
 
 function defaultA2ADir() {
@@ -313,38 +315,42 @@ function defaultA2ADir() {
 }
 
 function fileTransportSend(message, opts) {
-  var dir = (opts && opts.dir) || defaultA2ADir();
-  var subdir = path.join(dir, 'outbox');
+  const dir = (opts && opts.dir) || defaultA2ADir();
+  const subdir = path.join(dir, 'outbox');
   ensureDir(subdir);
-  var filePath = path.join(subdir, message.message_type + '.jsonl');
+  const filePath = path.join(subdir, message.message_type + '.jsonl');
   fs.appendFileSync(filePath, JSON.stringify(message) + '\n', 'utf8');
   return { ok: true, path: filePath };
 }
 
 function fileTransportReceive(opts) {
-  var dir = (opts && opts.dir) || defaultA2ADir();
-  var subdir = path.join(dir, 'inbox');
+  const dir = (opts && opts.dir) || defaultA2ADir();
+  const subdir = path.join(dir, 'inbox');
   if (!fs.existsSync(subdir)) return [];
-  var files = fs.readdirSync(subdir).filter(function (f) { return f.endsWith('.jsonl'); });
-  var messages = [];
-  for (var fi = 0; fi < files.length; fi++) {
+  const files = fs.readdirSync(subdir).filter(function (f) { return f.endsWith('.jsonl'); });
+  const messages = [];
+  for (let fi = 0; fi < files.length; fi++) {
     try {
-      var raw = fs.readFileSync(path.join(subdir, files[fi]), 'utf8');
-      var lines = raw.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
-      for (var li = 0; li < lines.length; li++) {
+      const raw = fs.readFileSync(path.join(subdir, files[fi]), 'utf8');
+      const lines = raw.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+      for (let li = 0; li < lines.length; li++) {
         try {
-          var msg = JSON.parse(lines[li]);
+          const msg = JSON.parse(lines[li]);
           if (msg && msg.protocol === PROTOCOL_NAME) messages.push(msg);
-        } catch (e) {}
+        } catch (e) {
+          console.warn('[a2aProtocol] Malformed JSON line in inbox file ' + files[fi] + ' (line ' + (li + 1) + '):', e && e.message || e);
+        }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn('[a2aProtocol] Failed to read inbox file:', files[fi], e && e.message || e);
+    }
   }
   return messages;
 }
 
 function fileTransportList(opts) {
-  var dir = (opts && opts.dir) || defaultA2ADir();
-  var subdir = path.join(dir, 'outbox');
+  const dir = (opts && opts.dir) || defaultA2ADir();
+  const subdir = path.join(dir, 'outbox');
   if (!fs.existsSync(subdir)) return [];
   return fs.readdirSync(subdir).filter(function (f) { return f.endsWith('.jsonl'); });
 }
@@ -352,40 +358,52 @@ function fileTransportList(opts) {
 // --- HTTP Transport (connects to evomap-hub) ---
 
 function httpTransportSend(message, opts) {
-  var hubUrl = (opts && opts.hubUrl) || process.env.A2A_HUB_URL;
+  const hubUrl = (opts && opts.hubUrl) || process.env.A2A_HUB_URL;
   if (!hubUrl) return { ok: false, error: 'A2A_HUB_URL not set' };
-  var endpoint = hubUrl.replace(/\/+$/, '') + '/a2a/' + message.message_type;
-  var body = JSON.stringify(message);
+  const timeoutMs = (opts && opts.timeoutMs) || require('../config').HTTP_TRANSPORT_TIMEOUT_MS;
+  const endpoint = hubUrl.replace(/\/+$/, '') + '/a2a/' + message.message_type;
+  const body = JSON.stringify(message);
   return fetch(endpoint, {
     method: 'POST',
     headers: buildHubHeaders(),
     body: body,
+    signal: AbortSignal.timeout(timeoutMs),
   })
-    .then(function (res) { return res.json(); })
-    .then(function (data) { return { ok: true, response: data }; })
+    .then(function (res) {
+      if (!res.ok) return res.text().then(function (t) { return { ok: false, error: 'HTTP ' + res.status + ': ' + t.slice(0, 200) }; });
+      return res.json().then(function (data) { return { ok: true, response: data }; });
+    })
     .catch(function (err) { return { ok: false, error: err.message }; });
 }
 
 function httpTransportReceive(opts) {
-  var hubUrl = (opts && opts.hubUrl) || process.env.A2A_HUB_URL;
+  const hubUrl = (opts && opts.hubUrl) || process.env.A2A_HUB_URL;
   if (!hubUrl) return Promise.resolve([]);
-  var assetType = (opts && opts.assetType) || null;
-  var signals = (opts && Array.isArray(opts.signals)) ? opts.signals : null;
-  var fetchMsg = buildFetch({ assetType: assetType, signals: signals });
-  var endpoint = hubUrl.replace(/\/+$/, '') + '/a2a/fetch';
+  const timeoutMs = (opts && opts.timeoutMs) || require('../config').HTTP_TRANSPORT_TIMEOUT_MS;
+  const assetType = (opts && opts.assetType) || null;
+  const signals = (opts && Array.isArray(opts.signals)) ? opts.signals : null;
+  const fetchMsg = buildFetch({ assetType: assetType, signals: signals });
+  const endpoint = hubUrl.replace(/\/+$/, '') + '/a2a/fetch';
   return fetch(endpoint, {
     method: 'POST',
     headers: buildHubHeaders(),
     body: JSON.stringify(fetchMsg),
+    signal: AbortSignal.timeout(timeoutMs),
   })
-    .then(function (res) { return res.json(); })
+    .then(function (res) {
+      if (!res.ok) { console.warn('[a2aProtocol] httpTransportReceive HTTP ' + res.status); return { payload: { results: [] } }; }
+      return res.json();
+    })
     .then(function (data) {
       if (data && data.payload && Array.isArray(data.payload.results)) {
         return data.payload.results;
       }
       return [];
     })
-    .catch(function () { return []; });
+    .catch(function (err) {
+      console.warn('[a2aProtocol] httpTransportReceive failed:', err && err.message || err);
+      return [];
+    });
 }
 
 function httpTransportList() {
@@ -394,28 +412,32 @@ function httpTransportList() {
 
 // --- Heartbeat ---
 
-var _heartbeatTimer = null;
-var _heartbeatStartedAt = null;
-var _heartbeatConsecutiveFailures = 0;
-var _heartbeatTotalSent = 0;
-var _heartbeatTotalFailed = 0;
-var _heartbeatFpSent = false;
-var _latestAvailableWork = [];
-var _latestOverdueTasks = [];
-var _latestSkillStoreHint = null;
-var _latestNoveltyHint = null;
-var _latestCapabilityGaps = [];
-var _pendingCommitmentUpdates = [];
-var _cachedHubNodeSecret = null;
-var _heartbeatIntervalMs = 0;
-var _heartbeatRunning = false;
+let _heartbeatTimer = null;
+let _heartbeatStartedAt = null;
+let _heartbeatConsecutiveFailures = 0;
+let _heartbeatTotalSent = 0;
+let _heartbeatTotalFailed = 0;
+let _heartbeatFpSent = false;
+let _latestAvailableWork = [];
+let _latestOverdueTasks = [];
+let _latestSkillStoreHint = null;
+let _latestNoveltyHint = null;
+let _latestCapabilityGaps = [];
+let _pendingCommitmentUpdates = [];
+let _latestHubEvents = [];
+let _pollInflight = false;
+let _cachedHubNodeSecret = null;
+let _cachedHubNodeSecretAt = 0;
+const _SECRET_CACHE_TTL_MS = require('../config').SECRET_CACHE_TTL_MS;
+let _heartbeatIntervalMs = 0;
+let _heartbeatRunning = false;
 
-var NODE_SECRET_FILE = path.join(NODE_ID_DIR, 'node_secret');
+const NODE_SECRET_FILE = path.join(NODE_ID_DIR, 'node_secret');
 
 function _loadPersistedNodeSecret() {
   try {
     if (fs.existsSync(NODE_SECRET_FILE)) {
-      var s = fs.readFileSync(NODE_SECRET_FILE, 'utf8').trim();
+      const s = fs.readFileSync(NODE_SECRET_FILE, 'utf8').trim();
       if (s && /^[a-f0-9]{64}$/i.test(s)) return s;
     }
   } catch {}
@@ -428,7 +450,9 @@ function _persistNodeSecret(secret) {
       fs.mkdirSync(NODE_ID_DIR, { recursive: true, mode: 0o700 });
     }
     fs.writeFileSync(NODE_SECRET_FILE, secret, { encoding: 'utf8', mode: 0o600 });
-  } catch {}
+  } catch (e) {
+    console.warn('[a2aProtocol] Failed to persist node secret:', e && e.message || e);
+  }
 }
 
 function getHubUrl() {
@@ -436,34 +460,35 @@ function getHubUrl() {
 }
 
 function buildHubHeaders() {
-  var headers = { 'Content-Type': 'application/json' };
-  var secret = getHubNodeSecret();
+  const headers = { 'Content-Type': 'application/json' };
+  const secret = getHubNodeSecret();
   if (secret) headers['Authorization'] = 'Bearer ' + secret;
   return headers;
 }
 
 function sendHelloToHub() {
-  var hubUrl = getHubUrl();
+  const hubUrl = getHubUrl();
   if (!hubUrl) return Promise.resolve({ ok: false, error: 'no_hub_url' });
 
-  var endpoint = hubUrl.replace(/\/+$/, '') + '/a2a/hello';
-  var nodeId = getNodeId();
-  var msg = buildHello({ nodeId: nodeId, capabilities: {} });
+  const endpoint = hubUrl.replace(/\/+$/, '') + '/a2a/hello';
+  const nodeId = getNodeId();
+  const msg = buildHello({ nodeId: nodeId, capabilities: {} });
   msg.sender_id = nodeId;
 
   return fetch(endpoint, {
     method: 'POST',
     headers: buildHubHeaders(),
     body: JSON.stringify(msg),
-    signal: AbortSignal.timeout(15000),
+    signal: AbortSignal.timeout(require('../config').HELLO_TIMEOUT_MS),
   })
     .then(function (res) { return res.json(); })
     .then(function (data) {
-      var secret = (data && data.payload && data.payload.node_secret)
+      const secret = (data && data.payload && data.payload.node_secret)
         || (data && data.node_secret)
         || null;
       if (secret && /^[a-f0-9]{64}$/i.test(secret)) {
         _cachedHubNodeSecret = secret;
+        _cachedHubNodeSecretAt = Date.now();
         _persistNodeSecret(secret);
       }
       return { ok: true, response: data };
@@ -473,10 +498,14 @@ function sendHelloToHub() {
 
 function getHubNodeSecret() {
   if (process.env.A2A_NODE_SECRET) return process.env.A2A_NODE_SECRET;
-  if (_cachedHubNodeSecret) return _cachedHubNodeSecret;
-  var persisted = _loadPersistedNodeSecret();
+  const now = Date.now();
+  if (_cachedHubNodeSecret && (now - _cachedHubNodeSecretAt) < _SECRET_CACHE_TTL_MS) {
+    return _cachedHubNodeSecret;
+  }
+  const persisted = _loadPersistedNodeSecret();
   if (persisted) {
     _cachedHubNodeSecret = persisted;
+    _cachedHubNodeSecretAt = now;
     return persisted;
   }
   if (process.env.A2A_HUB_TOKEN) return process.env.A2A_HUB_TOKEN;
@@ -486,22 +515,24 @@ function getHubNodeSecret() {
 function _scheduleNextHeartbeat(delayMs) {
   if (!_heartbeatRunning) return;
   if (_heartbeatTimer) clearTimeout(_heartbeatTimer);
-  var delay = delayMs || _heartbeatIntervalMs;
+  const delay = delayMs || _heartbeatIntervalMs;
   _heartbeatTimer = setTimeout(function () {
     if (!_heartbeatRunning) return;
-    sendHeartbeat().catch(function () {});
+    sendHeartbeat().catch(function (err) {
+      console.warn('[Heartbeat] Scheduled heartbeat failed:', err && err.message || err);
+    });
     _scheduleNextHeartbeat();
   }, delay);
   if (_heartbeatTimer.unref) _heartbeatTimer.unref();
 }
 
 function sendHeartbeat() {
-  var hubUrl = getHubUrl();
+  const hubUrl = getHubUrl();
   if (!hubUrl) return Promise.resolve({ ok: false, error: 'no_hub_url' });
 
-  var endpoint = hubUrl.replace(/\/+$/, '') + '/a2a/heartbeat';
-  var nodeId = getNodeId();
-  var bodyObj = {
+  const endpoint = hubUrl.replace(/\/+$/, '') + '/a2a/heartbeat';
+  const nodeId = getNodeId();
+  const bodyObj = {
     node_id: nodeId,
     sender_id: nodeId,
     version: PROTOCOL_VERSION,
@@ -509,10 +540,10 @@ function sendHeartbeat() {
     timestamp: new Date().toISOString(),
   };
 
-  var meta = {};
+  const meta = {};
 
   if (process.env.WORKER_ENABLED === '1') {
-    var domains = (process.env.WORKER_DOMAINS || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    const domains = (process.env.WORKER_DOMAINS || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
     meta.worker_enabled = true;
     meta.worker_domains = domains;
     meta.max_load = Math.max(1, Number(process.env.WORKER_MAX_LOAD) || 5);
@@ -524,19 +555,21 @@ function sendHeartbeat() {
 
   if (!_heartbeatFpSent) {
     try {
-      var fp = captureEnvFingerprint();
+      const fp = captureEnvFingerprint();
       if (fp && fp.evolver_version) {
         meta.env_fingerprint = fp;
         _heartbeatFpSent = true;
       }
-    } catch {}
+    } catch (e) {
+      console.warn('[a2aProtocol] Failed to capture env fingerprint:', e && e.message || e);
+    }
   }
 
   if (Object.keys(meta).length > 0) {
     bodyObj.meta = meta;
   }
 
-  var body = JSON.stringify(bodyObj);
+  const body = JSON.stringify(bodyObj);
 
   _heartbeatTotalSent++;
 
@@ -544,15 +577,15 @@ function sendHeartbeat() {
     method: 'POST',
     headers: buildHubHeaders(),
     body: body,
-    signal: AbortSignal.timeout(10000),
+    signal: AbortSignal.timeout(require('../config').HEARTBEAT_TIMEOUT_MS),
   })
     .then(function (res) { return res.json(); })
     .then(function (data) {
       if (data && (data.error === 'rate_limited' || data.status === 'rate_limited')) {
-        var retryMs = Number(data.retry_after_ms) || 0;
-        var policy = data.policy || {};
-        var windowMs = Number(policy.window_ms) || 0;
-        var backoff = retryMs > 0 ? retryMs + 5000 : (windowMs > 0 ? windowMs + 5000 : _heartbeatIntervalMs);
+        const retryMs = Number(data.retry_after_ms) || 0;
+        const policy = data.policy || {};
+        const windowMs = Number(policy.window_ms) || 0;
+        const backoff = retryMs > 0 ? retryMs + 5000 : (windowMs > 0 ? windowMs + 5000 : _heartbeatIntervalMs);
         if (backoff > _heartbeatIntervalMs) {
           console.warn('[Heartbeat] Rate limited by hub. Next attempt in ' + Math.round(backoff / 1000) + 's. ' +
             'Consider increasing HEARTBEAT_INTERVAL_MS to >= ' + (windowMs || backoff) + 'ms.');
@@ -594,17 +627,22 @@ function sendHeartbeat() {
       if (data.circle_experience && typeof data.circle_experience === 'object') {
         console.log('[EvolutionCircle] Active circle: ' + (data.circle_experience.circle_id || '?') + ' (' + (data.circle_experience.member_count || 0) + ' members)');
       }
+      if (data.has_pending_events) {
+        _fetchHubEvents().catch(function (err) {
+          console.warn('[Events] Poll failed:', err && err.message || err);
+        });
+      }
       _heartbeatConsecutiveFailures = 0;
       try {
-        var logPath = getEvolverLogPath();
+        const logPath = getEvolverLogPath();
         fs.mkdirSync(path.dirname(logPath), { recursive: true });
-        var now = new Date();
+        const now = new Date();
         try {
           fs.utimesSync(logPath, now, now);
         } catch (e) {
           if (e && e.code === 'ENOENT') {
             try {
-              var fd = fs.openSync(logPath, 'a');
+              const fd = fs.openSync(logPath, 'a');
               fs.closeSync(fd);
               fs.utimesSync(logPath, now, now);
             } catch (innerErr) {
@@ -638,7 +676,7 @@ function getLatestAvailableWork() {
 }
 
 function consumeAvailableWork() {
-  var work = _latestAvailableWork;
+  const work = _latestAvailableWork;
   _latestAvailableWork = [];
   return work;
 }
@@ -652,7 +690,7 @@ function getSkillStoreHint() {
 }
 
 function consumeOverdueTasks() {
-  var tasks = _latestOverdueTasks;
+  const tasks = _latestOverdueTasks;
   _latestOverdueTasks = [];
   return tasks;
 }
@@ -663,6 +701,74 @@ function getNoveltyHint() {
 
 function getCapabilityGaps() {
   return _latestCapabilityGaps;
+}
+
+/**
+ * Fetch pending high-priority events from the hub via long-poll.
+ * Called automatically when heartbeat returns has_pending_events: true.
+ * Results are stored in _latestHubEvents and can be consumed via consumeHubEvents().
+ */
+function _fetchHubEvents() {
+  if (_pollInflight) return Promise.resolve([]);
+  const hubUrl = getHubUrl();
+  if (!hubUrl) return Promise.resolve([]);
+  _pollInflight = true;
+
+  const nodeId = getNodeId();
+  const endpoint = hubUrl.replace(/\/+$/, '') + '/a2a/events/poll';
+  const body = JSON.stringify({
+    protocol: 'gep-a2a',
+    protocol_version: PROTOCOL_VERSION,
+    message_type: 'events_poll',
+    message_id: 'poll_' + Date.now(),
+    timestamp: new Date().toISOString(),
+    sender_id: nodeId,
+    payload: {},
+  });
+
+  return fetch(endpoint, {
+    method: 'POST',
+    headers: buildHubHeaders(),
+    body: body,
+    signal: AbortSignal.timeout(require('../config').EVENT_POLL_TIMEOUT_MS),
+  })
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+      const events = (data && Array.isArray(data.events))
+        ? data.events
+        : (data && data.payload && Array.isArray(data.payload.events))
+          ? data.payload.events
+          : [];
+      if (events.length > 0) {
+        _latestHubEvents = _latestHubEvents.concat(events);
+        console.log('[Events] Received ' + events.length + ' pending event(s): ' +
+          events.map(function (e) { return e.type; }).join(', '));
+      }
+      return events;
+    })
+    .catch(function (err) {
+      console.warn('[Events] Poll error:', err && err.message || err);
+      return [];
+    })
+    .finally(function () {
+      _pollInflight = false;
+    });
+}
+
+/**
+ * Returns all buffered hub events (does not clear the buffer).
+ */
+function getHubEvents() {
+  return _latestHubEvents;
+}
+
+/**
+ * Returns and clears all buffered hub events.
+ */
+function consumeHubEvents() {
+  const events = _latestHubEvents;
+  _latestHubEvents = [];
+  return events;
 }
 
 /**
@@ -682,17 +788,19 @@ function queueCommitmentUpdate(taskId, deadlineIso, isAssignment) {
 
 function startHeartbeat(intervalMs) {
   if (_heartbeatRunning) return;
-  _heartbeatIntervalMs = intervalMs || Number(process.env.HEARTBEAT_INTERVAL_MS) || 360000; // default 6min
+  _heartbeatIntervalMs = intervalMs || require('../config').HEARTBEAT_INTERVAL_MS;
   _heartbeatStartedAt = Date.now();
   _heartbeatRunning = true;
 
   sendHelloToHub().then(function (r) {
     if (r.ok) console.log('[Heartbeat] Registered with hub. Node: ' + getNodeId());
     else console.warn('[Heartbeat] Hello failed (will retry via heartbeat): ' + (r.error || 'unknown'));
-  }).catch(function () {}).then(function () {
+  }).catch(function (err) {
+    console.warn('[Heartbeat] Hello during startup failed:', err && err.message || err);
+  }).then(function () {
     if (!_heartbeatRunning) return;
     // First heartbeat after hello completes, with enough gap to avoid rate limit
-    _scheduleNextHeartbeat(Math.max(30000, _heartbeatIntervalMs));
+    _scheduleNextHeartbeat(Math.max(require('../config').HEARTBEAT_FIRST_DELAY_MS, _heartbeatIntervalMs));
   });
 }
 
@@ -716,7 +824,7 @@ function getHeartbeatStats() {
 
 // --- Transport registry ---
 
-var transports = {
+const transports = {
   file: {
     send: fileTransportSend,
     receive: fileTransportReceive,
@@ -730,8 +838,8 @@ var transports = {
 };
 
 function getTransport(name) {
-  var n = String(name || process.env.A2A_TRANSPORT || 'file').toLowerCase();
-  var t = transports[n];
+  const n = String(name || process.env.A2A_TRANSPORT || 'file').toLowerCase();
+  const t = transports[n];
   if (!t) throw new Error('Unknown A2A transport: ' + n + '. Available: ' + Object.keys(transports).join(', '));
   return t;
 }
@@ -742,6 +850,210 @@ function registerTransport(name, impl) {
     throw new Error('transport must implement send() and receive()');
   }
   transports[name] = impl;
+}
+
+// --- Hub Infrastructure Helpers ---
+// These wrap the agent infrastructure endpoints added to evomap-hub,
+// enabling evolver instances to self-provision, transfer credits,
+// manage identity, and query audit logs programmatically.
+
+function _hubPost(pathSuffix, body, timeoutMs) {
+  var hubUrl = getHubUrl();
+  if (!hubUrl) return Promise.resolve({ ok: false, error: 'no_hub_url' });
+  var endpoint = hubUrl.replace(/\/+$/, '') + pathSuffix;
+  var timeout = timeoutMs || require('../config').HTTP_TRANSPORT_TIMEOUT_MS;
+  return fetch(endpoint, {
+    method: 'POST',
+    headers: buildHubHeaders(),
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(timeout),
+  })
+    .then(function (res) {
+      if (!res.ok) return res.text().then(function (t) { return { ok: false, status: res.status, error: t.slice(0, 400) }; });
+      return res.json().then(function (data) { return { ok: true, data: data }; });
+    })
+    .catch(function (err) { return { ok: false, error: err.message }; });
+}
+
+function _hubGet(pathSuffix, timeoutMs) {
+  var hubUrl = getHubUrl();
+  if (!hubUrl) return Promise.resolve({ ok: false, error: 'no_hub_url' });
+  var endpoint = hubUrl.replace(/\/+$/, '') + pathSuffix;
+  var timeout = timeoutMs || require('../config').HTTP_TRANSPORT_TIMEOUT_MS;
+  return fetch(endpoint, {
+    method: 'GET',
+    headers: buildHubHeaders(),
+    signal: AbortSignal.timeout(timeout),
+  })
+    .then(function (res) {
+      if (!res.ok) return res.text().then(function (t) { return { ok: false, status: res.status, error: t.slice(0, 400) }; });
+      return res.json().then(function (data) { return { ok: true, data: data }; });
+    })
+    .catch(function (err) { return { ok: false, error: err.message }; });
+}
+
+/**
+ * Self-provision a machine account on the hub.
+ * POST /a2a/provision
+ */
+function hubSelfProvision(opts) {
+  var nodeId = (opts && opts.nodeId) || getNodeId();
+  return _hubPost('/a2a/provision', {
+    node_id: nodeId,
+    sender_id: nodeId,
+    label: (opts && opts.label) || undefined,
+    description: (opts && opts.description) || undefined,
+  });
+}
+
+/**
+ * Programmatically top up credits on the hub.
+ * POST /a2a/credit/topup
+ */
+function hubCreditTopUp(amount, opts) {
+  var nodeId = (opts && opts.nodeId) || getNodeId();
+  var safeAmount = Math.max(0, Number(amount) || 0);
+  return _hubPost('/a2a/credit/topup', {
+    node_id: nodeId,
+    sender_id: nodeId,
+    amount: safeAmount,
+    idempotency_key: (opts && opts.idempotencyKey) || undefined,
+  });
+}
+
+/**
+ * Transfer credits to another agent on the hub.
+ * POST /a2a/credit/transfer
+ */
+function hubCreditTransfer(toNodeId, amount, opts) {
+  var fromNodeId = (opts && opts.fromNodeId) || getNodeId();
+  var safeAmount = Math.max(0, Number(amount) || 0);
+  return _hubPost('/a2a/credit/transfer', {
+    from_node_id: fromNodeId,
+    sender_id: fromNodeId,
+    to_node_id: toNodeId,
+    amount: safeAmount,
+    reason: (opts && opts.reason) || 'agent_transfer',
+    reference_id: (opts && opts.referenceId) || undefined,
+    meta: (opts && opts.meta) || undefined,
+  });
+}
+
+/**
+ * Get transfer fee estimate.
+ * GET /a2a/credit/transfer/estimate?amount=N
+ */
+function hubTransferEstimate(amount) {
+  return _hubGet('/a2a/credit/transfer/estimate?amount=' + (Number(amount) || 0));
+}
+
+/**
+ * Get own transfer history.
+ * GET /a2a/credit/transfer/history?node_id=...
+ */
+function hubTransferHistory(opts) {
+  var nodeId = (opts && opts.nodeId) || getNodeId();
+  var limit = (opts && opts.limit) || 20;
+  var offset = (opts && opts.offset) || 0;
+  var dir = (opts && opts.direction) || '';
+  var qs = 'node_id=' + encodeURIComponent(nodeId) + '&limit=' + limit + '&offset=' + offset;
+  if (dir) qs += '&direction=' + encodeURIComponent(dir);
+  return _hubGet('/a2a/credit/transfer/history?' + qs);
+}
+
+/**
+ * Get portable identity profile of any node.
+ * GET /a2a/identity/:nodeId
+ */
+function hubGetIdentity(nodeId) {
+  var nid = nodeId || getNodeId();
+  return _hubGet('/a2a/identity/' + encodeURIComponent(nid));
+}
+
+/**
+ * Get a verifiable reputation attestation.
+ * GET /a2a/identity/:nodeId/attestation
+ */
+function hubGetAttestation(nodeId) {
+  var nid = nodeId || getNodeId();
+  return _hubGet('/a2a/identity/' + encodeURIComponent(nid) + '/attestation');
+}
+
+/**
+ * Verify a reputation attestation.
+ * POST /a2a/identity/verify
+ */
+function hubVerifyAttestation(attestation) {
+  return _hubPost('/a2a/identity/verify', attestation);
+}
+
+/**
+ * Set a DID document for the current node.
+ * POST /a2a/identity/did
+ */
+function hubSetDid(didDocument, didMethod) {
+  var nodeId = getNodeId();
+  return _hubPost('/a2a/identity/did', {
+    node_id: nodeId,
+    sender_id: nodeId,
+    did_document: didDocument,
+    did_method: didMethod || 'did:evomap',
+  });
+}
+
+/**
+ * Get own audit logs.
+ * GET /a2a/audit/:nodeId
+ */
+function hubGetAuditLogs(opts) {
+  var nodeId = (opts && opts.nodeId) || getNodeId();
+  var limit = (opts && opts.limit) || 50;
+  var offset = (opts && opts.offset) || 0;
+  var qs = '?limit=' + limit + '&offset=' + offset;
+  if (opts && opts.action) qs += '&action=' + encodeURIComponent(opts.action);
+  if (opts && opts.since) qs += '&since=' + encodeURIComponent(opts.since);
+  if (opts && opts.until) qs += '&until=' + encodeURIComponent(opts.until);
+  return _hubGet('/a2a/audit/' + encodeURIComponent(nodeId) + qs);
+}
+
+/**
+ * Get a generated work report.
+ * GET /a2a/audit/:nodeId/report
+ */
+function hubGetWorkReport(opts) {
+  var nodeId = (opts && opts.nodeId) || getNodeId();
+  var days = (opts && opts.days) || 7;
+  return _hubGet('/a2a/audit/' + encodeURIComponent(nodeId) + '/report?days=' + days);
+}
+
+/**
+ * Open a Server-Sent Events stream for real-time hub notifications.
+ * Returns an object with { ok, eventSource, close() } on success.
+ * The caller should attach event listeners to eventSource.
+ * GET /a2a/events/stream?node_id=...
+ */
+function hubOpenEventStream(opts) {
+  var hubUrl = getHubUrl();
+  if (!hubUrl) return { ok: false, error: 'no_hub_url' };
+
+  var nodeId = (opts && opts.nodeId) || getNodeId();
+  var durationMs = (opts && opts.durationMs) || 300000;
+  var qs = 'node_id=' + encodeURIComponent(nodeId) + '&duration_ms=' + durationMs;
+  var secret = getHubNodeSecret();
+  if (secret) qs += '&node_secret=' + encodeURIComponent(secret);
+  var endpoint = hubUrl.replace(/\/+$/, '') + '/a2a/events/stream?' + qs;
+
+  try {
+    var EventSource = require('eventsource');
+    var es = new EventSource(endpoint);
+    return {
+      ok: true,
+      eventSource: es,
+      close: function () { es.close(); },
+    };
+  } catch (err) {
+    return { ok: false, error: 'eventsource_not_available: ' + (err.message || err) };
+  }
 }
 
 module.exports = {
@@ -783,4 +1095,18 @@ module.exports = {
   buildHubHeaders,
   getNoveltyHint,
   getCapabilityGaps,
+  getHubEvents,
+  consumeHubEvents,
+  hubSelfProvision,
+  hubCreditTopUp,
+  hubCreditTransfer,
+  hubTransferEstimate,
+  hubTransferHistory,
+  hubGetIdentity,
+  hubGetAttestation,
+  hubVerifyAttestation,
+  hubSetDid,
+  hubGetAuditLogs,
+  hubGetWorkReport,
+  hubOpenEventStream,
 };

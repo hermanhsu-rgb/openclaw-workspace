@@ -9,17 +9,14 @@ const {
   loadCapsules,
   readAllEvents,
   getLastEventId,
-  appendCandidateJsonl,
-  readRecentCandidates,
-  readRecentExternalCandidates,
   readRecentFailedCapsules,
   ensureAssetFiles,
 } = require('./gep/assetStore');
-const { selectGeneAndCapsule, matchPatternToSignals } = require('./gep/selector');
+const { selectGeneAndCapsule } = require('./gep/selector');
 const { buildGepPrompt, buildReusePrompt, buildHubMatchedBlock } = require('./gep/prompt');
 const { hubSearch } = require('./gep/hubSearch');
 const { logAssetCall } = require('./gep/assetCallLog');
-const { extractCapabilityCandidates, renderCandidatesPreview } = require('./gep/candidates');
+const { buildCandidatePreviews } = require('./gep/candidateEval');
 const memoryAdapter = require('./gep/memoryGraphAdapter');
 const {
   getAdvice: getMemoryAdvice,
@@ -36,11 +33,50 @@ const { buildMutation, isHighRiskMutationAllowed } = require('./gep/mutation');
 const { selectPersonalityForRun } = require('./gep/personality');
 const { clip, writePromptArtifact, renderSessionsSpawnCall } = require('./gep/bridge');
 const { getEvolutionDir } = require('./gep/paths');
-const { shouldReflect, buildReflectionContext, recordReflection } = require('./gep/reflection');
+const { shouldReflect, buildReflectionContext, recordReflection, buildSuggestedMutations } = require('./gep/reflection');
 const { loadNarrativeSummary } = require('./gep/narrativeMemory');
 const { maybeReportIssue } = require('./gep/issueReporter');
+const { resolveStrategy } = require('./gep/strategy');
+const { expandSignals } = require('./gep/learningSignals');
 
 const REPO_ROOT = getRepoRoot();
+
+// Verbose logging helper. Checks EVOLVER_VERBOSE env const (set by --verbose flag in index.js).
+function verbose() {
+  if (String(process.env.EVOLVER_VERBOSE || '').toLowerCase() !== 'true') return;
+  const args = Array.prototype.slice.call(arguments);
+  args.unshift('[Verbose]');
+  console.log.apply(console, args);
+}
+
+// Idle-cycle gating: track last Hub fetch to avoid redundant API calls during saturation.
+// When evolver is saturated (no actionable signals), Hub calls are throttled to at most
+// once per EVOLVER_IDLE_FETCH_INTERVAL_MS (default 30 min) instead of every cycle.
+let _lastHubFetchMs = 0;
+
+function shouldSkipHubCalls(signals) {
+  if (!Array.isArray(signals)) return false;
+  const saturationIndicators = ['force_steady_state', 'evolution_saturation', 'empty_cycle_loop_detected'];
+  let hasSaturation = false;
+  for (let si = 0; si < saturationIndicators.length; si++) {
+    if (signals.indexOf(saturationIndicators[si]) !== -1) { hasSaturation = true; break; }
+  }
+  if (!hasSaturation) return false;
+
+  const actionablePatterns = [
+    'log_error', 'recurring_error', 'capability_gap', 'perf_bottleneck',
+    'external_task', 'bounty_task', 'overdue_task', 'urgent',
+    'unsupported_input_type',
+  ];
+  for (let ai = 0; ai < signals.length; ai++) {
+    const s = signals[ai];
+    if (actionablePatterns.indexOf(s) !== -1) return false;
+    if (s.indexOf('errsig:') === 0) return false;
+    if (s.indexOf('user_feature_request:') === 0 && s.length > 21) return false;
+    if (s.indexOf('user_improvement_suggestion:') === 0 && s.length > 28) return false;
+  }
+  return true;
+}
 
 // Load environment variables from repo root
 try {
@@ -352,6 +388,73 @@ function readRecentLog(filePath, size = 10000) {
   }
 }
 
+function computeAdaptiveStrategyPolicy(opts) {
+  const recentEvents = Array.isArray(opts && opts.recentEvents) ? opts.recentEvents : [];
+  const selectedGene = opts && opts.selectedGene ? opts.selectedGene : null;
+  const signals = Array.isArray(opts && opts.signals) ? opts.signals : [];
+  const baseStrategy = resolveStrategy({ signals: signals });
+
+  const tail = recentEvents.slice(-8);
+  let repairStreak = 0;
+  for (let i = tail.length - 1; i >= 0; i--) {
+    if (tail[i] && tail[i].intent === 'repair') repairStreak++;
+    else break;
+  }
+  let failureStreak = 0;
+  for (let i = tail.length - 1; i >= 0; i--) {
+    if (tail[i] && tail[i].outcome && tail[i].outcome.status === 'failed') failureStreak++;
+    else break;
+  }
+
+  const antiPatterns = selectedGene && Array.isArray(selectedGene.anti_patterns) ? selectedGene.anti_patterns.slice(-5) : [];
+  const learningHistory = selectedGene && Array.isArray(selectedGene.learning_history) ? selectedGene.learning_history.slice(-6) : [];
+  const signalTags = new Set(expandSignals(signals, ''));
+  const overlappingAntiPatterns = antiPatterns.filter(function (ap) {
+    return ap && Array.isArray(ap.learning_signals) && ap.learning_signals.some(function (tag) {
+      return signalTags.has(String(tag));
+    });
+  });
+  const hardFailures = overlappingAntiPatterns.filter(function (ap) { return ap && ap.mode === 'hard'; }).length;
+  const softFailures = overlappingAntiPatterns.filter(function (ap) { return ap && ap.mode !== 'hard'; }).length;
+  const recentSuccesses = learningHistory.filter(function (x) { return x && x.outcome === 'success'; }).length;
+
+  const stagnation = signals.includes('stable_success_plateau') ||
+    signals.includes('evolution_saturation') ||
+    signals.includes('empty_cycle_loop_detected') ||
+    failureStreak >= 3 ||
+    repairStreak >= 3;
+
+  const forceInnovate = stagnation && !signals.includes('log_error');
+  const highRiskGene = hardFailures >= 1 || (softFailures >= 2 && recentSuccesses === 0);
+  const cautiousExecution = highRiskGene || failureStreak >= 2;
+
+  let blastRadiusMaxFiles = selectedGene && selectedGene.constraints && Number.isFinite(Number(selectedGene.constraints.max_files))
+    ? Number(selectedGene.constraints.max_files)
+    : 12;
+  if (cautiousExecution) blastRadiusMaxFiles = Math.max(2, Math.min(blastRadiusMaxFiles, 6));
+  else if (forceInnovate) blastRadiusMaxFiles = Math.max(3, Math.min(blastRadiusMaxFiles, 10));
+
+  const directives = [];
+  directives.push('Base strategy: ' + baseStrategy.label + ' (' + baseStrategy.description + ')');
+  if (forceInnovate) directives.push('Force strategy shift: prefer innovate over repeating repair/optimize.');
+  if (highRiskGene) directives.push('Selected gene is high risk for current signals; keep blast radius narrow and prefer smallest viable change.');
+  if (failureStreak >= 2) directives.push('Recent failure streak detected; avoid repeating recent failed approach.');
+  directives.push('Target max files for this cycle: ' + blastRadiusMaxFiles + '.');
+
+  return {
+    name: baseStrategy.name,
+    label: baseStrategy.label,
+    description: baseStrategy.description,
+    forceInnovate: forceInnovate,
+    cautiousExecution: cautiousExecution,
+    highRiskGene: highRiskGene,
+    repairStreak: repairStreak,
+    failureStreak: failureStreak,
+    blastRadiusMaxFiles: blastRadiusMaxFiles,
+    directives: directives,
+  };
+}
+
 function checkSystemHealth() {
   const report = [];
   try {
@@ -450,14 +553,14 @@ function getMutationDirective(logContent) {
 
 const STATE_FILE = path.join(getEvolutionDir(), 'evolution_state.json');
 const DORMANT_HYPOTHESIS_FILE = path.join(getEvolutionDir(), 'dormant_hypothesis.json');
-var DORMANT_TTL_MS = 3600 * 1000;
+const DORMANT_TTL_MS = 3600 * 1000;
 
 function writeDormantHypothesis(data) {
   try {
-    var dir = getEvolutionDir();
+    const dir = getEvolutionDir();
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    var obj = Object.assign({}, data, { created_at: new Date().toISOString(), ttl_ms: DORMANT_TTL_MS });
-    var tmp = DORMANT_HYPOTHESIS_FILE + '.tmp';
+    const obj = Object.assign({}, data, { created_at: new Date().toISOString(), ttl_ms: DORMANT_TTL_MS });
+    const tmp = DORMANT_HYPOTHESIS_FILE + '.tmp';
     fs.writeFileSync(tmp, JSON.stringify(obj, null, 2) + '\n', 'utf8');
     fs.renameSync(tmp, DORMANT_HYPOTHESIS_FILE);
     console.log('[DormantHypothesis] Saved partial state before backoff: ' + (data.backoff_reason || 'unknown'));
@@ -469,11 +572,11 @@ function writeDormantHypothesis(data) {
 function readDormantHypothesis() {
   try {
     if (!fs.existsSync(DORMANT_HYPOTHESIS_FILE)) return null;
-    var raw = fs.readFileSync(DORMANT_HYPOTHESIS_FILE, 'utf8');
+    const raw = fs.readFileSync(DORMANT_HYPOTHESIS_FILE, 'utf8');
     if (!raw.trim()) return null;
-    var obj = JSON.parse(raw);
-    var createdAt = obj.created_at ? new Date(obj.created_at).getTime() : 0;
-    var ttl = Number.isFinite(Number(obj.ttl_ms)) ? Number(obj.ttl_ms) : DORMANT_TTL_MS;
+    const obj = JSON.parse(raw);
+    const createdAt = obj.created_at ? new Date(obj.created_at).getTime() : 0;
+    const ttl = Number.isFinite(Number(obj.ttl_ms)) ? Number(obj.ttl_ms) : DORMANT_TTL_MS;
     if (Date.now() - createdAt > ttl) {
       clearDormantHypothesis();
       console.log('[DormantHypothesis] Expired (age: ' + Math.round((Date.now() - createdAt) / 1000) + 's). Discarded.');
@@ -541,14 +644,18 @@ function getNextCycleId() {
     if (fs.existsSync(STATE_FILE)) {
       state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
     }
-  } catch (e) {}
+  } catch (e) {
+    console.warn('[Evolve] Failed to read state file:', e && e.message || e);
+  }
 
   state.cycleCount = (state.cycleCount || 0) + 1;
   state.lastRun = Date.now();
 
   try {
     fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
-  } catch (e) {}
+  } catch (e) {
+    console.warn('[Evolve] Failed to write state file:', e && e.message || e);
+  }
 
   return String(state.cycleCount).padStart(4, '0');
 }
@@ -743,13 +850,18 @@ function getRecentActiveSessionCount(windowMs) {
   } catch (_) { return 0; }
 }
 
-async function run() {
-  const bridgeEnabled = String(process.env.EVOLVE_BRIDGE || '').toLowerCase() !== 'false';
-  const loopMode = ARGS.includes('--loop') || ARGS.includes('--mad-dog') || String(process.env.EVOLVE_LOOP || '').toLowerCase() === 'true';
+function determineBridgeEnabled() {
+  const bridgeExplicit = process.env.EVOLVE_BRIDGE;
+  if (bridgeExplicit !== undefined && bridgeExplicit !== '') {
+    return String(bridgeExplicit).toLowerCase() !== 'false';
+  }
+  return Boolean(process.env.OPENCLAW_WORKSPACE);
+}
 
+// Pre-flight safeguards: race detection, queue limits, system load, loop gating.
+// Returns { abort: true } if the cycle should be skipped, otherwise { abort: false }.
+async function runPreflightChecks(bridgeEnabled, loopMode) {
   // SAFEGUARD: If another evolver Hand Agent is already running, back off.
-  // Prevents race conditions when a wrapper restarts while the old Hand Agent
-  // is still executing. The Core yields instead of starting a competing cycle.
   if (process.platform !== 'win32') {
     try {
       const _psRace = require('child_process').execSync(
@@ -758,49 +870,33 @@ async function run() {
       ).trim();
       if (_psRace && _psRace.length > 0) {
         console.log('[Evolver] Another evolver Hand Agent is already running. Yielding this cycle.');
-        return;
+        return { abort: true };
       }
-    } catch (_) {
-      // grep exit 1 = no match = no conflict, safe to proceed
-    }
+    } catch (_) {}
   }
 
   // SAFEGUARD: If the agent has too many active user sessions, back off.
-  // Evolver must not starve user conversations by consuming model concurrency.
   const QUEUE_MAX = Number.parseInt(process.env.EVOLVE_AGENT_QUEUE_MAX || '10', 10);
   const QUEUE_BACKOFF_MS = Number.parseInt(process.env.EVOLVE_AGENT_QUEUE_BACKOFF_MS || '60000', 10);
   const activeUserSessions = getRecentActiveSessionCount(10 * 60 * 1000);
   if (activeUserSessions > QUEUE_MAX) {
     console.log(`[Evolver] Agent has ${activeUserSessions} active user sessions (max ${QUEUE_MAX}). Backing off ${QUEUE_BACKOFF_MS}ms to avoid starving user conversations.`);
-    writeDormantHypothesis({
-      backoff_reason: 'active_sessions_exceeded',
-      active_sessions: activeUserSessions,
-      queue_max: QUEUE_MAX,
-    });
+    writeDormantHypothesis({ backoff_reason: 'active_sessions_exceeded', active_sessions: activeUserSessions, queue_max: QUEUE_MAX });
     await sleepMs(QUEUE_BACKOFF_MS);
-    return;
+    return { abort: true };
   }
 
   // SAFEGUARD: System load awareness.
-  // When system load is too high (e.g. too many concurrent processes, heavy I/O),
-  // back off to prevent the evolver from contributing to load spikes.
-  // Echo-MingXuan's Cycle #55 saw load spike from 0.02-0.50 to 1.30 before crash.
   const LOAD_MAX = parseFloat(process.env.EVOLVE_LOAD_MAX || String(getDefaultLoadMax()));
   const sysLoad = getSystemLoad();
   if (sysLoad.load1m > LOAD_MAX) {
     console.log(`[Evolver] System load ${sysLoad.load1m.toFixed(2)} exceeds max ${LOAD_MAX.toFixed(1)} (auto-calculated for ${os.cpus().length} cores). Backing off ${QUEUE_BACKOFF_MS}ms.`);
-    writeDormantHypothesis({
-      backoff_reason: 'system_load_exceeded',
-      system_load: { load1m: sysLoad.load1m, load5m: sysLoad.load5m, load15m: sysLoad.load15m },
-      load_max: LOAD_MAX,
-      cpu_cores: os.cpus().length,
-    });
+    writeDormantHypothesis({ backoff_reason: 'system_load_exceeded', system_load: { load1m: sysLoad.load1m, load5m: sysLoad.load5m, load15m: sysLoad.load15m }, load_max: LOAD_MAX, cpu_cores: os.cpus().length });
     await sleepMs(QUEUE_BACKOFF_MS);
-    return;
+    return { abort: true };
   }
 
   // Loop gating: do not start a new cycle until the previous one is solidified.
-  // This prevents wrappers from "fast-cycling" the Brain without waiting for the Hand to finish.
   if (bridgeEnabled && loopMode) {
     try {
       const st = readStateForSolidify();
@@ -809,25 +905,51 @@ async function run() {
       if (lastRun && lastRun.run_id) {
         const pending = !lastSolid || !lastSolid.run_id || String(lastSolid.run_id) !== String(lastRun.run_id);
         if (pending) {
-          writeDormantHypothesis({
-            backoff_reason: 'loop_gating_pending_solidify',
-            signals: lastRun && Array.isArray(lastRun.signals) ? lastRun.signals : [],
-            selected_gene_id: lastRun && lastRun.selected_gene_id ? lastRun.selected_gene_id : null,
-            mutation: lastRun && lastRun.mutation ? lastRun.mutation : null,
-            personality_state: lastRun && lastRun.personality_state ? lastRun.personality_state : null,
-            run_id: lastRun.run_id,
-          });
+          writeDormantHypothesis({ backoff_reason: 'loop_gating_pending_solidify', signals: lastRun && Array.isArray(lastRun.signals) ? lastRun.signals : [], selected_gene_id: lastRun && lastRun.selected_gene_id ? lastRun.selected_gene_id : null, mutation: lastRun && lastRun.mutation ? lastRun.mutation : null, personality_state: lastRun && lastRun.personality_state ? lastRun.personality_state : null, run_id: lastRun.run_id });
           const raw = process.env.EVOLVE_PENDING_SLEEP_MS || process.env.EVOLVE_MIN_INTERVAL || '120000';
           const n = parseInt(String(raw), 10);
           const waitMs = Number.isFinite(n) ? Math.max(0, n) : 120000;
           await sleepMs(waitMs);
-          return;
+          return { abort: true };
         }
       }
     } catch (e) {
       // If we cannot read state, proceed (fail open) to avoid deadlock.
     }
   }
+
+  return { abort: false };
+}
+
+// Repair loop circuit breaker: detect stuck repair->fail->repair cycles.
+function checkRepairLoopCircuitBreaker() {
+  const threshold = require('./config').REPAIR_LOOP_THRESHOLD;
+  try {
+    const allEvents = readAllEvents();
+    const recent = Array.isArray(allEvents) ? allEvents.slice(-threshold) : [];
+    if (recent.length >= threshold) {
+      const allRepairFailed = recent.every(e =>
+        e && e.intent === 'repair' &&
+        e.outcome && e.outcome.status === 'failed'
+      );
+      if (allRepairFailed) {
+        const geneIds = recent.map(e => (e.genes_used && e.genes_used[0]) || 'unknown');
+        const sameGene = geneIds.every(id => id === geneIds[0]);
+        console.warn(`[CircuitBreaker] Detected ${threshold} consecutive failed repairs${sameGene ? ` (gene: ${geneIds[0]})` : ''}. Forcing innovation intent to break the loop.`);
+        process.env.FORCE_INNOVATION = 'true';
+      }
+    }
+  } catch (e) {
+    console.error(`[CircuitBreaker] Check failed (non-fatal): ${e.message}`);
+  }
+}
+
+async function run() {
+  const bridgeEnabled = determineBridgeEnabled();
+  const loopMode = ARGS.includes('--loop') || ARGS.includes('--mad-dog') || String(process.env.EVOLVE_LOOP || '').toLowerCase() === 'true';
+
+  const preflight = await runPreflightChecks(bridgeEnabled, loopMode);
+  if (preflight.abort) return;
 
   // Reset per-cycle env flags to prevent state leaking between cycles.
   // In --loop mode, process.env persists across cycles. The circuit breaker
@@ -864,13 +986,16 @@ async function run() {
     return;
   }
 
-  var dormantHypothesis = readDormantHypothesis();
+  const dormantHypothesis = readDormantHypothesis();
   if (dormantHypothesis) {
     console.log('[DormantHypothesis] Recovered partial state from previous backoff: ' + (dormantHypothesis.backoff_reason || 'unknown'));
     clearDormantHypothesis();
   }
 
   const startTime = Date.now();
+  verbose('--- evolve.run() start ---');
+  verbose('Config: EVOLVE_STRATEGY=' + (process.env.EVOLVE_STRATEGY || '(default)') + ' EVOLVE_BRIDGE=' + (process.env.EVOLVE_BRIDGE || '(default)') + ' EVOLVE_LOOP=' + (process.env.EVOLVE_LOOP || 'false'));
+  verbose('Config: EVOLVER_IDLE_FETCH_INTERVAL_MS=' + (process.env.EVOLVER_IDLE_FETCH_INTERVAL_MS || '(default 1800000)') + ' RANDOM_DRIFT=' + (process.env.RANDOM_DRIFT || 'false'));
   console.log('Scanning session logs...');
 
   // Ensure all GEP asset files exist before any operation.
@@ -887,31 +1012,7 @@ async function run() {
     console.log('[Maintenance] Skipped (dry-run mode).');
   }
 
-  // --- Repair Loop Circuit Breaker ---
-  // Detect when the evolver is stuck in a "repair -> fail -> repair" cycle.
-  // If the last N events are all failed repairs with the same gene, force
-  // innovation intent to break out of the loop instead of retrying the same fix.
-  const REPAIR_LOOP_THRESHOLD = 3;
-  try {
-    const allEvents = readAllEvents();
-    const recent = Array.isArray(allEvents) ? allEvents.slice(-REPAIR_LOOP_THRESHOLD) : [];
-    if (recent.length >= REPAIR_LOOP_THRESHOLD) {
-      const allRepairFailed = recent.every(e =>
-        e && e.intent === 'repair' &&
-        e.outcome && e.outcome.status === 'failed'
-      );
-      if (allRepairFailed) {
-        const geneIds = recent.map(e => (e.genes_used && e.genes_used[0]) || 'unknown');
-        const sameGene = geneIds.every(id => id === geneIds[0]);
-        console.warn(`[CircuitBreaker] Detected ${REPAIR_LOOP_THRESHOLD} consecutive failed repairs${sameGene ? ` (gene: ${geneIds[0]})` : ''}. Forcing innovation intent to break the loop.`);
-        // Set env flag that downstream code reads to force innovation
-        process.env.FORCE_INNOVATION = 'true';
-      }
-    }
-  } catch (e) {
-    // Non-fatal: if we can't read events, proceed normally
-    console.error(`[CircuitBreaker] Check failed (non-fatal): ${e.message}`);
-  }
+  checkRepairLoopCircuitBreaker();
 
   const recentMasterLog = readRealSessionLog();
   const todayLog = readRecentLog(TODAY_LOG);
@@ -1069,10 +1170,13 @@ async function run() {
     recentEvents,
   });
 
+  verbose('Signals extracted (' + signals.length + '):', signals.join(', '));
+  verbose('Recent events: ' + recentEvents.length + ', session log size: ' + recentMasterLog.length + ' chars');
+
   if (dormantHypothesis && Array.isArray(dormantHypothesis.signals) && dormantHypothesis.signals.length > 0) {
-    var dormantSignals = dormantHypothesis.signals;
-    var injected = 0;
-    for (var dsi = 0; dsi < dormantSignals.length; dsi++) {
+    const dormantSignals = dormantHypothesis.signals;
+    let injected = 0;
+    for (let dsi = 0; dsi < dormantSignals.length; dsi++) {
       if (!signals.includes(dormantSignals[dsi])) {
         signals.push(dormantSignals[dsi]);
         injected++;
@@ -1083,94 +1187,150 @@ async function run() {
     }
   }
 
+  // --- Idle-cycle gating: skip Hub API calls during saturation to save credits ---
+  let _idleFetchInterval = parseInt(String(process.env.EVOLVER_IDLE_FETCH_INTERVAL_MS || ''), 10);
+  if (!Number.isFinite(_idleFetchInterval) || _idleFetchInterval <= 0) _idleFetchInterval = 600000;
+  let skipHubCalls = false;
+
+  if (shouldSkipHubCalls(signals)) {
+    const _elapsed = Date.now() - _lastHubFetchMs;
+    if (_lastHubFetchMs > 0 && _elapsed < _idleFetchInterval) {
+      skipHubCalls = true;
+      console.log('[IdleGating] Saturated with no actionable signals. Skipping Hub API calls (last fetch ' + Math.round(_elapsed / 1000) + 's ago, threshold ' + Math.round(_idleFetchInterval / 1000) + 's).');
+    } else {
+      console.log('[IdleGating] Saturated but fetch interval elapsed (' + Math.round((Date.now() - _lastHubFetchMs) / 1000) + 's). Performing periodic Hub check.');
+    }
+  }
+
+  // Inject retry context from previous validation failure.
+  try {
+    var solidifyState = readStateForSolidify();
+    if (solidifyState && solidifyState.last_validation_failure) {
+      var lvf = solidifyState.last_validation_failure;
+      signals.push('retry_error_context');
+      if (lvf.cmd) signals.push('retry_cmd:' + String(lvf.cmd).slice(0, 80));
+      if (lvf.stderr) signals.push('retry_stderr:' + String(lvf.stderr).slice(0, 120));
+      console.log('[RetryContext] Injected validation failure context from previous solidify (retries=' + (lvf.retries_attempted || 0) + ').');
+    }
+  } catch (_) {}
+
+  // Curriculum engine: generate progressive evolution targets.
+  try {
+    var { generateCurriculumSignals } = require('./gep/curriculum');
+    var { getNoveltyHint: _getNoveltyHintEarly, getCapabilityGaps: _getCapGapsEarly } = require('./gep/a2aProtocol');
+    var earlyCapGaps = [];
+    try { earlyCapGaps = _getCapGapsEarly() || []; } catch (_) {}
+    var memGraphPath = require('./gep/memoryGraph').memoryGraphPath ? require('./gep/memoryGraph').memoryGraphPath() : '';
+    var curriculumSignals = generateCurriculumSignals({
+      capabilityGaps: earlyCapGaps,
+      memoryGraphPath: memGraphPath,
+      personality: {},
+    });
+    for (var ci = 0; ci < curriculumSignals.length; ci++) {
+      if (!signals.includes(curriculumSignals[ci])) {
+        signals.push(curriculumSignals[ci]);
+      }
+    }
+    if (curriculumSignals.length > 0) {
+      console.log('[Curriculum] Injected ' + curriculumSignals.length + ' curriculum target(s).');
+    }
+  } catch (e) {
+    console.log('[Curriculum] Failed (non-fatal): ' + (e && e.message ? e.message : e));
+  }
+
   // --- Hub Task Auto-Claim (with proactive questions) ---
   // Generate questions from current context, piggyback them on the fetch call,
   // then pick the best task and auto-claim it.
   let activeTask = null;
   let proactiveQuestions = [];
-  try {
-    proactiveQuestions = generateQuestions({
-      signals,
-      recentEvents,
-      sessionTranscript: recentMasterLog,
-      memorySnippet: memorySnippet,
-    });
-    if (proactiveQuestions.length > 0) {
-      console.log(`[QuestionGenerator] Generated ${proactiveQuestions.length} proactive question(s).`);
+  if (!skipHubCalls) {
+    try {
+      proactiveQuestions = generateQuestions({
+        signals,
+        recentEvents,
+        sessionTranscript: recentMasterLog,
+        memorySnippet: memorySnippet,
+      });
+      if (proactiveQuestions.length > 0) {
+        console.log(`[QuestionGenerator] Generated ${proactiveQuestions.length} proactive question(s).`);
+      }
+    } catch (e) {
+      console.log(`[QuestionGenerator] Generation failed (non-fatal): ${e.message}`);
     }
-  } catch (e) {
-    console.log(`[QuestionGenerator] Generation failed (non-fatal): ${e.message}`);
-  }
 
-  // --- Auto GitHub Issue Reporter ---
-  // When persistent failures are detected, file an issue to the upstream repo
-  // with sanitized logs and environment info.
-  try {
-    await maybeReportIssue({
-      signals,
-      recentEvents,
-      sessionLog: recentMasterLog,
-    });
-  } catch (e) {
-    console.log(`[IssueReporter] Check failed (non-fatal): ${e.message}`);
+    // --- Auto GitHub Issue Reporter ---
+    // When persistent failures are detected, file an issue to the upstream repo
+    // with sanitized logs and environment info.
+    try {
+      await maybeReportIssue({
+        signals,
+        recentEvents,
+        sessionLog: recentMasterLog,
+      });
+    } catch (e) {
+      console.log(`[IssueReporter] Check failed (non-fatal): ${e.message}`);
+    }
   }
 
   // LessonL: lessons received from Hub during fetch
   let hubLessons = [];
 
-  try {
-    const fetchResult = await fetchTasks({ questions: proactiveQuestions });
-    const hubTasks = fetchResult.tasks || [];
+  if (!skipHubCalls) {
+    _lastHubFetchMs = Date.now();
+    try {
+      const fetchResult = await fetchTasks({ questions: proactiveQuestions });
+      const hubTasks = fetchResult.tasks || [];
 
-    if (fetchResult.questions_created && fetchResult.questions_created.length > 0) {
-      const created = fetchResult.questions_created.filter(function(q) { return !q.error; });
-      const failed = fetchResult.questions_created.filter(function(q) { return q.error; });
-      if (created.length > 0) {
-        console.log(`[QuestionGenerator] Hub accepted ${created.length} question(s) as bounties.`);
-      }
-      if (failed.length > 0) {
-        console.log(`[QuestionGenerator] Hub rejected ${failed.length} question(s): ${failed.map(function(q) { return q.error; }).join(', ')}`);
-      }
-    }
-
-    // LessonL: capture relevant lessons from Hub
-    if (Array.isArray(fetchResult.relevant_lessons) && fetchResult.relevant_lessons.length > 0) {
-      hubLessons = fetchResult.relevant_lessons;
-      console.log(`[LessonBank] Received ${hubLessons.length} lesson(s) from ecosystem.`);
-    }
-
-    if (hubTasks.length > 0) {
-      let taskMemoryEvents = [];
-      try {
-        const { tryReadMemoryGraphEvents } = require('./gep/memoryGraph');
-        taskMemoryEvents = tryReadMemoryGraphEvents(1000);
-      } catch (e) {
-        console.warn('[TaskReceiver] MemoryGraph read failed (task selection proceeds without history):', e && e.message || e);
-      }
-      const best = selectBestTask(hubTasks, taskMemoryEvents);
-      if (best) {
-        const alreadyClaimed = best.status === 'claimed';
-        let claimed = alreadyClaimed;
-        if (!alreadyClaimed) {
-          const commitDeadline = estimateCommitmentDeadline(best);
-          claimed = await claimTask(best.id || best.task_id, commitDeadline ? { commitment_deadline: commitDeadline } : undefined);
-          if (claimed && commitDeadline) {
-            best._commitment_deadline = commitDeadline;
-            console.log(`[Commitment] Deadline set: ${commitDeadline}`);
-          }
+      if (fetchResult.questions_created && fetchResult.questions_created.length > 0) {
+        const created = fetchResult.questions_created.filter(function(q) { return !q.error; });
+        const failed = fetchResult.questions_created.filter(function(q) { return q.error; });
+        if (created.length > 0) {
+          console.log(`[QuestionGenerator] Hub accepted ${created.length} question(s) as bounties.`);
         }
-        if (claimed) {
-          activeTask = best;
-          const taskSignals = taskToSignals(best);
-          for (const sig of taskSignals) {
-            if (!signals.includes(sig)) signals.unshift(sig);
-          }
-          console.log(`[TaskReceiver] ${alreadyClaimed ? 'Resuming' : 'Claimed'} task: "${best.title || best.id}" (${taskSignals.length} signals injected)`);
+        if (failed.length > 0) {
+          console.log(`[QuestionGenerator] Hub rejected ${failed.length} question(s): ${failed.map(function(q) { return q.error; }).join(', ')}`);
         }
       }
+
+      // LessonL: capture relevant lessons from Hub
+      if (Array.isArray(fetchResult.relevant_lessons) && fetchResult.relevant_lessons.length > 0) {
+        hubLessons = fetchResult.relevant_lessons;
+        console.log(`[LessonBank] Received ${hubLessons.length} lesson(s) from ecosystem.`);
+      }
+
+      if (hubTasks.length > 0) {
+        let taskMemoryEvents = [];
+        try {
+          const { tryReadMemoryGraphEvents } = require('./gep/memoryGraph');
+          taskMemoryEvents = tryReadMemoryGraphEvents(1000);
+        } catch (e) {
+          console.warn('[TaskReceiver] MemoryGraph read failed (task selection proceeds without history):', e && e.message || e);
+        }
+        const best = selectBestTask(hubTasks, taskMemoryEvents);
+        if (best) {
+          const alreadyClaimed = best.status === 'claimed';
+          let claimed = alreadyClaimed;
+          if (!alreadyClaimed) {
+            const commitDeadline = estimateCommitmentDeadline(best);
+            claimed = await claimTask(best.id || best.task_id, commitDeadline ? { commitment_deadline: commitDeadline } : undefined);
+            if (claimed && commitDeadline) {
+              best._commitment_deadline = commitDeadline;
+              console.log(`[Commitment] Deadline set: ${commitDeadline}`);
+            }
+          }
+          if (claimed) {
+            activeTask = best;
+            const taskSignals = taskToSignals(best);
+            for (const sig of taskSignals) {
+              if (!signals.includes(sig)) signals.unshift(sig);
+            }
+            console.log(`[TaskReceiver] ${alreadyClaimed ? 'Resuming' : 'Claimed'} task: "${best.title || best.id}" (${taskSignals.length} signals injected)`);
+          }
+        }
+      }
+    } catch (e) {
+      console.log(`[TaskReceiver] Fetch/claim failed (non-fatal): ${e.message}`);
     }
-  } catch (e) {
-    console.log(`[TaskReceiver] Fetch/claim failed (non-fatal): ${e.message}`);
   }
 
   // --- Commitment: check for overdue tasks from heartbeat ---
@@ -1192,6 +1352,77 @@ async function run() {
     }
   } catch (e) {
     console.warn('[Commitment] Overdue task check failed (non-fatal):', e && e.message || e);
+  }
+
+  // --- Hub Events: process pending high-priority events from /a2a/events/poll ---
+  // Fetched automatically when heartbeat returns has_pending_events: true.
+  // Injects event-specific signals and stores event context for LLM awareness.
+  try {
+    const { consumeHubEvents } = require('./gep/a2aProtocol');
+    const hubEvents = consumeHubEvents();
+    if (hubEvents.length > 0) {
+      const HUB_EVENT_SIGNALS = {
+        // ── 对话 ──────────────────────────────────────────────────────
+        dialog_message:                ['dialog', 'respond_required'],
+
+        // ── 议会 / 治理 ───────────────────────────────────────────────
+        council_invite:                ['council', 'governance', 'respond_required'],
+        council_second_request:        ['council', 'governance', 'second_request', 'respond_required'],
+        council_vote:                  ['council', 'vote', 'governance', 'respond_required'],
+        council_community_vote:        ['council', 'community_vote', 'governance', 'respond_required'],
+        council_decision:              ['council', 'decision', 'governance'],
+        council_decision_notification: ['council', 'governance'],
+
+        // ── 审议 / 辩论 ───────────────────────────────────────────────
+        deliberation_invite:           ['deliberation', 'governance', 'respond_required'],
+        deliberation_challenge:        ['deliberation', 'challenge', 'respond_required'],
+        deliberation_next_round:       ['deliberation', 'next_round', 'respond_required'],
+        deliberation_completed:        ['deliberation', 'governance'],
+
+        // ── 协作 / 会话 ───────────────────────────────────────────────
+        collaboration_invite:          ['collaboration', 'respond_required'],
+        session_message:               ['collaboration', 'dialog', 'respond_required'],
+        session_nudge:                 ['collaboration', 'idle_warning'],
+        task_board_update:             ['collaboration', 'task_update'],
+
+        // ── 任务 / 工作池 ─────────────────────────────────────────────
+        task_available:                ['task', 'work_available'],
+        work_assigned:                 ['task', 'work_assigned'],
+        swarm_subtask_available:       ['swarm', 'task', 'work_available'],
+        swarm_aggregation_available:   ['swarm', 'aggregation', 'work_available'],
+        diverge_task_assigned:         ['swarm', 'task', 'work_assigned'],
+        pipeline_step_assigned:        ['pipeline', 'task', 'work_assigned'],
+        organism_work:                 ['organism', 'task', 'work_assigned'],
+
+        // ── 评审 / 赏金 ───────────────────────────────────────────────
+        bounty_review_requested:       ['review', 'bounty', 'respond_required'],
+        peer_review_request:           ['review', 'swarm', 'respond_required'],
+        supplement_request:            ['supplement', 'respond_required'],
+
+        // ── 成长 / 知识 ───────────────────────────────────────────────
+        evolution_circle_formed:       ['evolution_circle', 'collaboration'],
+        knowledge_update:              ['knowledge'],
+        topic_notification:            ['topic', 'knowledge'],
+        reflection_prompt:             ['reflection'],
+
+        // ── 系统 ──────────────────────────────────────────────────────
+        task_overdue:                  ['overdue_task', 'urgent'],
+      };
+      for (const ev of hubEvents) {
+        const evSignals = HUB_EVENT_SIGNALS[ev.type] || ['hub_event'];
+        for (const sig of evSignals) {
+          if (!signals.includes(sig)) signals.unshift(sig);
+        }
+        console.log('[HubEvents] Event: ' + ev.type +
+          (ev.payload && ev.payload.deliberation_id ? ' (deliberation: ' + ev.payload.deliberation_id + ')' : '') +
+          ' → signals: ' + evSignals.join(', '));
+      }
+      // Store events in evidencefor LLM context on next evolve pass
+      if (!global._pendingHubEventContext) global._pendingHubEventContext = [];
+      global._pendingHubEventContext.push(...hubEvents);
+    }
+  } catch (e) {
+    console.warn('[HubEvents] Processing failed (non-fatal):', e && e.message || e);
   }
 
   // --- Worker Pool: select task from heartbeat available_work (deferred claim) ---
@@ -1234,6 +1465,11 @@ async function run() {
     today_log_tail: String(todayLog || '').slice(-2500),
   };
 
+  // Inject pending hub events into evidence so LLM sees them in context
+  if (global._pendingHubEventContext && global._pendingHubEventContext.length > 0) {
+    evidence.hub_events = global._pendingHubEventContext.splice(0, 10);
+  }
+
   const sessionScope = getSessionScope();
   const observations = {
     agent: AGENT_NAME,
@@ -1275,95 +1511,29 @@ async function run() {
     throw new Error(`MemoryGraph Signal snapshot write failed: ${e.message}`);
   }
 
-  // Capability candidates (structured, short): persist and preview.
-  const newCandidates = extractCapabilityCandidates({
-    recentSessionTranscript: recentMasterLog,
+  // Capability candidates: extract, persist, and build previews.
+  const { capabilityCandidatesPreview, externalCandidatesPreview } = buildCandidatePreviews({
     signals,
+    recentSessionTranscript: recentMasterLog,
   });
-  for (const c of newCandidates) {
-    try {
-      appendCandidateJsonl(c);
-    } catch (e) {
-      console.warn('[Candidates] Failed to persist candidate:', e && e.message || e);
-    }
-  }
-  const recentCandidates = readRecentCandidates(20);
-  const capabilityCandidatesPreview = renderCandidatesPreview(recentCandidates.slice(-8), 1600);
-
-  // External candidate zone (A2A receive): only surface candidates when local signals trigger them.
-  // External candidates are NEVER executed directly; they must be validated and promoted first.
-  let externalCandidatesPreview = '(none)';
-  try {
-    const external = readRecentExternalCandidates(50);
-    const list = Array.isArray(external) ? external : [];
-    const capsulesOnly = list.filter(x => x && x.type === 'Capsule');
-    const genesOnly = list.filter(x => x && x.type === 'Gene');
-
-    const matchedExternalGenes = genesOnly
-      .map(g => {
-        const pats = Array.isArray(g.signals_match) ? g.signals_match : [];
-        const hit = pats.reduce((acc, p) => (matchPatternToSignals(p, signals) ? acc + 1 : acc), 0);
-        return { gene: g, hit };
-      })
-      .filter(x => x.hit > 0)
-      .sort((a, b) => b.hit - a.hit)
-      .slice(0, 3)
-      .map(x => x.gene);
-
-    const matchedExternalCapsules = capsulesOnly
-      .map(c => {
-        const triggers = Array.isArray(c.trigger) ? c.trigger : [];
-        const score = triggers.reduce((acc, t) => (matchPatternToSignals(t, signals) ? acc + 1 : acc), 0);
-        return { capsule: c, score };
-      })
-      .filter(x => x.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3)
-      .map(x => x.capsule);
-
-    if (matchedExternalGenes.length || matchedExternalCapsules.length) {
-      externalCandidatesPreview = `\`\`\`json\n${JSON.stringify(
-        [
-          ...matchedExternalGenes.map(g => ({
-            type: g.type,
-            id: g.id,
-            category: g.category || null,
-            signals_match: g.signals_match || [],
-            a2a: g.a2a || null,
-          })),
-          ...matchedExternalCapsules.map(c => ({
-            type: c.type,
-            id: c.id,
-            trigger: c.trigger,
-            gene: c.gene,
-            summary: c.summary,
-            confidence: c.confidence,
-            blast_radius: c.blast_radius || null,
-            outcome: c.outcome || null,
-            success_streak: c.success_streak || null,
-            a2a: c.a2a || null,
-          })),
-        ],
-        null,
-        2
-      )}\n\`\`\``;
-    }
-  } catch (e) {
-    console.warn('[ExternalCandidates] Preview build failed (non-fatal):', e && e.message || e);
-  }
 
   // Search-First Evolution: query Hub for reusable solutions before local reasoning.
   let hubHit = null;
-  try {
-    hubHit = await hubSearch(signals, { timeoutMs: 8000 });
-    if (hubHit && hubHit.hit) {
-      console.log(`[SearchFirst] Hub hit: asset=${hubHit.asset_id}, score=${hubHit.score}, mode=${hubHit.mode}`);
-    } else {
-      console.log(`[SearchFirst] No hub match (reason: ${hubHit && hubHit.reason ? hubHit.reason : 'unknown'}). Proceeding with local evolution.`);
+  if (!skipHubCalls) {
+    try {
+      hubHit = await hubSearch(signals, { timeoutMs: 8000 });
+      if (hubHit && hubHit.hit) {
+        console.log(`[SearchFirst] Hub hit: asset=${hubHit.asset_id}, score=${hubHit.score}, mode=${hubHit.mode}`);
+      } else {
+        console.log(`[SearchFirst] No hub match (reason: ${hubHit && hubHit.reason ? hubHit.reason : 'unknown'}). Proceeding with local evolution.`);
+      }
+    } catch (e) {
+      console.log(`[SearchFirst] Hub search failed (non-fatal): ${e.message}`);
+      hubHit = { hit: false, reason: 'exception' };
     }
-  } catch (e) {
-    console.log(`[SearchFirst] Hub search failed (non-fatal): ${e.message}`);
-    hubHit = { hit: false, reason: 'exception' };
+  } else {
+    hubHit = { hit: false, reason: 'idle_skip' };
+    console.log('[IdleGating] hubSearch skipped (idle cycle).');
   }
 
   // Memory Graph reasoning: prefer high-confidence paths, suppress known low-success paths (unless drift is explicit).
@@ -1394,6 +1564,7 @@ async function run() {
         preferred_gene: memoryAdvice && memoryAdvice.preferredGeneId ? memoryAdvice.preferredGeneId : null,
         banned_genes: memoryAdvice && Array.isArray(memoryAdvice.bannedGeneIds) ? memoryAdvice.bannedGeneIds : [],
         context_preview: reflectionCtx.slice(0, 1000),
+        suggested_mutations: buildSuggestedMutations(signals),
       });
       console.log(`[Reflection] Strategic reflection recorded at cycle ${cycleCount}.`);
     }
@@ -1401,7 +1572,7 @@ async function run() {
     console.log('[Reflection] Failed (non-fatal): ' + (e && e.message ? e.message : e));
   }
 
-  var recentFailedCapsules = [];
+  let recentFailedCapsules = [];
   try {
     recentFailedCapsules = readRecentFailedCapsules(50);
   } catch (e) {
@@ -1409,10 +1580,10 @@ async function run() {
   }
 
   // Heartbeat hints: novelty score and capability gaps for diversity-directed drift
-  var heartbeatNovelty = null;
-  var heartbeatCapGaps = [];
+  let heartbeatNovelty = null;
+  let heartbeatCapGaps = [];
   try {
-    var { getNoveltyHint, getCapabilityGaps: getCapGaps } = require('./gep/a2aProtocol');
+    const { getNoveltyHint, getCapabilityGaps: getCapGaps } = require('./gep/a2aProtocol');
     heartbeatNovelty = getNoveltyHint();
     heartbeatCapGaps = getCapGaps() || [];
   } catch (e) {}
@@ -1433,6 +1604,17 @@ async function run() {
     ? capsuleCandidates.map(c => (c && c.id ? String(c.id) : null)).filter(Boolean)
     : [];
   const selectedCapsuleId = capsulesUsed.length ? capsulesUsed[0] : null;
+  const strategyPolicy = computeAdaptiveStrategyPolicy({
+    recentEvents,
+    selectedGene,
+    signals,
+  });
+
+  verbose('Gene selection: gene=' + (selectedGene ? selectedGene.id : '(none)') + ' capsule=' + (selectedCapsuleId || '(none)') + ' selectedBy=' + selectedBy + ' selector=' + (selector || '(none)'));
+  verbose('Strategy policy: name=' + strategyPolicy.name + ' forceInnovate=' + strategyPolicy.forceInnovate + ' cautious=' + strategyPolicy.cautiousExecution + ' maxFiles=' + strategyPolicy.blastRadiusMaxFiles);
+  if (memoryAdvice) {
+    verbose('Memory advice: preferred=' + (memoryAdvice.preferredGeneId || '(none)') + ' banned=[' + (Array.isArray(memoryAdvice.bannedGeneIds) ? memoryAdvice.bannedGeneIds.join(',') : '') + ']');
+  }
 
   // Personality selection (natural selection + small mutation when triggered).
   // This state is persisted in MEMORY_DIR and is treated as an evolution control surface (not role-play).
@@ -1463,9 +1645,9 @@ async function run() {
     tailAvgScore >= 0.7;
   const forceInnovation =
     String(process.env.FORCE_INNOVATION || process.env.EVOLVE_FORCE_INNOVATION || '').toLowerCase() === 'true';
-  const mutationInnovateMode = !!IS_RANDOM_DRIFT || !!innovationPressure || !!forceInnovation;
+  const mutationInnovateMode = !!IS_RANDOM_DRIFT || !!innovationPressure || !!forceInnovation || !!strategyPolicy.forceInnovate;
   const mutationSignals = innovationPressure ? [...(Array.isArray(signals) ? signals : []), 'stable_success_plateau'] : signals;
-  const mutationSignalsEffective = forceInnovation
+  const mutationSignalsEffective = (forceInnovation || strategyPolicy.forceInnovate)
     ? [...(Array.isArray(mutationSignals) ? mutationSignals : []), 'force_innovation']
     : mutationSignals;
 
@@ -1485,6 +1667,9 @@ async function run() {
     personalityState,
     allowHighRisk,
   });
+
+  verbose('Mutation: category=' + (mutation && mutation.category || '?') + ' risk=' + (mutation && mutation.risk_level || '?') + ' innovateMode=' + mutationInnovateMode + ' forceInnovation=' + forceInnovation + ' allowHighRisk=' + allowHighRisk);
+  verbose('Hub: hubHit=' + (hubHit && hubHit.hit ? 'true (score=' + hubHit.score + ' mode=' + hubHit.mode + ')' : 'false (' + (hubHit && hubHit.reason || 'unknown') + ')'));
 
   // Memory Graph: record hypothesis bridging Signal -> Action. If this fails, refuse to evolve.
   let hypothesisId = null;
@@ -1565,10 +1750,13 @@ async function run() {
       console.warn('[SolidifyState] Failed to read git HEAD:', e && e.message || e);
     }
 
-    const maxFiles =
-      selectedGene && selectedGene.constraints && Number.isFinite(Number(selectedGene.constraints.max_files))
-        ? Number(selectedGene.constraints.max_files)
-        : 12;
+    const maxFiles = strategyPolicy && Number.isFinite(Number(strategyPolicy.blastRadiusMaxFiles))
+      ? Number(strategyPolicy.blastRadiusMaxFiles)
+      : (
+        selectedGene && selectedGene.constraints && Number.isFinite(Number(selectedGene.constraints.max_files))
+          ? Number(selectedGene.constraints.max_files)
+          : 12
+      );
     const blastRadiusEstimate = {
       files: Number.isFinite(maxFiles) && maxFiles > 0 ? maxFiles : 0,
       lines: Number.isFinite(maxFiles) && maxFiles > 0 ? Math.round(maxFiles * 80) : 0,
@@ -1602,6 +1790,7 @@ async function run() {
         baseline_untracked: baselineUntracked,
         baseline_git_head: baselineHead,
         blast_radius_estimate: blastRadiusEstimate,
+        strategy_policy: strategyPolicy,
         active_task_id: activeTask ? (activeTask.id || activeTask.task_id || null) : null,
         active_task_title: activeTask ? (activeTask.title || null) : null,
         worker_assignment_id: activeTask ? (activeTask._worker_assignment_id || null) : null,
@@ -1632,6 +1821,11 @@ async function run() {
     }
   } catch (e) {
     console.error(`[SolidifyState] Write failed: ${e.message}`);
+  }
+
+  if (skipHubCalls) {
+    console.log('[IdleGating] Idle cycle complete. Prompt generation and bridge spawning skipped.');
+    return;
   }
 
   const genesPreview = `\`\`\`json\n${JSON.stringify(genes.slice(0, 6), null, 2)}\n\`\`\``;
@@ -1739,6 +1933,7 @@ ${mutationDirective}
         capabilityCandidatesPreview,
         externalCandidatesPreview,
         hubMatchedBlock,
+        strategyPolicy,
         failedCapsules: recentFailedCapsules,
         hubLessons,
       });
@@ -1827,5 +2022,5 @@ ${mutationDirective}
   }
 }
 
-module.exports = { run };
+module.exports = { run, computeAdaptiveStrategyPolicy, shouldSkipHubCalls, verbose, determineBridgeEnabled };
 

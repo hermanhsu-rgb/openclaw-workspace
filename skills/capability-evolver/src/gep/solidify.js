@@ -5,6 +5,20 @@ const { loadGenes, upsertGene, appendEventJsonl, appendCapsule, upsertCapsule, g
 const { computeSignalKey, memoryGraphPath } = require('./memoryGraph');
 const { computeCapsuleSuccessStreak, isBlastRadiusSafe } = require('./a2a');
 const { getRepoRoot, getMemoryDir, getEvolutionDir, getWorkspaceRoot } = require('./paths');
+const {
+  runCmd, tryRunCmd, normalizeRelPath, countFileLines,
+  gitListChangedFiles, gitListUntrackedFiles, captureDiffSnapshot, DIFF_SNAPSHOT_MAX_CHARS,
+  isGitRepo, isCriticalProtectedPath, CRITICAL_PROTECTED_PREFIXES, CRITICAL_PROTECTED_FILES,
+  rollbackTracked, rollbackNewUntrackedFiles,
+} = require('./gitOps');
+const {
+  readOpenclawConstraintPolicy, isConstraintCountedPath, parseNumstatRows,
+  computeBlastRadius, isForbiddenPath, checkConstraints,
+  classifyBlastSeverity, analyzeBlastRadiusBreakdown, compareBlastEstimate,
+  detectDestructiveChanges, isValidationCommandAllowed, runValidations, runCanaryCheck,
+  buildFailureReason, buildSoftFailureLearningSignals, classifyFailureMode,
+  BLAST_RADIUS_HARD_CAP_FILES, BLAST_RADIUS_HARD_CAP_LINES,
+} = require('./policyCheck');
 const { extractSignals } = require('./signals');
 const { selectGene } = require('./selector');
 const { isValidMutation, normalizeMutation, isHighRiskMutationAllowed, isHighRiskPersonality } = require('./mutation');
@@ -61,319 +75,26 @@ function stableHash(input) {
   return (h >>> 0).toString(16).padStart(8, '0');
 }
 
-function runCmd(cmd, opts = {}) {
-  const cwd = opts.cwd || getRepoRoot();
-  const timeoutMs = Number.isFinite(Number(opts.timeoutMs)) ? Number(opts.timeoutMs) : 120000;
-  return execSync(cmd, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: timeoutMs, windowsHide: true });
-}
+// runCmd, tryRunCmd, gitListChangedFiles, countFileLines, normalizeRelPath
+// moved to ./gitOps.js
 
-function tryRunCmd(cmd, opts = {}) {
+// readOpenclawConstraintPolicy, matchAnyPrefix, matchAnyExact, matchAnyRegex,
+// isConstraintCountedPath, parseNumstatRows moved to ./policyCheck.js
+
+// computeBlastRadius, isForbiddenPath moved to ./policyCheck.js
+
+// checkConstraints moved to ./policyCheck.js
+
+function computeGeneLibraryVersion() {
   try {
-    return { ok: true, out: runCmd(cmd, opts), err: '' };
+    const genesPath = path.join(require('./paths').getGepAssetsDir(), 'genes.json');
+    if (!fs.existsSync(genesPath)) return null;
+    const raw = fs.readFileSync(genesPath, 'utf8');
+    const hash = require('crypto').createHash('sha256').update(raw, 'utf8').digest('hex').slice(0, 16);
+    return 'glib_' + hash;
   } catch (e) {
-    const stderr = e && e.stderr ? String(e.stderr) : '';
-    const stdout = e && e.stdout ? String(e.stdout) : '';
-    const msg = e && e.message ? String(e.message) : 'command_failed';
-    return { ok: false, out: stdout, err: stderr || msg };
+    return null;
   }
-}
-
-function gitListChangedFiles({ repoRoot }) {
-  const files = new Set();
-  const s1 = tryRunCmd('git diff --name-only', { cwd: repoRoot, timeoutMs: 60000 });
-  if (s1.ok) for (const line of String(s1.out).split('\n').map(l => l.trim()).filter(Boolean)) files.add(line);
-  const s2 = tryRunCmd('git diff --cached --name-only', { cwd: repoRoot, timeoutMs: 60000 });
-  if (s2.ok) for (const line of String(s2.out).split('\n').map(l => l.trim()).filter(Boolean)) files.add(line);
-  const s3 = tryRunCmd('git ls-files --others --exclude-standard', { cwd: repoRoot, timeoutMs: 60000 });
-  if (s3.ok) for (const line of String(s3.out).split('\n').map(l => l.trim()).filter(Boolean)) files.add(line);
-  return Array.from(files);
-}
-
-function countFileLines(absPath) {
-  try {
-    if (!fs.existsSync(absPath)) return 0;
-    const buf = fs.readFileSync(absPath);
-    if (!buf || buf.length === 0) return 0;
-    let n = 1;
-    for (let i = 0; i < buf.length; i++) if (buf[i] === 10) n++;
-    return n;
-  } catch {
-    return 0;
-  }
-}
-
-function normalizeRelPath(relPath) {
-  return String(relPath || '').replace(/\\/g, '/').replace(/^\.\/+/, '').trim();
-}
-
-function readOpenclawConstraintPolicy() {
-  const defaults = {
-    excludePrefixes: ['logs/', 'memory/', 'assets/gep/', 'out/', 'temp/', 'node_modules/'],
-    excludeExact: ['event.json', 'temp_gep_output.json', 'temp_evolution_output.json', 'evolution_error.log'],
-    excludeRegex: ['capsule', 'events?\\.jsonl$'],
-    includePrefixes: ['src/', 'scripts/', 'config/'],
-    includeExact: ['index.js', 'package.json'],
-    includeExtensions: ['.js', '.cjs', '.mjs', '.ts', '.tsx', '.json', '.yaml', '.yml', '.toml', '.ini', '.sh'],
-  };
-  try {
-    const root = path.resolve(getWorkspaceRoot(), '..');
-    const cfgPath = path.join(root, 'openclaw.json');
-    if (!fs.existsSync(cfgPath)) return defaults;
-    const obj = readJsonIfExists(cfgPath, {});
-    const pol =
-      obj &&
-      obj.evolver &&
-      obj.evolver.constraints &&
-      obj.evolver.constraints.countedFilePolicy &&
-      typeof obj.evolver.constraints.countedFilePolicy === 'object'
-        ? obj.evolver.constraints.countedFilePolicy
-        : {};
-    return {
-      excludePrefixes: Array.isArray(pol.excludePrefixes) ? pol.excludePrefixes.map(String) : defaults.excludePrefixes,
-      excludeExact: Array.isArray(pol.excludeExact) ? pol.excludeExact.map(String) : defaults.excludeExact,
-      excludeRegex: Array.isArray(pol.excludeRegex) ? pol.excludeRegex.map(String) : defaults.excludeRegex,
-      includePrefixes: Array.isArray(pol.includePrefixes) ? pol.includePrefixes.map(String) : defaults.includePrefixes,
-      includeExact: Array.isArray(pol.includeExact) ? pol.includeExact.map(String) : defaults.includeExact,
-      includeExtensions: Array.isArray(pol.includeExtensions) ? pol.includeExtensions.map(String) : defaults.includeExtensions,
-    };
-  } catch (_) {
-    console.warn('[evolver] readOpenclawConstraintPolicy failed:', _ && _.message || _);
-    return defaults;
-  }
-}
-
-function matchAnyPrefix(rel, prefixes) {
-  const list = Array.isArray(prefixes) ? prefixes : [];
-  for (const p of list) {
-    const n = normalizeRelPath(p).replace(/\/+$/, '');
-    if (!n) continue;
-    if (rel === n || rel.startsWith(n + '/')) return true;
-  }
-  return false;
-}
-
-function matchAnyExact(rel, exacts) {
-  const set = new Set((Array.isArray(exacts) ? exacts : []).map(x => normalizeRelPath(x)));
-  return set.has(rel);
-}
-
-function matchAnyRegex(rel, regexList) {
-  for (const raw of Array.isArray(regexList) ? regexList : []) {
-    try {
-      if (new RegExp(String(raw), 'i').test(rel)) return true;
-    } catch (_) {
-      console.warn('[evolver] matchAnyRegex invalid pattern:', raw, _ && _.message || _);
-    }
-  }
-  return false;
-}
-
-function isConstraintCountedPath(relPath, policy) {
-  const rel = normalizeRelPath(relPath);
-  if (!rel) return false;
-  if (matchAnyExact(rel, policy.excludeExact)) return false;
-  if (matchAnyPrefix(rel, policy.excludePrefixes)) return false;
-  if (matchAnyRegex(rel, policy.excludeRegex)) return false;
-  if (matchAnyExact(rel, policy.includeExact)) return true;
-  if (matchAnyPrefix(rel, policy.includePrefixes)) return true;
-  const lower = rel.toLowerCase();
-  for (const ext of Array.isArray(policy.includeExtensions) ? policy.includeExtensions : []) {
-    const e = String(ext || '').toLowerCase();
-    if (!e) continue;
-    if (lower.endsWith(e)) return true;
-  }
-  return false;
-}
-
-function parseNumstatRows(text) {
-  const rows = [];
-  const lines = String(text || '').split('\n').map(l => l.trim()).filter(Boolean);
-  for (const line of lines) {
-    const parts = line.split('\t');
-    if (parts.length < 3) continue;
-    const a = Number(parts[0]);
-    const d = Number(parts[1]);
-    let rel = normalizeRelPath(parts.slice(2).join('\t'));
-    if (rel.includes('=>')) {
-      const right = rel.split('=>').pop();
-      rel = normalizeRelPath(String(right || '').replace(/[{}]/g, '').trim());
-    }
-    rows.push({
-      file: rel,
-      added: Number.isFinite(a) ? a : 0,
-      deleted: Number.isFinite(d) ? d : 0,
-    });
-  }
-  return rows;
-}
-
-function computeBlastRadius({ repoRoot, baselineUntracked }) {
-  const policy = readOpenclawConstraintPolicy();
-  let changedFiles = gitListChangedFiles({ repoRoot }).map(normalizeRelPath).filter(Boolean);
-  if (Array.isArray(baselineUntracked) && baselineUntracked.length > 0) {
-    const baselineSet = new Set(baselineUntracked.map(normalizeRelPath));
-    changedFiles = changedFiles.filter(f => !baselineSet.has(f));
-  }
-  const countedFiles = changedFiles.filter(f => isConstraintCountedPath(f, policy));
-  const ignoredFiles = changedFiles.filter(f => !isConstraintCountedPath(f, policy));
-  const filesCount = countedFiles.length;
-
-  const u = tryRunCmd('git diff --numstat', { cwd: repoRoot, timeoutMs: 60000 });
-  const c = tryRunCmd('git diff --cached --numstat', { cwd: repoRoot, timeoutMs: 60000 });
-  const unstagedRows = u.ok ? parseNumstatRows(u.out) : [];
-  const stagedRows = c.ok ? parseNumstatRows(c.out) : [];
-  let stagedUnstagedChurn = 0;
-  for (const row of [...unstagedRows, ...stagedRows]) {
-    if (!isConstraintCountedPath(row.file, policy)) continue;
-    stagedUnstagedChurn += row.added + row.deleted;
-  }
-
-  const untracked = tryRunCmd('git ls-files --others --exclude-standard', { cwd: repoRoot, timeoutMs: 60000 });
-  let untrackedLines = 0;
-  if (untracked.ok) {
-    const rels = String(untracked.out).split('\n').map(normalizeRelPath).filter(Boolean);
-    const baselineSet = new Set((Array.isArray(baselineUntracked) ? baselineUntracked : []).map(normalizeRelPath));
-    for (const rel of rels) {
-      if (baselineSet.has(rel)) continue;
-      if (!isConstraintCountedPath(rel, policy)) continue;
-      const abs = path.join(repoRoot, rel);
-      untrackedLines += countFileLines(abs);
-    }
-  }
-  const churn = stagedUnstagedChurn + untrackedLines;
-  return {
-    files: filesCount,
-    lines: churn,
-    changed_files: countedFiles,
-    ignored_files: ignoredFiles,
-    all_changed_files: changedFiles,
-  };
-}
-
-function isForbiddenPath(relPath, forbiddenPaths) {
-  const rel = String(relPath || '').replace(/\\/g, '/').replace(/^\.\/+/, '');
-  const list = Array.isArray(forbiddenPaths) ? forbiddenPaths : [];
-  for (const fp of list) {
-    const f = String(fp || '').replace(/\\/g, '/').replace(/^\.\/+/, '').replace(/\/+$/, '');
-    if (!f) continue;
-    if (rel === f) return true;
-    if (rel.startsWith(f + '/')) return true;
-  }
-  return false;
-}
-
-function checkConstraints({ gene, blast, blastRadiusEstimate, repoRoot }) {
-  const violations = [];
-  const warnings = [];
-  let blastSeverity = null;
-
-  if (!gene || gene.type !== 'Gene') return { ok: true, violations, warnings, blastSeverity };
-  const constraints = gene.constraints || {};
-  const DEFAULT_MAX_FILES = 20;
-  const maxFiles = Number(constraints.max_files) > 0 ? Number(constraints.max_files) : DEFAULT_MAX_FILES;
-
-  // --- Blast radius severity classification ---
-  blastSeverity = classifyBlastSeverity({ blast, maxFiles });
-
-  // Hard cap breach is always a violation, regardless of gene config.
-  if (blastSeverity.severity === 'hard_cap_breach') {
-    violations.push(blastSeverity.message);
-    console.error(`[Solidify] ${blastSeverity.message}`);
-  } else if (blastSeverity.severity === 'critical_overrun') {
-    violations.push(blastSeverity.message);
-    // Log directory breakdown for diagnostics.
-    const breakdown = analyzeBlastRadiusBreakdown(blast.all_changed_files || blast.changed_files || []);
-    console.error(`[Solidify] ${blastSeverity.message}`);
-    console.error(`[Solidify] Top contributing directories: ${breakdown.map(function (d) { return d.dir + ' (' + d.files + ')'; }).join(', ')}`);
-  } else if (blastSeverity.severity === 'exceeded') {
-    violations.push(`max_files exceeded: ${blast.files} > ${maxFiles}`);
-  } else if (blastSeverity.severity === 'approaching_limit') {
-    warnings.push(blastSeverity.message);
-  }
-
-  // --- Estimate vs actual drift detection ---
-  const estimateComparison = compareBlastEstimate(blastRadiusEstimate, blast);
-  if (estimateComparison && estimateComparison.drifted) {
-    warnings.push(estimateComparison.message);
-    console.log(`[Solidify] WARNING: ${estimateComparison.message}`);
-  }
-
-  // --- Forbidden paths ---
-  const forbidden = Array.isArray(constraints.forbidden_paths) ? constraints.forbidden_paths : [];
-  for (const f of blast.all_changed_files || blast.changed_files || []) {
-    if (isForbiddenPath(f, forbidden)) violations.push(`forbidden_path touched: ${f}`);
-  }
-
-  // --- Critical protection: block modifications to critical paths ---
-  // By default, evolution CANNOT modify evolver, wrapper, or other core skills.
-  // This prevents the "evolver modifies itself and introduces bugs" problem.
-  // To opt in to self-modification (NOT recommended for production):
-  //   set EVOLVE_ALLOW_SELF_MODIFY=true in environment.
-  var allowSelfModify = String(process.env.EVOLVE_ALLOW_SELF_MODIFY || '').toLowerCase() === 'true';
-  for (const f of blast.all_changed_files || blast.changed_files || []) {
-    if (isCriticalProtectedPath(f)) {
-      var norm = normalizeRelPath(f);
-      if (allowSelfModify && norm.startsWith('skills/evolver/') && gene && gene.category === 'repair') {
-        // Self-modify opt-in: allow repair-only changes to evolver when explicitly enabled
-        warnings.push('self_modify_evolver_repair: ' + norm + ' (EVOLVE_ALLOW_SELF_MODIFY=true)');
-      } else {
-        violations.push('critical_path_modified: ' + norm);
-      }
-    }
-  }
-
-  // --- New skill directory completeness check ---
-  // Detect when an innovation cycle creates a skill directory with too few files.
-  // This catches the "empty directory" problem where AI creates skills/<name>/ but
-  // fails to write any code into it. A real skill needs at least index.js + SKILL.md.
-  if (repoRoot) {
-    var newSkillDirs = new Set();
-    var changedList = blast.all_changed_files || blast.changed_files || [];
-    for (var sci = 0; sci < changedList.length; sci++) {
-      var scNorm = normalizeRelPath(changedList[sci]);
-      var scMatch = scNorm.match(/^skills\/([^\/]+)\//);
-      if (scMatch && !isCriticalProtectedPath(scNorm)) {
-        newSkillDirs.add(scMatch[1]);
-      }
-    }
-    newSkillDirs.forEach(function (skillName) {
-      var skillDir = path.join(repoRoot, 'skills', skillName);
-      try {
-        var entries = fs.readdirSync(skillDir).filter(function (e) { return !e.startsWith('.'); });
-        if (entries.length < 2) {
-          warnings.push('incomplete_skill: skills/' + skillName + '/ has only ' + entries.length + ' file(s). New skills should have at least index.js + SKILL.md.');
-        }
-      } catch (e) {
-        console.warn('[evolver] checkConstraints skill dir read failed:', skillName, e && e.message || e);
-      }
-    });
-  }
-
-  // --- Ethics Committee: constitutional principle enforcement ---
-  var ethicsText = '';
-  if (gene.strategy) {
-    ethicsText += (Array.isArray(gene.strategy) ? gene.strategy.join(' ') : String(gene.strategy)) + ' ';
-  }
-  if (gene.description) ethicsText += String(gene.description) + ' ';
-  if (gene.summary) ethicsText += String(gene.summary) + ' ';
-
-  if (ethicsText.length > 0) {
-    var ethicsBlockPatterns = [
-      { re: /(?:bypass|disable|circumvent|remove)\s+(?:safety|guardrail|security|ethic|constraint|protection)/i, rule: 'safety', msg: 'ethics: strategy attempts to bypass safety mechanisms' },
-      { re: /(?:keylogger|screen\s*capture|webcam\s*hijack|mic(?:rophone)?\s*record)/i, rule: 'human_welfare', msg: 'ethics: covert monitoring tool in strategy' },
-      { re: /(?:social\s+engineering|phishing)\s+(?:attack|template|script)/i, rule: 'human_welfare', msg: 'ethics: social engineering content in strategy' },
-      { re: /(?:exploit|hack)\s+(?:user|human|people|victim)/i, rule: 'human_welfare', msg: 'ethics: human exploitation in strategy' },
-      { re: /(?:hide|conceal|obfuscat)\w*\s+(?:action|behavior|intent|log)/i, rule: 'transparency', msg: 'ethics: strategy conceals actions from audit trail' },
-    ];
-    for (var ei = 0; ei < ethicsBlockPatterns.length; ei++) {
-      if (ethicsBlockPatterns[ei].re.test(ethicsText)) {
-        violations.push(ethicsBlockPatterns[ei].msg);
-        console.error('[Solidify] Ethics violation: ' + ethicsBlockPatterns[ei].msg);
-      }
-    }
-  }
-
-  return { ok: violations.length === 0, violations, warnings, blastSeverity };
 }
 
 function readStateForSolidify() {
@@ -405,372 +126,73 @@ function buildCapsuleId(tsIso) {
   return `capsule_${Number.isFinite(t) ? t : Date.now()}`;
 }
 
-// --- System-wide blast radius hard caps ---
-// These are absolute maximums that NO gene can override.
-// Even if a gene sets max_files: 1000, the hard cap prevails.
-const BLAST_RADIUS_HARD_CAP_FILES = Number(process.env.EVOLVER_HARD_CAP_FILES) || 60;
-const BLAST_RADIUS_HARD_CAP_LINES = Number(process.env.EVOLVER_HARD_CAP_LINES) || 20000;
+// BLAST_RADIUS_HARD_CAP_FILES, BLAST_RADIUS_HARD_CAP_LINES,
+// classifyBlastSeverity, analyzeBlastRadiusBreakdown, compareBlastEstimate,
+// detectDestructiveChanges, isValidationCommandAllowed, runValidations, runCanaryCheck,
+// buildFailureReason, buildSoftFailureLearningSignals, classifyFailureMode
+// moved to ./policyCheck.js
 
-// Severity thresholds (as ratios of gene max_files).
-const BLAST_WARN_RATIO = 0.8;   // >80% of limit: warning
-const BLAST_CRITICAL_RATIO = 2.0; // >200% of limit: critical overrun
+// BLAST_WARN_RATIO, BLAST_CRITICAL_RATIO defined in policyCheck.js
 
-// Classify blast radius severity relative to a gene's max_files constraint.
-// Returns: { severity, message }
-//   severity: 'within_limit' | 'approaching_limit' | 'exceeded' | 'critical_overrun' | 'hard_cap_breach'
-function classifyBlastSeverity({ blast, maxFiles }) {
-  const files = Number(blast.files) || 0;
-  const lines = Number(blast.lines) || 0;
+// classifyBlastSeverity through classifyFailureMode: all moved to ./policyCheck.js
 
-  // Hard cap breach is always the highest severity -- system-level guard.
-  if (files > BLAST_RADIUS_HARD_CAP_FILES || lines > BLAST_RADIUS_HARD_CAP_LINES) {
-    return {
-      severity: 'hard_cap_breach',
-      message: `HARD CAP BREACH: ${files} files / ${lines} lines exceeds system limit (${BLAST_RADIUS_HARD_CAP_FILES} files / ${BLAST_RADIUS_HARD_CAP_LINES} lines)`,
-    };
-  }
+function adaptGeneFromLearning(opts) {
+  const gene = opts && opts.gene && opts.gene.type === 'Gene' ? opts.gene : null;
+  if (!gene) return gene;
 
-  if (!Number.isFinite(maxFiles) || maxFiles <= 0) {
-    return { severity: 'within_limit', message: 'no max_files constraint defined' };
-  }
+  const outcomeStatus = String(opts && opts.outcomeStatus || '').toLowerCase();
+  const learningSignals = Array.isArray(opts && opts.learningSignals) ? opts.learningSignals : [];
+  const failureMode = opts && opts.failureMode && typeof opts.failureMode === 'object'
+    ? opts.failureMode
+    : { mode: 'soft', reasonClass: 'unknown', retryable: true };
 
-  if (files > maxFiles * BLAST_CRITICAL_RATIO) {
-    return {
-      severity: 'critical_overrun',
-      message: `CRITICAL OVERRUN: ${files} files > ${maxFiles * BLAST_CRITICAL_RATIO} (${BLAST_CRITICAL_RATIO}x limit of ${maxFiles}). Agent likely performed bulk/unintended operation.`,
-    };
-  }
+  if (!Array.isArray(gene.learning_history)) gene.learning_history = [];
+  if (!Array.isArray(gene.signals_match)) gene.signals_match = [];
 
-  if (files > maxFiles) {
-    return {
-      severity: 'exceeded',
-      message: `max_files exceeded: ${files} > ${maxFiles}`,
-    };
-  }
-
-  if (files > maxFiles * BLAST_WARN_RATIO) {
-    return {
-      severity: 'approaching_limit',
-      message: `approaching limit: ${files} / ${maxFiles} files (${Math.round((files / maxFiles) * 100)}%)`,
-    };
-  }
-
-  return { severity: 'within_limit', message: `${files} / ${maxFiles} files` };
-}
-
-// Analyze which directory prefixes contribute the most changed files.
-// Returns top N directory groups sorted by count descending.
-function analyzeBlastRadiusBreakdown(changedFiles, topN) {
-  const n = Number.isFinite(topN) && topN > 0 ? topN : 5;
-  const dirCount = {};
-  for (const f of Array.isArray(changedFiles) ? changedFiles : []) {
-    const rel = normalizeRelPath(f);
-    if (!rel) continue;
-    // Use first two path segments as the group key (e.g. "skills/feishu-post").
-    const parts = rel.split('/');
-    const key = parts.length >= 2 ? parts.slice(0, 2).join('/') : parts[0];
-    dirCount[key] = (dirCount[key] || 0) + 1;
-  }
-  return Object.entries(dirCount)
-    .sort(function (a, b) { return b[1] - a[1]; })
-    .slice(0, n)
-    .map(function (e) { return { dir: e[0], files: e[1] }; });
-}
-
-// Compare agent's pre-edit estimate against actual blast radius.
-// Returns null if no estimate, or { estimateFiles, actualFiles, ratio, drifted }.
-function compareBlastEstimate(estimate, actual) {
-  if (!estimate || typeof estimate !== 'object') return null;
-  const estFiles = Number(estimate.files);
-  const actFiles = Number(actual.files);
-  if (!Number.isFinite(estFiles) || estFiles <= 0) return null;
-  const ratio = actFiles / estFiles;
-  return {
-    estimateFiles: estFiles,
-    actualFiles: actFiles,
-    ratio: Math.round(ratio * 100) / 100,
-    drifted: ratio > 3 || ratio < 0.1,
-    message: ratio > 3
-      ? `Estimate drift: actual ${actFiles} files is ${ratio.toFixed(1)}x the estimated ${estFiles}. Agent did not plan accurately.`
-      : null,
-  };
-}
-
-// --- Critical skills / paths that evolver must NEVER delete or overwrite ---
-// These are core dependencies; destroying them will crash the entire system.
-const CRITICAL_PROTECTED_PREFIXES = [
-  'skills/feishu-evolver-wrapper/',
-  'skills/feishu-common/',
-  'skills/feishu-post/',
-  'skills/feishu-card/',
-  'skills/feishu-doc/',
-  'skills/skill-tools/',
-  'skills/clawhub/',
-  'skills/clawhub-batch-undelete/',
-  'skills/git-sync/',
-  'skills/evolver/',
-];
-
-// Files at workspace root that must never be deleted by evolver.
-const CRITICAL_PROTECTED_FILES = [
-  'MEMORY.md',
-  'SOUL.md',
-  'IDENTITY.md',
-  'AGENTS.md',
-  'USER.md',
-  'HEARTBEAT.md',
-  'RECENT_EVENTS.md',
-  'TOOLS.md',
-  'TROUBLESHOOTING.md',
-  'openclaw.json',
-  '.env',
-  'package.json',
-];
-
-function isCriticalProtectedPath(relPath) {
-  const rel = normalizeRelPath(relPath);
-  if (!rel) return false;
-  // Check protected prefixes (skill directories)
-  for (const prefix of CRITICAL_PROTECTED_PREFIXES) {
-    const p = prefix.replace(/\/+$/, '');
-    if (rel === p || rel.startsWith(p + '/')) return true;
-  }
-  // Check protected root files
-  for (const f of CRITICAL_PROTECTED_FILES) {
-    if (rel === f) return true;
-  }
-  return false;
-}
-
-function detectDestructiveChanges({ repoRoot, changedFiles, baselineUntracked }) {
-  const violations = [];
-  const baselineSet = new Set((Array.isArray(baselineUntracked) ? baselineUntracked : []).map(normalizeRelPath));
-
-  for (const rel of changedFiles) {
-    const norm = normalizeRelPath(rel);
-    if (!norm) continue;
-    if (!isCriticalProtectedPath(norm)) continue;
-
-    const abs = path.join(repoRoot, norm);
-    const normAbs = path.resolve(abs);
-    const normRepo = path.resolve(repoRoot);
-    if (!normAbs.startsWith(normRepo + path.sep) && normAbs !== normRepo) continue;
-
-    // If a critical file existed before but is now missing/empty, that is destructive.
-    if (!baselineSet.has(norm)) {
-      // It was tracked before, check if it still exists
-      if (!fs.existsSync(normAbs)) {
-        violations.push(`CRITICAL_FILE_DELETED: ${norm}`);
-      } else {
-        try {
-          const stat = fs.statSync(normAbs);
-          if (stat.isFile() && stat.size === 0) {
-            violations.push(`CRITICAL_FILE_EMPTIED: ${norm}`);
-          }
-        } catch (e) {
-          console.warn('[evolver] detectDestructiveChanges stat failed:', norm, e && e.message || e);
-        }
+  const seenSignal = new Set(gene.signals_match.map(function (s) { return String(s); }));
+  if (outcomeStatus === 'success') {
+    for (let i = 0; i < learningSignals.length; i++) {
+      const sig = String(learningSignals[i] || '');
+      if (!sig || seenSignal.has(sig)) continue;
+      if (sig.indexOf('problem:') === 0 || sig.indexOf('area:') === 0) {
+        gene.signals_match.push(sig);
+        seenSignal.add(sig);
       }
     }
   }
-  return violations;
-}
 
-// --- Validation command safety ---
-const VALIDATION_ALLOWED_PREFIXES = ['node ', 'npm ', 'npx '];
-
-function isValidationCommandAllowed(cmd) {
-  const c = String(cmd || '').trim();
-  if (!c) return false;
-  if (!VALIDATION_ALLOWED_PREFIXES.some(p => c.startsWith(p))) return false;
-  if (/`|\$\(/.test(c)) return false;
-  const stripped = c.replace(/"[^"]*"/g, '').replace(/'[^']*'/g, '');
-  if (/[;&|><]/.test(stripped)) return false;
-  if (/^node\s+(-e|--eval|--print|-p)\b/.test(c)) return false;
-  return true;
-}
-
-function runValidations(gene, opts = {}) {
-  const repoRoot = opts.repoRoot || getRepoRoot();
-  const timeoutMs = Number.isFinite(Number(opts.timeoutMs)) ? Number(opts.timeoutMs) : 180000;
-  const validation = Array.isArray(gene && gene.validation) ? gene.validation : [];
-  const results = [];
-  const startedAt = Date.now();
-  for (const cmd of validation) {
-    const c = String(cmd || '').trim();
-    if (!c) continue;
-    if (!isValidationCommandAllowed(c)) {
-      results.push({ cmd: c, ok: false, out: '', err: 'BLOCKED: validation command rejected by safety check (allowed prefixes: node/npm/npx; shell operators prohibited)' });
-      return { ok: false, results, startedAt, finishedAt: Date.now() };
-    }
-    const r = tryRunCmd(c, { cwd: repoRoot, timeoutMs });
-    results.push({ cmd: c, ok: r.ok, out: String(r.out || ''), err: String(r.err || '') });
-    if (!r.ok) return { ok: false, results, startedAt, finishedAt: Date.now() };
+  gene.learning_history.push({
+    at: nowIso(),
+    outcome: outcomeStatus || 'unknown',
+    mode: failureMode.mode || 'soft',
+    reason_class: failureMode.reasonClass || 'unknown',
+    retryable: !!failureMode.retryable,
+    learning_signals: learningSignals.slice(0, 12),
+  });
+  if (gene.learning_history.length > 20) {
+    gene.learning_history = gene.learning_history.slice(gene.learning_history.length - 20);
   }
-  return { ok: true, results, startedAt, finishedAt: Date.now() };
-}
 
-// --- Canary via Fork: verify index.js loads in an isolated child process ---
-// This is the last safety net before solidify commits an evolution.
-// If a patch broke index.js, the canary catches it BEFORE the daemon
-// restarts with broken code. Runs with a short timeout to avoid blocking.
-function runCanaryCheck(opts) {
-  const repoRoot = (opts && opts.repoRoot) ? opts.repoRoot : getRepoRoot();
-  const timeoutMs = (opts && Number.isFinite(Number(opts.timeoutMs))) ? Number(opts.timeoutMs) : 30000;
-  const canaryScript = path.join(repoRoot, 'src', 'canary.js');
-  if (!fs.existsSync(canaryScript)) {
-    return { ok: true, skipped: true, reason: 'canary.js not found' };
-  }
-  const r = tryRunCmd(`node "${canaryScript}"`, { cwd: repoRoot, timeoutMs });
-  return {
-    ok: r.ok,
-    skipped: false,
-    out: String(r.out || '').slice(0, 500),
-    err: String(r.err || '').slice(0, 500),
-  };
-}
-
-var DIFF_SNAPSHOT_MAX_CHARS = 8000;
-
-function captureDiffSnapshot(repoRoot) {
-  var parts = [];
-  var unstaged = tryRunCmd('git diff', { cwd: repoRoot, timeoutMs: 30000 });
-  if (unstaged.ok && unstaged.out) parts.push(String(unstaged.out));
-  var staged = tryRunCmd('git diff --cached', { cwd: repoRoot, timeoutMs: 30000 });
-  if (staged.ok && staged.out) parts.push(String(staged.out));
-  var combined = parts.join('\n');
-  if (combined.length > DIFF_SNAPSHOT_MAX_CHARS) {
-    combined = combined.slice(0, DIFF_SNAPSHOT_MAX_CHARS) + '\n... [TRUNCATED]';
-  }
-  return combined || '';
-}
-
-function buildFailureReason(constraintCheck, validation, protocolViolations, canary) {
-  var reasons = [];
-  if (constraintCheck && Array.isArray(constraintCheck.violations)) {
-    for (var i = 0; i < constraintCheck.violations.length; i++) {
-      reasons.push('constraint: ' + constraintCheck.violations[i]);
+  if (outcomeStatus === 'failed') {
+    if (!Array.isArray(gene.anti_patterns)) gene.anti_patterns = [];
+    const anti = {
+      at: nowIso(),
+      mode: failureMode.mode || 'soft',
+      reason_class: failureMode.reasonClass || 'unknown',
+      learning_signals: learningSignals.slice(0, 8),
+    };
+    gene.anti_patterns.push(anti);
+    if (gene.anti_patterns.length > 12) {
+      gene.anti_patterns = gene.anti_patterns.slice(gene.anti_patterns.length - 12);
     }
   }
-  if (Array.isArray(protocolViolations)) {
-    for (var j = 0; j < protocolViolations.length; j++) {
-      reasons.push('protocol: ' + protocolViolations[j]);
-    }
-  }
-  if (validation && Array.isArray(validation.results)) {
-    for (var k = 0; k < validation.results.length; k++) {
-      var r = validation.results[k];
-      if (r && !r.ok) {
-        reasons.push('validation_failed: ' + String(r.cmd || '').slice(0, 120) + ' => ' + String(r.err || '').slice(0, 200));
-      }
-    }
-  }
-  if (canary && !canary.ok && !canary.skipped) {
-    reasons.push('canary_failed: ' + String(canary.err || '').slice(0, 200));
-  }
-  return reasons.join('; ').slice(0, 2000) || 'unknown';
+
+  return gene;
 }
 
-function rollbackTracked(repoRoot) {
-  const mode = String(process.env.EVOLVER_ROLLBACK_MODE || 'hard').toLowerCase();
+// rollbackTracked, gitListUntrackedFiles moved to ./gitOps.js
 
-  if (mode === 'none') {
-    console.log('[Rollback] EVOLVER_ROLLBACK_MODE=none, skipping rollback');
-    return;
-  }
-
-  if (mode === 'stash') {
-    const stashRef = 'evolver-rollback-' + Date.now();
-    const result = tryRunCmd('git stash push -m "' + stashRef + '" --include-untracked', { cwd: repoRoot, timeoutMs: 60000 });
-    if (result.ok) {
-      console.log('[Rollback] Changes stashed with ref: ' + stashRef + '. Recover with "git stash list" and "git stash pop".');
-    } else {
-      console.log('[Rollback] Stash failed or no changes, using hard reset');
-      tryRunCmd('git restore --staged --worktree .', { cwd: repoRoot, timeoutMs: 60000 });
-      tryRunCmd('git reset --hard', { cwd: repoRoot, timeoutMs: 60000 });
-    }
-    return;
-  }
-
-  console.log('[Rollback] EVOLVER_ROLLBACK_MODE=hard, resetting tracked files in: ' + repoRoot);
-  tryRunCmd('git restore --staged --worktree .', { cwd: repoRoot, timeoutMs: 60000 });
-  tryRunCmd('git reset --hard', { cwd: repoRoot, timeoutMs: 60000 });
-}
-
-function gitListUntrackedFiles(repoRoot) {
-  const r = tryRunCmd('git ls-files --others --exclude-standard', { cwd: repoRoot, timeoutMs: 60000 });
-  if (!r.ok) return [];
-  return String(r.out).split('\n').map(l => l.trim()).filter(Boolean);
-}
-
-function rollbackNewUntrackedFiles({ repoRoot, baselineUntracked }) {
-  const baseline = new Set((Array.isArray(baselineUntracked) ? baselineUntracked : []).map(String));
-  const current = gitListUntrackedFiles(repoRoot);
-  const toDelete = current.filter(f => !baseline.has(String(f)));
-  const skipped = [];
-  const deleted = [];
-  for (const rel of toDelete) {
-    const safeRel = String(rel || '').replace(/\\/g, '/').replace(/^\.\/+/, '');
-    if (!safeRel) continue;
-    // CRITICAL: Never delete files inside protected skill directories during rollback.
-    if (isCriticalProtectedPath(safeRel)) {
-      skipped.push(safeRel);
-      continue;
-    }
-    const abs = path.join(repoRoot, safeRel);
-    const normRepo = path.resolve(repoRoot);
-    const normAbs = path.resolve(abs);
-    if (!normAbs.startsWith(normRepo + path.sep) && normAbs !== normRepo) continue;
-    try {
-      if (fs.existsSync(normAbs) && fs.statSync(normAbs).isFile()) {
-        fs.unlinkSync(normAbs);
-        deleted.push(safeRel);
-      }
-    } catch (e) {
-      console.warn('[evolver] rollbackNewUntrackedFiles unlink failed:', safeRel, e && e.message || e);
-    }
-  }
-  if (skipped.length > 0) {
-    console.log(`[Rollback] Skipped ${skipped.length} critical protected file(s): ${skipped.slice(0, 5).join(', ')}`);
-  }
-  // Clean up empty directories left after file deletion.
-  // This prevents "ghost skill directories" where mkdir succeeded but
-  // file creation failed/was rolled back. Without this, empty dirs like
-  // skills/anima/, skills/oblivion/ etc. accumulate after failed innovations.
-  // SAFETY: never remove top-level structural directories (skills/, src/, etc.)
-  // or critical protected directories. Only remove leaf subdirectories.
-  var dirsToCheck = new Set();
-  for (var di = 0; di < deleted.length; di++) {
-    var dir = path.dirname(deleted[di]);
-    while (dir && dir !== '.' && dir !== '/') {
-      var normalized = dir.replace(/\\/g, '/');
-      if (!normalized.includes('/')) break;
-      dirsToCheck.add(dir);
-      dir = path.dirname(dir);
-    }
-  }
-  // Sort deepest first to ensure children are removed before parents
-  var sortedDirs = Array.from(dirsToCheck).sort(function (a, b) { return b.length - a.length; });
-  var removedDirs = [];
-  for (var si = 0; si < sortedDirs.length; si++) {
-    if (isCriticalProtectedPath(sortedDirs[si] + '/')) continue;
-    var dirAbs = path.join(repoRoot, sortedDirs[si]);
-    try {
-      var entries = fs.readdirSync(dirAbs);
-      if (entries.length === 0) {
-        fs.rmdirSync(dirAbs);
-        removedDirs.push(sortedDirs[si]);
-      }
-    } catch (e) {
-      console.warn('[evolver] rollbackNewUntrackedFiles rmdir failed:', sortedDirs[si], e && e.message || e);
-    }
-  }
-  if (removedDirs.length > 0) {
-    console.log('[Rollback] Removed ' + removedDirs.length + ' empty director' + (removedDirs.length === 1 ? 'y' : 'ies') + ': ' + removedDirs.slice(0, 5).join(', '));
-  }
-
-  return { deleted, skipped, removedDirs: removedDirs };
-}
+// rollbackNewUntrackedFiles moved to ./gitOps.js
 
 function inferCategoryFromSignals(signals) {
   const list = Array.isArray(signals) ? signals.map(String) : [];
@@ -806,10 +228,10 @@ function buildSuccessReason({ gene, signals, blast, mutation, score }) {
   return parts.join(' ').slice(0, 1000) || 'Evolution succeeded.';
 }
 
-var CAPSULE_CONTENT_MAX_CHARS = 8000;
+const CAPSULE_CONTENT_MAX_CHARS = 8000;
 
 function buildCapsuleContent({ intent, gene, signals, blast, mutation, score }) {
-  var parts = [];
+  const parts = [];
 
   if (intent) {
     parts.push('Intent: ' + String(intent).slice(0, 500));
@@ -828,7 +250,7 @@ function buildCapsuleContent({ intent, gene, signals, blast, mutation, score }) 
   }
 
   if (blast) {
-    var fileList = blast.changed_files || blast.all_changed_files || [];
+    const fileList = blast.changed_files || blast.all_changed_files || [];
     parts.push('Scope: ' + blast.files + ' file(s), ' + blast.lines + ' line(s)');
     if (fileList.length > 0) {
       parts.push('Changed files:\n' + fileList.slice(0, 20).join('\n'));
@@ -843,7 +265,7 @@ function buildCapsuleContent({ intent, gene, signals, blast, mutation, score }) 
     parts.push('Outcome score: ' + score.toFixed(2));
   }
 
-  var result = parts.join('\n\n');
+  let result = parts.join('\n\n');
   if (result.length > CAPSULE_CONTENT_MAX_CHARS) {
     result = result.slice(0, CAPSULE_CONTENT_MAX_CHARS) + '\n... [TRUNCATED]';
   }
@@ -967,7 +389,10 @@ function buildAutoGene({ signals, intent }) {
         'skills/git-sync',
       ],
     },
-    validation: ['node scripts/validate-modules.js ./src/gep/solidify'],
+    validation: [
+      'node scripts/validate-modules.js ./src/gep/solidify ./src/gep/policyCheck ./src/gep/assetStore',
+      'node scripts/validate-suite.js',
+    ],
     epigenetic_marks: [], // Epigenetic marks: environment-specific expression modifiers
   };
   gene.asset_id = computeAssetId(gene);
@@ -1000,16 +425,126 @@ function readRecentSessionInputs() {
   return { recentSessionTranscript, todayLog: todayLogContent, memorySnippet, userSnippet };
 }
 
-function isGitRepo(dir) {
-  try {
-    execSync('git rev-parse --git-dir', {
-      cwd: dir, encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'pipe'], timeout: 5000,
-    });
-    return true;
-  } catch (_) {
-    return false;
+// isGitRepo moved to ./gitOps.js
+
+// ---------------------------------------------------------------------------
+// Process Reward Model (PRM-inspired multi-step scoring)
+// Evaluates each phase of the evolution cycle independently for richer feedback.
+// ---------------------------------------------------------------------------
+function computeProcessScores(opts) {
+  const {
+    constraintCheck, validation, protocolViolations, canary,
+    blast, geneUsed, signals, mutation, blastRadiusEstimate, llmReviewResult,
+  } = opts || {};
+
+  // Phase 1: Signal quality (did we have meaningful signals to work with?)
+  let signalScore = 0.5;
+  if (Array.isArray(signals) && signals.length > 0) {
+    signalScore = Math.min(1, 0.4 + signals.length * 0.1);
   }
+
+  // Phase 2: Gene selection quality (was a matching gene found?)
+  let selectionScore = 0.3;
+  if (geneUsed && geneUsed.type === 'Gene') {
+    selectionScore = 0.7;
+    if (geneUsed.id && !geneUsed.id.startsWith('gene_auto_')) selectionScore = 0.9;
+  }
+
+  // Phase 3: Mutation quality (was the mutation well-formed?)
+  let mutationScore = 0.5;
+  if (mutation && mutation.rationale && mutation.category) {
+    mutationScore = 0.8;
+    if (mutation.risk_level === 'low') mutationScore = 0.9;
+    if (mutation.risk_level === 'high') mutationScore = 0.6;
+  }
+  if (!mutation) mutationScore = 0.3;
+
+  // Phase 4: Blast radius control (was the change scope appropriate?)
+  let blastScore = 0.5;
+  if (blast) {
+    const maxFiles = geneUsed && geneUsed.constraints && geneUsed.constraints.max_files
+      ? geneUsed.constraints.max_files : 12;
+    if (blast.files === 0) {
+      blastScore = 0.4;
+    } else if (blast.files <= maxFiles * 0.5) {
+      blastScore = 1.0;
+    } else if (blast.files <= maxFiles) {
+      blastScore = 0.7;
+    } else {
+      blastScore = 0.2;
+    }
+  }
+  if (blastRadiusEstimate && blast) {
+    const estFiles = blastRadiusEstimate.files_changed || 0;
+    if (estFiles > 0 && blast.files > 0) {
+      const ratio = blast.files / estFiles;
+      if (ratio > 3) blastScore *= 0.5;
+      else if (ratio > 2) blastScore *= 0.7;
+    }
+  }
+
+  // Phase 5: Constraint compliance
+  let constraintScore = 1.0;
+  if (constraintCheck && !constraintCheck.ok) {
+    const violationCount = Array.isArray(constraintCheck.violations) ? constraintCheck.violations.length : 0;
+    constraintScore = Math.max(0, 1 - violationCount * 0.25);
+  }
+
+  // Phase 6: Validation pass rate
+  // Empty validation arrays get a penalty (0.5) -- genes SHOULD define
+  // at least one validation command to prove the change is correct.
+  let validationScore = 0.5;
+  if (validation && Array.isArray(validation.results) && validation.results.length > 0) {
+    const passed = validation.results.filter(function (r) { return r && r.ok; }).length;
+    validationScore = passed / validation.results.length;
+  } else if (validation && !validation.ok) {
+    validationScore = 0;
+  }
+
+  // Phase 7: Protocol compliance
+  let protocolScore = 1.0;
+  if (Array.isArray(protocolViolations) && protocolViolations.length > 0) {
+    protocolScore = Math.max(0, 1 - protocolViolations.length * 0.3);
+  }
+
+  // Phase 8: Canary health
+  let canaryScore = 1.0;
+  if (canary && !canary.ok && !canary.skipped) canaryScore = 0;
+
+  // Weighted composite score
+  const weights = {
+    signal: 0.05,
+    selection: 0.10,
+    mutation: 0.05,
+    blast: 0.15,
+    constraint: 0.25,
+    validation: 0.25,
+    protocol: 0.10,
+    canary: 0.05,
+  };
+
+  const composite =
+    signalScore * weights.signal +
+    selectionScore * weights.selection +
+    mutationScore * weights.mutation +
+    blastScore * weights.blast +
+    constraintScore * weights.constraint +
+    validationScore * weights.validation +
+    protocolScore * weights.protocol +
+    canaryScore * weights.canary;
+
+  return {
+    signal_quality: Math.round(signalScore * 100) / 100,
+    gene_selection: Math.round(selectionScore * 100) / 100,
+    mutation_quality: Math.round(mutationScore * 100) / 100,
+    blast_control: Math.round(blastScore * 100) / 100,
+    constraint_compliance: Math.round(constraintScore * 100) / 100,
+    validation_pass_rate: Math.round(validationScore * 100) / 100,
+    protocol_compliance: Math.round(protocolScore * 100) / 100,
+    canary_health: Math.round(canaryScore * 100) / 100,
+    composite: Math.round(composite * 100) / 100,
+    weights: weights,
+  };
 }
 
 function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } = {}) {
@@ -1156,7 +691,40 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
   const success = constraintCheck.ok && validation.ok && protocolViolations.length === 0;
   const ts = nowIso();
   const outcomeStatus = success ? 'success' : 'failed';
-  const score = clamp01(success ? 0.85 : 0.2);
+
+  // Multi-step process scoring (PRM-inspired): evaluate each phase independently
+  // rather than a single binary outcome. This enables richer feedback for gene
+  // selection, distillation, and future RL-based optimization.
+  const processScores = computeProcessScores({
+    constraintCheck,
+    validation,
+    protocolViolations,
+    canary,
+    blast,
+    geneUsed,
+    signals,
+    mutation,
+    blastRadiusEstimate,
+    llmReviewResult,
+  });
+  const score = clamp01(processScores.composite);
+  const failureReason = !success ? buildFailureReason(constraintCheck, validation, protocolViolations, canary) : '';
+  const failureMode = !success
+    ? classifyFailureMode({
+        constraintViolations: constraintCheck.violations,
+        protocolViolations: protocolViolations,
+        validation: validation,
+        canary: canary,
+      })
+    : { mode: 'none', reasonClass: null, retryable: false };
+  const softFailureLearningSignals = !success
+    ? buildSoftFailureLearningSignals({
+        signals,
+        failureReason,
+        violations: constraintCheck.violations,
+        validationResults: validation.results,
+      })
+    : [];
 
   const selectedCapsuleId =
     lastRun && typeof lastRun.selected_capsule_id === 'string' && lastRun.selected_capsule_id.trim()
@@ -1174,6 +742,8 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
   // LessonL: carry applied lesson IDs for Hub effectiveness adjustment
   const appliedLessons = lastRun && Array.isArray(lastRun.applied_lessons) ? lastRun.applied_lessons : [];
 
+  const geneLibVersion = computeGeneLibraryVersion();
+
   const event = {
     type: 'EvolutionEvent',
     schema_version: SCHEMA_VERSION,
@@ -1190,6 +760,7 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
     source_type: sourceType,
     reused_asset_id: reusedAssetId,
     ...(appliedLessons.length > 0 ? { applied_lessons: appliedLessons } : {}),
+    gene_library_version: geneLibVersion,
     env_fingerprint: envFp,
     validation_report_id: validationReport.id,
     meta: {
@@ -1224,6 +795,13 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
       protocol_ok: protocolViolations.length === 0,
       protocol_violations: protocolViolations,
       memory_graph: memoryGraphPath(),
+      soft_failure: success ? null : {
+        learning_signals: softFailureLearningSignals,
+        retryable: !!failureMode.retryable,
+        class: failureMode.reasonClass,
+        mode: failureMode.mode,
+      },
+      process_scores: processScores,
     },
   };
   // Build desensitized execution trace for cross-agent experience sharing
@@ -1276,6 +854,7 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
       outcome: { status: 'success', score },
       success_streak: 1,
       success_reason: successReason,
+      gene_library_version: geneLibVersion,
       env_fingerprint: envFp,
       source_type: sourceType,
       reused_asset_id: reusedAssetId,
@@ -1290,9 +869,9 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
   // Capture failed mutation as a FailedCapsule before rollback destroys the diff.
   if (!dryRun && !success) {
     try {
-      var diffSnapshot = captureDiffSnapshot(repoRoot);
+      const diffSnapshot = captureDiffSnapshot(repoRoot);
       if (diffSnapshot) {
-        var failedCapsule = {
+        const failedCapsule = {
           type: 'Capsule',
           schema_version: SCHEMA_VERSION,
           id: 'failed_' + buildCapsuleId(ts),
@@ -1303,7 +882,8 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
             ? 'Failed: ' + geneUsed.id + ' on signals [' + (signals.slice(0, 3).join(', ') || 'none') + ']'
             : 'Failed evolution on signals [' + (signals.slice(0, 3).join(', ') || 'none') + ']',
           diff_snapshot: diffSnapshot,
-          failure_reason: buildFailureReason(constraintCheck, validation, protocolViolations, canary),
+          failure_reason: failureReason,
+          learning_signals: softFailureLearningSignals,
           constraint_violations: constraintCheck.violations || [],
           env_fingerprint: envFp,
           blast_radius: { files: blast.files, lines: blast.lines },
@@ -1331,6 +911,12 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
   // Apply epigenetic marks to the gene based on outcome and environment
   if (!dryRun && geneUsed && geneUsed.type === 'Gene') {
     try {
+      adaptGeneFromLearning({
+        gene: geneUsed,
+        outcomeStatus: outcomeStatus,
+        learningSignals: success ? signals : softFailureLearningSignals,
+        failureMode: failureMode,
+      });
       applyEpigeneticMarks(geneUsed, envFp, outcomeStatus);
       upsertGene(geneUsed);
     } catch (e) {
@@ -1348,8 +934,8 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
       capsule.a2a = {
         eligible_to_broadcast:
           isBlastRadiusSafe(capsule.blast_radius) &&
-          (capsule.outcome.score || 0) >= 0.7 &&
-          (capsule.success_streak || 0) >= 2,
+          (capsule.outcome.score || 0) >= require('../config').BROADCAST_SCORE_THRESHOLD &&
+          (capsule.success_streak || 0) >= require('../config').BROADCAST_SUCCESS_STREAK,
       };
       capsule.asset_id = computeAssetId(capsule);
       upsertCapsule(capsule);
@@ -1367,6 +953,17 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
   state.last_solidify = {
     run_id: runId, at: ts, event_id: event.id, capsule_id: capsuleId, outcome: event.outcome,
   };
+  if (!success && validation && !validation.ok) {
+    var failedCmd = validation.results && validation.results.find(function (r) { return !r.ok; });
+    state.last_validation_failure = {
+      cmd: failedCmd ? failedCmd.cmd : null,
+      stderr: failedCmd ? String(failedCmd.err || '').slice(0, 500) : null,
+      retries_attempted: validation.retries_attempted || 0,
+      at: ts,
+    };
+  } else {
+    delete state.last_validation_failure;
+  }
   if (!dryRun) {
     state.solidify_count = (state.solidify_count || 0) + 1;
     writeStateForSolidify(state);
@@ -1392,20 +989,36 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
   if (!dryRun && capsule && capsule.a2a && capsule.a2a.eligible_to_broadcast) {
     const autoPublish = String(process.env.EVOLVER_AUTO_PUBLISH || 'true').toLowerCase() !== 'false';
     const visibility = String(process.env.EVOLVER_DEFAULT_VISIBILITY || 'public').toLowerCase();
-    const minPublishScore = Number(process.env.EVOLVER_MIN_PUBLISH_SCORE) || 0.78;
+    const minPublishScore = require('../config').MIN_PUBLISH_SCORE;
 
     // Skip publishing if: disabled, private, direct-reused asset, or below minimum score.
     // 'reference' mode produces a new capsule inspired by hub -- eligible for publish.
     if (autoPublish && visibility === 'public' && sourceType !== 'reused' && (capsule.outcome.score || 0) >= minPublishScore) {
       try {
         const { buildPublishBundle, httpTransportSend } = require('./a2aProtocol');
-        const { sanitizePayload } = require('./sanitize');
+        const { sanitizePayload, fullLeakCheck } = require('./sanitize');
         const hubUrl = (process.env.A2A_HUB_URL || '').replace(/\/+$/, '');
 
-        if (hubUrl) {
+        // Pre-publish leak scan: check capsule content for sensitive data
+        const leakCheckMode = require('../config').LEAK_CHECK_MODE;
+        if (leakCheckMode !== 'off') {
+          const contentToScan = JSON.stringify(capsule) + (geneUsed ? JSON.stringify(geneUsed) : '') + (event ? JSON.stringify(event) : '');
+          const leakResult = fullLeakCheck(contentToScan);
+          if (leakResult.found) {
+            const leakSummary = leakResult.leaks.map(function (l) { return l.type + ': ' + l.value + ' -> ' + l.suggestion; }).join('; ');
+            if (leakCheckMode === 'strict') {
+              console.warn('[LeakCheck] BLOCKED publish -- sensitive data detected: ' + leakSummary);
+              publishResult = { blocked: true, reason: 'leak_detected', leaks: leakResult.leaks.length };
+            } else {
+              console.warn('[LeakCheck] WARNING -- sensitive data detected in publish payload (will be redacted by sanitizePayload): ' + leakSummary);
+            }
+          }
+        }
+
+        if (hubUrl && !(publishResult && publishResult.blocked)) {
           // Hub requires bundle format: Gene + Capsule published together.
           // Build a Gene object from geneUsed if available; otherwise synthesize a minimal Gene.
-          var publishGene = null;
+          let publishGene = null;
           if (geneUsed && geneUsed.type === 'Gene' && geneUsed.id) {
             publishGene = sanitizePayload(geneUsed);
           } else {
@@ -1417,34 +1030,34 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
               summary: capsule.summary || '',
             };
           }
-          var parentRef = reusedAssetId && sourceType === 'reference' && String(reusedAssetId).startsWith('sha256:')
+          const parentRef = reusedAssetId && sourceType === 'reference' && String(reusedAssetId).startsWith('sha256:')
             ? reusedAssetId : null;
           if (parentRef) {
             publishGene.parent = parentRef;
           }
           publishGene.asset_id = computeAssetId(publishGene);
 
-          var sanitizedCapsule = sanitizePayload(capsule);
+          const sanitizedCapsule = sanitizePayload(capsule);
           if (parentRef) {
             sanitizedCapsule.parent = parentRef;
           }
           sanitizedCapsule.asset_id = computeAssetId(sanitizedCapsule);
 
-          var sanitizedEvent = (event && event.type === 'EvolutionEvent') ? sanitizePayload(event) : null;
+          const sanitizedEvent = (event && event.type === 'EvolutionEvent') ? sanitizePayload(event) : null;
           if (sanitizedEvent) sanitizedEvent.asset_id = computeAssetId(sanitizedEvent);
 
-          var publishChainId = reusedChainId || null;
+          const publishChainId = reusedChainId || null;
 
-          var evolverModelName = (process.env.EVOLVER_MODEL_NAME || '').trim().slice(0, 100);
+          const evolverModelName = (process.env.EVOLVER_MODEL_NAME || '').trim().slice(0, 100);
 
-          var msg = buildPublishBundle({
+          const msg = buildPublishBundle({
             gene: publishGene,
             capsule: sanitizedCapsule,
             event: sanitizedEvent,
             chainId: publishChainId,
             modelName: evolverModelName || undefined,
           });
-          var result = httpTransportSend(msg, { hubUrl });
+          const result = httpTransportSend(msg, { hubUrl });
           // httpTransportSend returns a Promise
           if (result && typeof result.then === 'function') {
             result
@@ -1503,23 +1116,31 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
   // Publish high-information-value failures to the Hub as anti-pattern assets.
   // Only enabled via EVOLVER_PUBLISH_ANTI_PATTERNS=true (opt-in).
   // Only constraint violations or canary failures qualify (not routine validation failures).
-  var antiPatternPublishResult = null;
+  let antiPatternPublishResult = null;
   if (!dryRun && !success) {
-    var publishAntiPatterns = String(process.env.EVOLVER_PUBLISH_ANTI_PATTERNS || '').toLowerCase() === 'true';
-    var hubUrl = (process.env.A2A_HUB_URL || '').replace(/\/+$/, '');
-    var hasHighInfoFailure = (constraintCheck.violations && constraintCheck.violations.length > 0)
+    const publishAntiPatterns = String(process.env.EVOLVER_PUBLISH_ANTI_PATTERNS || '').toLowerCase() === 'true';
+    const hubUrl = (process.env.A2A_HUB_URL || '').replace(/\/+$/, '');
+    const hasHighInfoFailure = (constraintCheck.violations && constraintCheck.violations.length > 0)
       || (canary && !canary.ok && !canary.skipped);
     if (publishAntiPatterns && hubUrl && hasHighInfoFailure) {
       try {
-        var { buildPublishBundle: buildApBundle, httpTransportSend: httpApSend } = require('./a2aProtocol');
-        var { sanitizePayload: sanitizeAp } = require('./sanitize');
-        var apGene = geneUsed && geneUsed.type === 'Gene' && geneUsed.id
+        const { buildPublishBundle: buildApBundle, httpTransportSend: httpApSend } = require('./a2aProtocol');
+        const { sanitizePayload: sanitizeAp, fullLeakCheck: fullLeakCheckAp } = require('./sanitize');
+        const apLeakMode = require('../config').LEAK_CHECK_MODE;
+        if (apLeakMode !== 'off') {
+          const apContent = JSON.stringify(geneUsed || {}) + JSON.stringify(constraintCheck || {});
+          const apLeakResult = fullLeakCheckAp(apContent);
+          if (apLeakResult.found) {
+            console.warn('[LeakCheck] Anti-pattern payload has ' + apLeakResult.leaks.length + ' potential leaks (will be redacted)');
+          }
+        }
+        const apGene = geneUsed && geneUsed.type === 'Gene' && geneUsed.id
           ? sanitizeAp(geneUsed)
           : { type: 'Gene', id: 'gene_unknown_' + Date.now(), category: derivedIntent, signals_match: signals.slice(0, 8), summary: 'Failed evolution gene' };
         apGene.anti_pattern = true;
         apGene.failure_reason = buildFailureReason(constraintCheck, validation, protocolViolations, canary);
         apGene.asset_id = computeAssetId(apGene);
-        var apCapsule = {
+        const apCapsule = {
           type: 'Capsule',
           schema_version: SCHEMA_VERSION,
           id: 'failed_' + buildCapsuleId(ts),
@@ -1533,9 +1154,9 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
           a2a: { eligible_to_broadcast: false },
         };
         apCapsule.asset_id = computeAssetId(apCapsule);
-        var apModelName = (process.env.EVOLVER_MODEL_NAME || '').trim().slice(0, 100);
-        var apMsg = buildApBundle({ gene: apGene, capsule: sanitizeAp(apCapsule), event: null, modelName: apModelName || undefined });
-        var apResult = httpApSend(apMsg, { hubUrl });
+        const apModelName = (process.env.EVOLVER_MODEL_NAME || '').trim().slice(0, 100);
+        const apMsg = buildApBundle({ gene: apGene, capsule: sanitizeAp(apCapsule), event: null, modelName: apModelName || undefined });
+        const apResult = httpApSend(apMsg, { hubUrl });
         if (apResult && typeof apResult.then === 'function') {
           apResult
             .then(function (res) {
@@ -1562,7 +1183,7 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
   // which we already do above. The Hub-side solicitLesson() handles the rest.
   // For failures without a published event (no auto-publish), we still log locally.
   if (!dryRun && !success && event && event.outcome) {
-    var failureContent = buildFailureReason(constraintCheck, validation, protocolViolations, canary);
+    const failureContent = failureReason;
     event.failure_reason = failureContent;
     event.summary = geneUsed
       ? 'Failed: ' + geneUsed.id + ' on signals [' + (signals.slice(0, 3).join(', ') || 'none') + '] - ' + failureContent.slice(0, 200)
@@ -1661,11 +1282,11 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
   // --- Auto Hub Review: rate fetched assets based on solidify outcome ---
   // When this cycle reused a Hub asset, submit a usage-verified review.
   // The promise is returned so callers can await it before process.exit().
-  var hubReviewResult = null;
-  var hubReviewPromise = null;
+  let hubReviewResult = null;
+  let hubReviewPromise = null;
   if (!dryRun && reusedAssetId && (sourceType === 'reused' || sourceType === 'reference')) {
     try {
-      var { submitHubReview } = require('./hubReview');
+      const { submitHubReview } = require('./hubReview');
       hubReviewPromise = submitHubReview({
         reusedAssetId: reusedAssetId,
         sourceType: sourceType,
@@ -1708,11 +1329,16 @@ module.exports = {
   classifyBlastSeverity,
   analyzeBlastRadiusBreakdown,
   compareBlastEstimate,
+  classifyFailureMode,
+  adaptGeneFromLearning,
+  buildSoftFailureLearningSignals,
   runCanaryCheck,
   applyEpigeneticMarks,
   getEpigeneticBoost,
   buildEpigeneticMark,
   buildSuccessReason,
+  computeGeneLibraryVersion,
+  computeProcessScores,
   BLAST_RADIUS_HARD_CAP_FILES,
   BLAST_RADIUS_HARD_CAP_LINES,
 };

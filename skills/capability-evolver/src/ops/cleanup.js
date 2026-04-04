@@ -6,8 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const { getEvolutionDir } = require('../gep/paths');
 
-var MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
-var MIN_KEEP = 10;
+var MAX_AGE_MS = require('../config').CLEANUP_MAX_AGE_MS;
+var MIN_KEEP = require('../config').CLEANUP_MIN_KEEP;
 
 function safeBatchDelete(batch) {
     var deleted = 0;
@@ -56,7 +56,7 @@ function run() {
             })
             .sort(function(a, b) { return b.mtime - a.mtime; }); // newest first
 
-        var MAX_FILES = 10;
+        var MAX_FILES = require('../config').CLEANUP_MAX_FILES;
         if (remainingFiles.length > MAX_FILES) {
             var toDelete = remainingFiles.slice(MAX_FILES).map(function(f) { return f.path; });
             deleted += safeBatchDelete(toDelete);

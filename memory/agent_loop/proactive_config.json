@@ -1,0 +1,105 @@
+{
+  "name": "proactive-mode",
+  "version": "1.0.0",
+  "description": "OpenClaw Proactive Mode - 基于 Claude Code 架构",
+  "enabled": true,
+  "proactive_triggers": {
+    "file_change": {
+      "description": "文件变化时主动建议",
+      "enabled": true,
+      "watch_patterns": ["*.js", "*.ts", "*.py", "*.sh", "*.md", "*.json"],
+      "suggestion_types": ["refactor", "test", "lint", "document"],
+      "cooldown_minutes": 5
+    },
+    "code_pattern": {
+      "description": "检测到代码模式时主动建议",
+      "enabled": true,
+      "patterns": {
+        "todo_comment": {
+          "regex": "TODO|FIXME|XXX|HACK",
+          "suggestion": "检测到待办事项，是否创建任务？"
+        },
+        "hardcoded_value": {
+          "regex": "(password|secret|key|token)\s*=\s*['\"][^'\"]+['\"]",
+          "suggestion": "检测到硬编码敏感信息，建议使用环境变量"
+        },
+        "console_log": {
+          "regex": "console\.(log|warn|error)",
+          "suggestion": "检测到调试日志，生产环境建议移除"
+        },
+        "empty_catch": {
+          "regex": "catch\s*\([^)]*\)\s*\{\s*\}",
+          "suggestion": "检测到空 catch 块，建议添加错误处理"
+        }
+      }
+    },
+    "time_based": {
+      "description": "基于时间的主动建议",
+      "enabled": true,
+      "schedules": [
+        {
+          "time": "09:00",
+          "day": "weekday",
+          "suggestion": "早上好！查看今日待办事项？"
+        },
+        {
+          "time": "18:00",
+          "day": "weekday",
+          "suggestion": "下班时间到了，需要备份今日工作吗？"
+        }
+      ]
+    },
+    "system_state": {
+      "description": "系统状态变化时主动建议",
+      "enabled": true,
+      "conditions": {
+        "disk_full": {
+          "threshold": 85,
+          "suggestion": "磁盘空间不足，建议清理日志文件"
+        },
+        "memory_high": {
+          "threshold": 80,
+          "suggestion": "内存使用率较高，建议重启服务"
+        },
+        "long_running_task": {
+          "threshold": 3600,
+          "suggestion": "检测到长时间运行的任务，需要检查状态吗？"
+        }
+      }
+    },
+    "user_behavior": {
+      "description": "基于用户行为的主动建议",
+      "enabled": true,
+      "patterns": {
+        "repetitive_action": {
+          "count": 3,
+          "timeframe_minutes": 10,
+          "suggestion": "检测到重复操作，建议创建自动化脚本"
+        },
+        "frequent_command": {
+          "commands": ["git status", "ls", "pwd"],
+          "suggestion": "您经常使用这些命令，建议创建别名？"
+        }
+      }
+    }
+  },
+  "suggestion_engine": {
+    "max_suggestions_per_hour": 5,
+    "min_confidence": 0.7,
+    "cooldown_seconds": 300,
+    "learning_enabled": true,
+    "user_feedback_weight": 0.3
+  },
+  "notification": {
+    "channels": ["terminal", "desktop", "wecom"],
+    "priority_levels": {
+      "low": {"notify": false, "log": true},
+      "medium": {"notify": true, "log": true, "silent": true},
+      "high": {"notify": true, "log": true, "silent": false}
+    }
+  },
+  "llm_prompts": {
+    "analyze_context": "分析以下上下文，判断是否有主动建议的机会:\n\n用户最近操作:\n{recent_actions}\n\n当前工作状态:\n{work_context}\n\n请判断:\n1. 是否有可优化的工作模式\n2. 是否有潜在的问题需要提醒\n3. 是否有可以自动化的地方\n\n以 JSON 返回建议列表",
+    "generate_suggestion": "基于以下分析结果，生成一个自然的建议:\n\n分析: {analysis}\n\n要求:\n1. 语气友好、不打扰\n2. 具体说明建议内容\n3. 提供执行选项\n\n返回建议文本"
+  }
+}

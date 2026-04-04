@@ -105,8 +105,11 @@ async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
   const isLoop = args.includes('--loop') || args.includes('--mad-dog');
+  const isVerbose = args.includes('--verbose') || args.includes('-v') ||
+    String(process.env.EVOLVER_VERBOSE || '').toLowerCase() === 'true';
+  if (isVerbose) process.env.EVOLVER_VERBOSE = 'true';
 
-  if (command === 'run' || command === '/evolve' || isLoop) {
+  if (!command || command === 'run' || command === '/evolve' || isLoop) {
     if (isLoop) {
         const originalLog = console.log;
         const originalWarn = console.warn;
@@ -117,7 +120,7 @@ async function main() {
         console.error = (...args) => { originalError.call(console, ts(), ...args); };
     }
 
-    console.log('Starting capability evolver...');
+    console.log('Starting evolver...');
     
     if (isLoop) {
         // Internal daemon loop (no wrapper required).
@@ -130,7 +133,7 @@ async function main() {
         if (!process.env.EVOLVE_BRIDGE) {
           process.env.EVOLVE_BRIDGE = 'false';
         }
-        console.log(`Loop mode enabled (internal daemon, bridge=${process.env.EVOLVE_BRIDGE}).`);
+        console.log(`Loop mode enabled (internal daemon, bridge=${process.env.EVOLVE_BRIDGE}, verbose=${isVerbose}).`);
 
         const { getEvolutionDir } = require('./src/gep/paths');
         const solidifyStatePath = path.join(getEvolutionDir(), 'evolution_solidify_state.json');
@@ -199,6 +202,31 @@ async function main() {
             currentSleepMs = minSleepMs;
           }
 
+          // OMLS-inspired idle scheduling: adjust sleep and trigger aggressive
+          // operations (distillation, reflection) during detected idle windows.
+          let omlsMultiplier = 1;
+          try {
+            const { getScheduleRecommendation } = require('./src/gep/idleScheduler');
+            const schedule = getScheduleRecommendation();
+            if (schedule.enabled && schedule.sleep_multiplier > 0) {
+              omlsMultiplier = schedule.sleep_multiplier;
+              if (schedule.should_distill) {
+                try {
+                  const { shouldDistillFromFailures: shouldDF, autoDistillFromFailures: autoDF } = require('./src/gep/skillDistiller');
+                  if (shouldDF()) {
+                    const dfResult = autoDF();
+                    if (dfResult && dfResult.ok) {
+                      console.log('[OMLS] Idle-window failure distillation: ' + dfResult.gene.id);
+                    }
+                  }
+                } catch (e) {}
+              }
+              if (isVerbose && schedule.idle_seconds >= 0) {
+                console.log(`[OMLS] idle=${schedule.idle_seconds}s intensity=${schedule.intensity} multiplier=${omlsMultiplier}`);
+              }
+            }
+          } catch (e) {}
+
           // Suicide check (memory leak protection)
           if (suicideEnabled) {
             const memMb = process.memoryUsage().rss / 1024 / 1024;
@@ -226,17 +254,22 @@ async function main() {
             const st1 = readJsonSafe(solidifyStatePath);
             const lastSignals = st1 && st1.last_run && Array.isArray(st1.last_run.signals) ? st1.last_run.signals : [];
             if (lastSignals.includes('force_steady_state')) {
-              saturationMultiplier = 10;
-              console.log('[Daemon] Saturation detected. Entering steady-state mode (10x sleep).');
+              saturationMultiplier = 4;
+              console.log('[Daemon] Saturation detected. Entering steady-state mode (4x sleep).');
             } else if (lastSignals.includes('evolution_saturation')) {
-              saturationMultiplier = 5;
-              console.log('[Daemon] Approaching saturation. Reducing evolution frequency (5x sleep).');
+              saturationMultiplier = 2;
+              console.log('[Daemon] Approaching saturation. Reducing evolution frequency (2x sleep).');
             }
           } catch (e) {}
 
           // Jitter to avoid lockstep restarts.
           const jitter = Math.floor(Math.random() * 250);
-          await sleepMs((currentSleepMs + jitter) * saturationMultiplier);
+          const totalSleepMs = Math.max(minSleepMs, (currentSleepMs + jitter) * saturationMultiplier * omlsMultiplier);
+          if (isVerbose) {
+            const memMb = (process.memoryUsage().rss / 1024 / 1024).toFixed(1);
+            console.log(`[Verbose] cycle=${cycleCount} ok=${ok} dt=${dt}ms sleep=${totalSleepMs}ms (base=${currentSleepMs} jitter=${jitter} sat=${saturationMultiplier}x) rss=${memMb}MB signals=[${(function() { try { var st = readJsonSafe(solidifyStatePath); return st && st.last_run && Array.isArray(st.last_run.signals) ? st.last_run.signals.join(',') : ''; } catch(e) { return ''; } })()}]`);
+          }
+          await sleepMs(totalSleepMs);
 
           } catch (loopErr) {
             console.error('[Daemon] Unexpected loop error (recovering): ' + (loopErr && loopErr.message ? loopErr.message : String(loopErr)));
@@ -255,8 +288,8 @@ async function main() {
 
     // Post-run hint
     console.log('\n' + '=======================================================');
-    console.log('Capability evolver finished. If you use this project, consider starring the upstream repository.');
-    console.log('Upstream: https://github.com/autogame-17/capability-evolver');
+    console.log('Evolver finished. If you use this project, consider starring the upstream repository.');
+    console.log('Upstream: https://github.com/EvoMap/evolver');
     console.log('=======================================================\n');
     
   } else if (command === 'solidify') {
@@ -282,7 +315,7 @@ async function main() {
 
       if (res && res.ok && !dryRun) {
         try {
-          const { shouldDistill, prepareDistillation } = require('./src/gep/skillDistiller');
+          const { shouldDistill, prepareDistillation, autoDistill, shouldDistillFromFailures, autoDistillFromFailures } = require('./src/gep/skillDistiller');
           const { readStateForSolidify } = require('./src/gep/solidify');
           const solidifyState = readStateForSolidify();
           const count = solidifyState.solidify_count || 0;
@@ -290,16 +323,28 @@ async function main() {
           const autoTrigger = count > 0 && count % autoDistillInterval === 0;
 
           if (autoTrigger || shouldDistill()) {
-            const dr = prepareDistillation();
-            if (dr && dr.ok && dr.promptPath) {
-              const trigger = autoTrigger ? `auto (every ${autoDistillInterval} solidifies, count=${count})` : 'threshold';
-              console.log('\n[DISTILL_REQUEST]');
-              console.log(`Distillation triggered: ${trigger}`);
-              console.log('Read the prompt file, process it with your LLM,');
-              console.log('save the LLM response to a file, then run:');
-              console.log('  node index.js distill --response-file=<path_to_llm_response>');
-              console.log('Prompt file: ' + dr.promptPath);
-              console.log('[/DISTILL_REQUEST]');
+            const auto = autoDistill();
+            if (auto && auto.ok && auto.gene) {
+              console.log('[Distiller] Auto-distilled gene: ' + auto.gene.id);
+            } else {
+              const dr = prepareDistillation();
+              if (dr && dr.ok && dr.promptPath) {
+                const trigger = autoTrigger ? `auto (every ${autoDistillInterval} solidifies, count=${count})` : 'threshold';
+                console.log('\n[DISTILL_REQUEST]');
+                console.log(`Distillation triggered: ${trigger}`);
+                console.log('Read the prompt file, process it with your LLM,');
+                console.log('save the LLM response to a file, then run:');
+                console.log('  node index.js distill --response-file=<path_to_llm_response>');
+                console.log('Prompt file: ' + dr.promptPath);
+                console.log('[/DISTILL_REQUEST]');
+              }
+            }
+          }
+
+          if (shouldDistillFromFailures()) {
+            const failureResult = autoDistillFromFailures();
+            if (failureResult && failureResult.ok && failureResult.gene) {
+              console.log('[Distiller] Repair gene distilled from failures: ' + failureResult.gene.id);
             }
           }
         } catch (e) {
@@ -454,7 +499,9 @@ async function main() {
           const s = readJsonSafe(sp);
           if (s && s.last_run) {
             s.last_solidify = { run_id: s.last_run.run_id, rejected: true, timestamp: new Date().toISOString() };
-            fs.writeFileSync(sp, JSON.stringify(s, null, 2));
+            const tmpReject = `${sp}.tmp`;
+            fs.writeFileSync(tmpReject, JSON.stringify(s, null, 2) + '\n', 'utf8');
+            fs.renameSync(tmpReject, sp);
           }
         }
         console.log('[Review] Changes rolled back.');
@@ -526,12 +573,38 @@ async function main() {
 
       if (!resp.ok) {
         const body = await resp.text().catch(() => '');
-        let msg = 'HTTP ' + resp.status;
-        try { const j = JSON.parse(body); msg = j.error || j.message || msg; } catch (_) {}
-        console.error('[fetch] Download failed: ' + msg);
-        if (resp.status === 404) console.error('  Skill not found or not publicly available.');
-        if (resp.status === 401) console.error('  Authentication failed. Try deleting ~/.evomap/node_secret and retry.');
-        if (resp.status === 402) console.error('  Insufficient credits.');
+        let errorDetail = '';
+        let errorCode = '';
+        try {
+          const j = JSON.parse(body);
+          errorDetail = j.detail || j.message || j.error || '';
+          errorCode = j.error || j.code || '';
+        } catch (_) {
+          errorDetail = body ? body.slice(0, 500) : '';
+        }
+        console.error('[fetch] Download failed (HTTP ' + resp.status + ')' + (errorCode ? ': ' + errorCode : ''));
+        if (errorDetail && errorDetail !== errorCode) {
+          console.error('  Detail: ' + errorDetail);
+        }
+        if (resp.status === 404) {
+          console.error('  Skill "' + skillId + '" not found or not publicly available.');
+          console.error('  Check the skill ID spelling, or browse available skills at https://evomap.ai');
+        } else if (resp.status === 401 || resp.status === 403) {
+          console.error('  Authentication failed. Try:');
+          console.error('    1. Delete ~/.evomap/node_secret and retry');
+          console.error('    2. Re-register: set A2A_NODE_ID and run fetch again');
+        } else if (resp.status === 402) {
+          console.error('  Insufficient credits. Check your balance at https://evomap.ai');
+        } else if (resp.status >= 500) {
+          console.error('  Server error. The Hub may be temporarily unavailable.');
+          console.error('  Try again in a few minutes. If the issue persists, report at:');
+          console.error('    https://github.com/autogame-17/evolver/issues');
+        }
+        if (isVerbose) {
+          console.error('[Verbose] Endpoint: ' + endpoint);
+          console.error('[Verbose] Status: ' + resp.status + ' ' + (resp.statusText || ''));
+          console.error('[Verbose] Response body: ' + (body || '(empty)').slice(0, 2000));
+        }
         process.exit(1);
       }
 
@@ -566,9 +639,12 @@ async function main() {
       }
     } catch (error) {
       if (error && error.name === 'TimeoutError') {
-        console.error('[fetch] Request timed out. Check your network and A2A_HUB_URL.');
+        console.error('[fetch] Request timed out (30s). Check your network and A2A_HUB_URL.');
+        console.error('  Hub URL: ' + hubUrl);
       } else {
-        console.error('[fetch] Error:', error && error.message || error);
+        console.error('[fetch] Error: ' + (error && error.message || error));
+        if (error && error.cause) console.error('  Cause: ' + (error.cause.message || error.cause.code || error.cause));
+        if (isVerbose && error && error.stack) console.error('[Verbose] Stack:\n' + error.stack);
       }
       process.exit(1);
     }
