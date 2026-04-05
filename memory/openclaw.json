@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.28",
-    "lastTouchedAt": "2026-04-02T20:56:58.999Z"
+    "lastTouchedAt": "2026-04-05T11:25:13.137Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-31T04:13:08.066Z",
@@ -35,42 +35,140 @@
           {
             "id": "tc-code-latest",
             "name": "自动",
+            "api": "openai-completions",
+            "reasoning": false,
             "input": [
               "text",
               "image"
-            ]
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "hunyuan-2.0-instruct",
-            "name": "Tencent HY 2.0 Instruct"
+            "name": "Tencent HY 2.0 Instruct",
+            "api": "openai-completions",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "hunyuan-2.0-thinking",
-            "name": "Tencent HY 2.0 Think"
+            "name": "Tencent HY 2.0 Think",
+            "api": "openai-completions",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "hunyuan-t1",
-            "name": "Hunyuan-T1"
+            "name": "Hunyuan-T1",
+            "api": "openai-completions",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "hunyuan-turbos",
-            "name": "Hunyuan-TurboS"
+            "name": "Hunyuan-TurboS",
+            "api": "openai-completions",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "minimax-m2.5",
-            "name": "MiniMax-M2.5"
+            "name": "MiniMax-M2.5",
+            "api": "openai-completions",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "kimi-k2.5",
             "name": "Kimi-K2.5",
+            "api": "openai-completions",
+            "reasoning": false,
             "input": [
               "text",
               "image"
-            ]
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "glm-5",
-            "name": "GLM-5"
+            "name": "GLM-5",
+            "api": "openai-completions",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           }
         ]
       },
@@ -81,59 +179,241 @@
         "models": [
           {
             "id": "gemini-3.1-pro-preview",
-            "name": "Gemini 3.1 Pro Preview"
+            "name": "Gemini 3.1 Pro Preview",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-3.1-flash-preview",
-            "name": "Gemini 3.1 Flash Preview"
+            "name": "Gemini 3.1 Flash Preview",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-3.1-flash-lite-preview",
-            "name": "Gemini 3.1 Flash Lite Preview"
+            "name": "Gemini 3.1 Flash Lite Preview",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-3-pro-preview",
-            "name": "Gemini 3 Pro Preview"
+            "name": "Gemini 3 Pro Preview",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-3-flash-preview",
-            "name": "Gemini 3 Flash Preview"
+            "name": "Gemini 3 Flash Preview",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-2.5-pro",
-            "name": "Gemini 2.5 Pro"
+            "name": "Gemini 2.5 Pro",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-2.5-flash",
-            "name": "Gemini 2.5 Flash"
+            "name": "Gemini 2.5 Flash",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-2.5-flash-lite",
-            "name": "Gemini 2.5 Flash Lite"
+            "name": "Gemini 2.5 Flash Lite",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-2.0-flash",
-            "name": "Gemini 2.0 Flash"
+            "name": "Gemini 2.0 Flash",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-2.0-pro",
-            "name": "Gemini 2.0 Pro"
+            "name": "Gemini 2.0 Pro",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-1.5-flash",
-            "name": "Gemini 1.5 Flash"
+            "name": "Gemini 1.5 Flash",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-1.5-pro",
-            "name": "Gemini 1.5 Pro"
+            "name": "Gemini 1.5 Pro",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-flash-latest",
-            "name": "Gemini Flash Latest"
+            "name": "Gemini Flash Latest",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           },
           {
             "id": "gemini-pro-latest",
-            "name": "Gemini Pro Latest"
+            "name": "Gemini Pro Latest",
+            "api": "google-generative-ai",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
           }
         ]
       }
@@ -147,6 +427,10 @@
       "workspace": "/root/.openclaw/workspace",
       "compaction": {
         "mode": "safeguard"
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
       },
       "sandbox": {
         "browser": {
@@ -216,7 +500,7 @@
   "gateway": {
     "port": 38768,
     "mode": "local",
-    "bind": "loopback",
+    "bind": "lan",
     "controlUi": {
       "basePath": "/yaylsi",
       "allowedOrigins": [
@@ -273,12 +557,7 @@
         "enabled": true,
         "config": {}
       },
-      "@openclaw/tavily-plugin": {
-        "enabled": true
-      },
-      "@openclaw/duckduckgo-plugin": {
-        "enabled": true
-      }
+
     },
     "installs": {
       "memory-tdai": {

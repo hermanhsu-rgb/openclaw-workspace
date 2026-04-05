@@ -34,3 +34,7 @@
 [Sat Apr  4 01:42:01 PM CST 2026] ⚠️ 发送失败，请检查 OpenClaw Gateway 是否运行
 [Sat Apr  4 01:42:01 PM CST 2026] ✅ weather 消息已发送
 ---
+[Sun Apr  5 06:07:09 PM CST 2026] 处理消息文件: /root/.openclaw/proactive_messages/weather_1775383629.txt
+[Sun Apr  5 06:07:09 PM CST 2026] 发送 weather 消息到企业微信
+Not Found[Sun Apr  5 06:07:09 PM CST 2026] ✅ weather 消息已发送
+---

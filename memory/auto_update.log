@@ -267,3 +267,48 @@ web-tools-guide
 Mem:           1.9Gi       1.1Gi       145Mi       5.7Mi       904Mi       853Mi
 [Sun Apr  5 03:00:37 AM CST 2026] ===== 自动更新完成 =====
 
+[Mon Apr  6 03:00:01 AM CST 2026] ===== 开始自动更新 =====
+[Mon Apr  6 03:00:01 AM CST 2026] 1. 备份当前配置...
+[Mon Apr  6 03:00:02 AM CST 2026] 备份完成: /root/.openclaw/backups/20260406_030001
+[Mon Apr  6 03:00:02 AM CST 2026] 2. 检查 OpenClaw 更新...
+OpenClaw 2026.3.28 (f9b1079)
+[Mon Apr  6 03:00:02 AM CST 2026] 3. 检查插件更新...
+[Mon Apr  6 03:00:02 AM CST 2026] 检查 adp-openclaw...
+[Mon Apr  6 03:00:02 AM CST 2026] 检查 ddingtalk...
+[Mon Apr  6 03:00:02 AM CST 2026] 检查 lightclawbot...
+[Mon Apr  6 03:00:02 AM CST 2026] 检查 memory-tdai...
+[Mon Apr  6 03:00:02 AM CST 2026] 检查 openclaw-plugin-yuanbao...
+[Mon Apr  6 03:00:02 AM CST 2026] 检查 openclaw-qqbot...
+[Mon Apr  6 03:00:02 AM CST 2026] 检查 openclaw-weixin...
+[Mon Apr  6 03:00:02 AM CST 2026] 检查 wecom...
+[Mon Apr  6 03:00:02 AM CST 2026] 4. 检查 skills...
+admapix
+agent-browser-clawdbot
+capability-evolver
+find-skills
+find-skills-skill
+github
+humanizer
+ima-skills
+memory-hygiene
+nano-banana-pro
+nano-pdf
+obsidian
+ontology
+openclaw-tavily-search
+playwright-mcp
+self-improving
+skillhub-preference
+skill-vetter
+summarize
+tencentcloud-lighthouse-skill
+tencent-cos-skill
+tencent-docs
+tencent-meeting-skill
+web-tools-guide
+[Mon Apr  6 03:00:02 AM CST 2026] 5. 清理旧备份...
+[Mon Apr  6 03:00:02 AM CST 2026] 6. 系统健康检查...
+/dev/vda2        50G   31G   16G  66% /
+Mem:           1.9Gi       1.1Gi       194Mi       5.7Mi       792Mi       789Mi
+[Mon Apr  6 03:00:02 AM CST 2026] ===== 自动更新完成 =====
+

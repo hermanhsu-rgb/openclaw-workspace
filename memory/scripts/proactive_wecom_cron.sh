@@ -105,7 +105,7 @@ esac
 # 直接推送到企业微信（通过 OpenClaw Gateway）
 JSON_PAYLOAD=$(printf '{"channel":"wecom","target":"heng-kaihsu","content":%s}' "$(echo "$MESSAGE" | jq -Rs .)")
 
-curl -s -X POST "http://localhost:3000/api/messages/send" \
+curl -s -X POST "http://localhost:38768/api/messages/send" \
     -H "Content-Type: application/json" \
     -d "$JSON_PAYLOAD" > /dev/null 2>&1
 

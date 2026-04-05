@@ -1550,3 +1550,403 @@ ClawHub /api/v1/download failed (429): Rate limit exceeded
 [Sun Apr  5 04:03:30 AM CST 2026] ===== batch2 更新完成 =====
 [Sun Apr  5 04:03:30 AM CST 2026] 本次更新: 0 个 skills
 
+[Mon Apr  6 03:30:01 AM CST 2026] ===== Skills 更新 (batch1) =====
+[Mon Apr  6 03:30:01 AM CST 2026] 🕐 执行第一批更新 (03:30) - 共 11 个 skills
+[Mon Apr  6 03:30:01 AM CST 2026] 检查 admapix...
+[Mon Apr  6 03:30:01 AM CST 2026] 📦 admapix (版本: 1.0.28) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading admapix@1.0.28 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[Mon Apr  6 03:30:10 AM CST 2026] ℹ️ admapix 无更新或更新失败
+[Mon Apr  6 03:30:20 AM CST 2026] 检查 agent-browser-clawdbot...
+[Mon Apr  6 03:30:20 AM CST 2026] 📦 agent-browser-clawdbot (版本: 0.1.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading agent-browser-clawdbot@0.1.0 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[Mon Apr  6 03:30:24 AM CST 2026] ℹ️ agent-browser-clawdbot 无更新或更新失败
+[Mon Apr  6 03:30:34 AM CST 2026] 检查 capability-evolver...
+[Mon Apr  6 03:30:34 AM CST 2026] 📦 capability-evolver (版本: 1.41.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading capability-evolver@1.41.0 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[Mon Apr  6 03:30:38 AM CST 2026] ℹ️ capability-evolver 无更新或更新失败
+[Mon Apr  6 03:30:48 AM CST 2026] 检查 find-skills...
+[Mon Apr  6 03:30:48 AM CST 2026] 检查 find-skills-skill...
+[Mon Apr  6 03:30:49 AM CST 2026] 📦 find-skills-skill (版本: 1.0.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading find-skills-skill@1.0.0 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[Mon Apr  6 03:30:53 AM CST 2026] ℹ️ find-skills-skill 无更新或更新失败
+[Mon Apr  6 03:31:03 AM CST 2026] 检查 github...
+[Mon Apr  6 03:31:03 AM CST 2026] 📦 github (版本: 1.0.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading github@1.0.0 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[Mon Apr  6 03:31:07 AM CST 2026] ℹ️ github 无更新或更新失败
+[Mon Apr  6 03:31:17 AM CST 2026] 检查 humanizer...
+[Mon Apr  6 03:31:17 AM CST 2026] 📦 humanizer (版本: 1.0.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading humanizer@1.0.0 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[Mon Apr  6 03:31:21 AM CST 2026] ℹ️ humanizer 无更新或更新失败
+[Mon Apr  6 03:31:31 AM CST 2026] 检查 ima-skills...
+[Mon Apr  6 03:31:31 AM CST 2026] 📦 ima-skills (版本: 1.1.2) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+ClawHub /api/v1/skills/ima-skills failed (404): Skill not found
+[Mon Apr  6 03:31:34 AM CST 2026] ℹ️ ima-skills 无更新或更新失败
+[Mon Apr  6 03:31:44 AM CST 2026] 检查 memory-hygiene...
+[Mon Apr  6 03:31:44 AM CST 2026] 📦 memory-hygiene (版本: 1.0.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading memory-hygiene@1.0.0 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[Mon Apr  6 03:31:48 AM CST 2026] ℹ️ memory-hygiene 无更新或更新失败
+[Mon Apr  6 03:31:58 AM CST 2026] 检查 nano-banana-pro...
+[Mon Apr  6 03:31:58 AM CST 2026] 📦 nano-banana-pro (版本: 1.0.1) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading nano-banana-pro@1.0.1 from ClawHub…
+Installing to /root/.openclaw/workspace/skills/nano-banana-pro…
+nano-banana-pro already at 1.0.1
+[Mon Apr  6 03:32:03 AM CST 2026] ℹ️ nano-banana-pro 无更新或更新失败
+[Mon Apr  6 03:32:13 AM CST 2026] 检查 nano-pdf...
+[Mon Apr  6 03:32:13 AM CST 2026] 📦 nano-pdf (版本: 1.0.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading nano-pdf@1.0.0 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[Mon Apr  6 03:32:17 AM CST 2026] ℹ️ nano-pdf 无更新或更新失败
+[Mon Apr  6 03:32:27 AM CST 2026] ===== batch1 更新完成 =====
+[Mon Apr  6 03:32:27 AM CST 2026] 本次更新: 0 个 skills
+
+[Mon Apr  6 04:00:01 AM CST 2026] ===== Skills 更新 (batch2) =====
+[Mon Apr  6 04:00:01 AM CST 2026] 🕓 执行第二批更新 (04:00) - 共 13 个 skills
+[Mon Apr  6 04:00:01 AM CST 2026] 检查 obsidian...
+[Mon Apr  6 04:00:01 AM CST 2026] 📦 obsidian (版本: 1.0.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading obsidian@1.0.0 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[Mon Apr  6 04:00:05 AM CST 2026] ℹ️ obsidian 无更新或更新失败
+[Mon Apr  6 04:00:15 AM CST 2026] 检查 ontology...
+[Mon Apr  6 04:00:15 AM CST 2026] 📦 ontology (版本: 1.0.4) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+ClawHub /api/v1/skills/ontology failed (429): Rate limit exceeded
+[Mon Apr  6 04:00:18 AM CST 2026] ℹ️ ontology 无更新或更新失败
+[Mon Apr  6 04:00:28 AM CST 2026] 检查 openclaw-tavily-search...
+[Mon Apr  6 04:00:28 AM CST 2026] 📦 openclaw-tavily-search (版本: 0.1.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+ClawHub /api/v1/skills/openclaw-tavily-search failed (429): Rate limit exceeded
+[Mon Apr  6 04:00:32 AM CST 2026] ℹ️ openclaw-tavily-search 无更新或更新失败
+[Mon Apr  6 04:00:42 AM CST 2026] 检查 playwright-mcp...
+[Mon Apr  6 04:00:42 AM CST 2026] 📦 playwright-mcp (版本: 1.0.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+ClawHub /api/v1/skills/playwright-mcp failed (429): Rate limit exceeded
+[Mon Apr  6 04:00:45 AM CST 2026] ℹ️ playwright-mcp 无更新或更新失败
+[Mon Apr  6 04:00:55 AM CST 2026] 检查 self-improving...
+[Mon Apr  6 04:00:55 AM CST 2026] 📦 self-improving (版本: 1.2.16) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+ClawHub /api/v1/skills/self-improving failed (429): Rate limit exceeded
+[Mon Apr  6 04:00:59 AM CST 2026] ℹ️ self-improving 无更新或更新失败
+[Mon Apr  6 04:01:09 AM CST 2026] 检查 skillhub-preference...
+[Mon Apr  6 04:01:09 AM CST 2026] 检查 skill-vetter...
+[Mon Apr  6 04:01:09 AM CST 2026] 📦 skill-vetter (版本: 1.0.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading skill-vetter@1.0.0 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[Mon Apr  6 04:01:13 AM CST 2026] ℹ️ skill-vetter 无更新或更新失败
+[Mon Apr  6 04:01:23 AM CST 2026] 检查 summarize...
+[Mon Apr  6 04:01:23 AM CST 2026] 📦 summarize (版本: 1.0.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+ClawHub /api/v1/skills/summarize failed (429): Rate limit exceeded
+[Mon Apr  6 04:01:26 AM CST 2026] ℹ️ summarize 无更新或更新失败
+[Mon Apr  6 04:01:36 AM CST 2026] 检查 tencentcloud-lighthouse-skill...
+[Mon Apr  6 04:01:36 AM CST 2026] 📦 tencentcloud-lighthouse-skill (版本: 1.0.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+ClawHub /api/v1/skills/tencentcloud-lighthouse-skill failed (429): Rate limit exceeded
+[Mon Apr  6 04:01:40 AM CST 2026] ℹ️ tencentcloud-lighthouse-skill 无更新或更新失败
+[Mon Apr  6 04:01:50 AM CST 2026] 检查 tencent-cos-skill...
+[Mon Apr  6 04:01:50 AM CST 2026] 📦 tencent-cos-skill (版本: 1.0.6) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+ClawHub /api/v1/skills/tencent-cos-skill failed (429): Rate limit exceeded
+[Mon Apr  6 04:01:53 AM CST 2026] ℹ️ tencent-cos-skill 无更新或更新失败
+[Mon Apr  6 04:02:03 AM CST 2026] 检查 tencent-docs...
+[Mon Apr  6 04:02:03 AM CST 2026] 📦 tencent-docs (版本: 1.0.22) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+ClawHub /api/v1/skills/tencent-docs failed (429): Rate limit exceeded
+[Mon Apr  6 04:02:07 AM CST 2026] ℹ️ tencent-docs 无更新或更新失败
+[Mon Apr  6 04:02:17 AM CST 2026] 检查 tencent-meeting-skill...
+[Mon Apr  6 04:02:17 AM CST 2026] 📦 tencent-meeting-skill (版本: 1.0.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading tencent-meeting-skill@1.0.5 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[Mon Apr  6 04:02:21 AM CST 2026] ℹ️ tencent-meeting-skill 无更新或更新失败
+[Mon Apr  6 04:02:31 AM CST 2026] 检查 web-tools-guide...
+[Mon Apr  6 04:02:31 AM CST 2026] 📦 web-tools-guide (版本: 1.0.0) - 尝试更新...
+│
+◇  Config warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - plugins.entries.@openclaw/tavily-plugin: plugin not found:           │
+│    @openclaw/tavily-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                      │
+│  - plugins.entries.@openclaw/duckduckgo-plugin: plugin not found:       │
+│    @openclaw/duckduckgo-plugin (stale config entry ignored; remove it   │
+│    from plugins config)                                                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.@openclaw/tavily-plugin: plugin not found: @openclaw/tavily-plugin (stale config entry ignored; remove it from plugins config)
+- plugins.entries.@openclaw/duckduckgo-plugin: plugin not found: @openclaw/duckduckgo-plugin (stale config entry ignored; remove it from plugins config)
+Downloading web-tools-guide@1.0.1 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[Mon Apr  6 04:02:34 AM CST 2026] ℹ️ web-tools-guide 无更新或更新失败
+[Mon Apr  6 04:02:44 AM CST 2026] ===== batch2 更新完成 =====
+[Mon Apr  6 04:02:44 AM CST 2026] 本次更新: 0 个 skills
+
