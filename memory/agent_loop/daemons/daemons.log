@@ -212,3 +212,5 @@
 [2026-04-05 08:02:00] [health_check] [INFO] Skills 数量: 24
 [2026-04-05 08:07:01] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
 [2026-04-05 08:07:01] [health_check] [INFO] Skills 数量: 24
+[2026-04-05 08:12:02] [health_check] [WARNING] Tavily API 连接异常 (状态码: 404)
+[2026-04-05 08:12:02] [health_check] [INFO] Skills 数量: 24
