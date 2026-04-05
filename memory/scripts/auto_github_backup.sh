@@ -48,14 +48,22 @@ sync_files() {
 configure_remote() {
     cd "$WORKSPACE_DIR"
     
-    if [ -n "$GITHUB_TOKEN" ]; then
+    # 尝试从 .env 文件加载 token
+    if [ -f "${OPENCLAW_DIR}/.env" ]; then
+        source "${OPENCLAW_DIR}/.env" 2>/dev/null || true
+    fi
+    
+    # 使用 GH_TOKEN 或 GITHUB_TOKEN
+    TOKEN="${GH_TOKEN:-$GITHUB_TOKEN}"
+    
+    if [ -n "$TOKEN" ]; then
         # 使用 Token 认证
-        git remote set-url origin "https://${GITHUB_TOKEN}@github.com/${GITHUB_REPO}.git" 2>/dev/null || true
+        git remote set-url origin "https://${TOKEN}@github.com/${GITHUB_REPO}.git" 2>/dev/null || true
         log "✓ 已配置 GitHub Token 认证"
     else
         # 检查是否已配置其他认证方式
         if ! git ls-remote origin > /dev/null 2>&1; then
-            log "⚠ GITHUB_TOKEN 未设置，将仅提交到本地仓库"
+            log "⚠ GitHub Token 未设置，将仅提交到本地仓库"
             return 1
         fi
     fi
