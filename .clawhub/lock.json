@@ -92,6 +92,14 @@
     "playwright-mcp": {
       "version": "1.0.0",
       "installedAt": 1775148349374
+    },
+    "wecom": {
+      "version": "1.0.2",
+      "installedAt": 1775433065267
+    },
+    "auto-updater": {
+      "version": "1.0.0",
+      "installedAt": 1775514257494
     }
   }
 }

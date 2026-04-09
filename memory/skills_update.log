@@ -1950,3 +1950,13 @@ ClawHub /api/v1/download failed (429): Rate limit exceeded
 [Mon Apr  6 04:02:44 AM CST 2026] ===== batch2 更新完成 =====
 [Mon Apr  6 04:02:44 AM CST 2026] 本次更新: 0 个 skills
 
+[Tue Apr  7 03:30:01 AM CST 2026] ===== Skills 智能更新 (batch1) =====
+[Tue Apr  7 03:30:01 AM CST 2026] 动态延迟: 30s
+[Tue Apr  7 03:30:09 AM CST 2026] ❌ github 触发速率限制 (429)
+[Tue Apr  7 03:30:09 AM CST 2026] ⏹️ 中断更新：已触发速率限制
+[Tue Apr  7 03:30:09 AM CST 2026] ===== batch1 更新完成 =====
+[Tue Apr  7 03:30:09 AM CST 2026] 成功: 0/1, 失败: 1
+
+[Tue Apr  7 03:30:10 AM CST 2026] ⚠️ 获取 access_token 失败，跳过推送
+[Tue Apr  7 04:00:01 AM CST 2026] ===== Skills 智能更新 (batch2) =====
+[Tue Apr  7 04:00:01 AM CST 2026] ⏸️ 跳过更新：距上次429仅 1792s，避免再次触发限制

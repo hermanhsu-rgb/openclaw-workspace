@@ -1,0 +1,169 @@
+[2026-04-07 06:27:15] ===== 官方 Auto-Updater 开始 =====
+[2026-04-07 06:27:15] OpenClaw 当前版本: OpenClaw 2026.3.28 (f9b1079)
+[2026-04-07 06:27:15] 正在更新 OpenClaw...
+Progress: resolved 0, reused 1, downloaded 0, added 0
+Progress: resolved 59, reused 16, downloaded 0, added 0
+Progress: resolved 139, reused 45, downloaded 0, added 0
+Progress: resolved 195, reused 97, downloaded 3, added 0
+Progress: resolved 219, reused 97, downloaded 3, added 0
+Progress: resolved 249, reused 97, downloaded 3, added 0
+Progress: resolved 272, reused 97, downloaded 3, added 0
+Progress: resolved 310, reused 97, downloaded 3, added 0
+Progress: resolved 358, reused 97, downloaded 3, added 0
+Progress: resolved 397, reused 97, downloaded 3, added 0
+Progress: resolved 439, reused 97, downloaded 3, added 0
+Progress: resolved 491, reused 97, downloaded 3, added 0
+Progress: resolved 532, reused 97, downloaded 3, added 0
+Progress: resolved 537, reused 97, downloaded 3, added 0
+Progress: resolved 537, reused 125, downloaded 5, added 0
+Progress: resolved 537, reused 125, downloaded 6, added 0
+Progress: resolved 539, reused 147, downloaded 12, added 0
+Progress: resolved 540, reused 436, downloaded 17, added 0
+ WARN  1 deprecated subdependencies found: node-domexception@1.0.0
+Packages: +79 -72
++++++++++++++++++++++++++++++++++++++++++---------------------------------------
+Progress: resolved 541, reused 437, downloaded 53, added 0
+Progress: resolved 541, reused 437, downloaded 54, added 0
+Progress: resolved 541, reused 437, downloaded 54, added 1
+Progress: resolved 541, reused 437, downloaded 54, added 6
+Progress: resolved 541, reused 437, downloaded 54, added 12
+Progress: resolved 541, reused 437, downloaded 54, added 15
+Progress: resolved 541, reused 437, downloaded 54, added 64
+Progress: resolved 541, reused 437, downloaded 54, added 78
+Progress: resolved 541, reused 437, downloaded 54, added 79, done
+
+/root/.local/share/pnpm/global/5:
+- openclaw 2026.3.28
++ openclaw 2026.4.5
+
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @matrix-org/matrix-sdk-crypto-nodejs@0.4.0,         │
+│   agent-browser@0.23.3, koffi@2.15.5, openclaw@2026.4.5, protobufjs@7.5.4,   │
+│   sharp@0.34.5.                                                              │
+│   Run "pnpm approve-builds -g" to pick which dependencies should be          │
+│   allowed to run scripts.                                                    │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 31.9s using pnpm v10.33.0
+[2026-04-07 06:27:47] 运行 doctor 检查...
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+██░▄▄▄░██░▄▄░██░▄▄▄██░▀██░██░▄▄▀██░████░▄▄▀██░███░██
+██░███░██░▀▀░██░▄▄▄██░█░█░██░█████░████░▀▀░██░█░█░██
+██░▀▀▀░██░█████░▀▀▀██░██▄░██░▀▀▄██░▀▀░█░██░██▄▀▄▀▄██
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                  🦞 OPENCLAW 🦞                    
+ 
+┌  OpenClaw doctor
+│
+◇  Startup optimization ─────────────────────────────────────────────────╮
+│                                                                        │
+│  - NODE_COMPILE_CACHE is not set; repeated CLI runs can be slower on   │
+│    small hosts (Pi/VM).                                                │
+│  - OPENCLAW_NO_RESPAWN is not set to 1; set it to avoid extra startup  │
+│    overhead from self-respawn.                                         │
+│  - Suggested env for low-power hosts:                                  │
+│    export NODE_COMPILE_CACHE=/var/tmp/openclaw-compile-cache           │
+│    mkdir -p /var/tmp/openclaw-compile-cache                            │
+│    export OPENCLAW_NO_RESPAWN=1                                        │
+│                                                                        │
+├────────────────────────────────────────────────────────────────────────╯
+│
+◇  Doctor changes ───────────────────────────────────────────────╮
+│                                                                │
+│  - channels.lightclawbot.allowFrom: set to ["*"] (required by  │
+│    dmPolicy="open")                                            │
+│                                                                │
+├────────────────────────────────────────────────────────────────╯
+│
+◇  Doctor warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - channels.telegram: Telegram is in first-time setup mode. DMs use     │
+│    pairing mode, so new senders must start a chat and be approved       │
+│    before regular messages are accepted. Group messages stay blocked    │
+│    until you add allowed chats under channels.telegram.groups (and      │
+│    optional sender IDs under channels.telegram.groupAllowFrom), or set  │
+│    channels.telegram.groupPolicy to "open" if you want broad group      │
+│    access.                                                              │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+│
+◇  Session locks ──────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  - Found 1 session lock file.                                                │
+│  - ~/.openclaw/agents/main/sessions/0edf566b-63c4-465e-8152-42d218a35d89.js  │
+│  onl.lock                                                                    │
+│    pid=1566970 (alive) age=1m33s stale=no                                    │
+│                                                                              │
+├──────────────────────────────────────────────────────────────────────────────╯
+│
+◇  Gateway service config ─────────────────────────────────────────────────╮
+│                                                                          │
+│  - Gateway service PATH includes version managers or package managers;   │
+│    recommend a minimal PATH. (/root/.nvm/versions/node/v22.22.2/bin)     │
+│  - Gateway service uses Node from a version manager; it can break after  │
+│    upgrades. (/root/.nvm/versions/node/v22.22.2/bin/node)                │
+│                                                                          │
+├──────────────────────────────────────────────────────────────────────────╯
+[2026-04-08 04:00:01] ===== 官方 Auto-Updater 开始 =====
+[2026-04-08 04:00:01] OpenClaw 当前版本: OpenClaw 2026.4.5 (3e72c03)
+[2026-04-08 04:00:01] 正在更新 OpenClaw...
+[2026-04-08 04:00:02] 运行 doctor 检查...
+[openclaw] Failed to start CLI: Error: Cannot find module '@buape/carbon'
+Require stack:
+- /root/.local/share/pnpm/global/5/.pnpm/openclaw@2026.4.5_@napi-rs+canvas@0.1.97/node_modules/openclaw/dist/ui-7MjYF8PY.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    at Function.resolve (node:internal/modules/helpers:157:19)
+    at jitiResolve (/root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:148703)
+    at jitiRequire (/root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:150290)
+    at /root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:157987
+    at /root/.local/share/pnpm/global/5/.pnpm/openclaw@2026.4.5_@napi-rs+canvas@0.1.97/node_modules/openclaw/dist/ui-7MjYF8PY.js:14:15
+    at eval_evalModule (/root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:155533)
+    at jitiRequire (/root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:150967)
+    at /root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:157987
+    at /root/.local/share/pnpm/global/5/.pnpm/openclaw@2026.4.5_@napi-rs+canvas@0.1.97/node_modules/openclaw/dist/channel-D0kY3Gd-.js:29:19
+[2026-04-08 04:00:08] OpenClaw 更新后版本: OpenClaw 2026.4.5 (3e72c03)
+[2026-04-08 04:00:08] 正在更新 Skills...
+Config invalid
+File: ~/.openclaw/openclaw.json
+Problem:
+  - <root>: read failed: Error: Cannot find module '@buape/carbon'\nRequire stack:\n- /root/.local/share/pnpm/global/5/.pnpm/openclaw@2026.4.5_@napi-rs+canvas@0.1.97/node_modules/openclaw/dist/ui-7MjYF8PY.js
+
+Run: openclaw doctor --fix
+[2026-04-08 04:00:16] Skills 更新完成
+[2026-04-08 04:00:16] ===== 生成更新报告 =====
+[2026-04-08 04:00:16] 检测到企业微信配置: CORPID=wwd53ab7d9..., AGENTID=1000014
+[2026-04-08 04:00:16] ⚠️ 获取 access_token 失败，跳过推送
+[2026-04-08 04:00:16] ===== 官方 Auto-Updater 完成 =====
+
+[2026-04-09 04:00:03] ===== 官方 Auto-Updater 开始 =====
+[2026-04-09 04:00:03] OpenClaw 当前版本: OpenClaw 2026.4.5 (3e72c03)
+[2026-04-09 04:00:03] 正在更新 OpenClaw...
+[2026-04-09 04:00:03] 运行 doctor 检查...
+[openclaw] Failed to start CLI: Error: Cannot find module '@buape/carbon'
+Require stack:
+- /root/.local/share/pnpm/global/5/.pnpm/openclaw@2026.4.5_@napi-rs+canvas@0.1.97/node_modules/openclaw/dist/ui-7MjYF8PY.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    at Function.resolve (node:internal/modules/helpers:157:19)
+    at jitiResolve (/root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:148703)
+    at jitiRequire (/root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:150290)
+    at /root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:157987
+    at /root/.local/share/pnpm/global/5/.pnpm/openclaw@2026.4.5_@napi-rs+canvas@0.1.97/node_modules/openclaw/dist/ui-7MjYF8PY.js:14:15
+    at eval_evalModule (/root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:155533)
+    at jitiRequire (/root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:150967)
+    at /root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:157987
+    at /root/.local/share/pnpm/global/5/.pnpm/openclaw@2026.4.5_@napi-rs+canvas@0.1.97/node_modules/openclaw/dist/channel-D0kY3Gd-.js:29:19
+[2026-04-09 04:00:14] OpenClaw 更新后版本: OpenClaw 2026.4.5 (3e72c03)
+[2026-04-09 04:00:14] 正在更新 Skills...
+Config invalid
+File: ~/.openclaw/openclaw.json
+Problem:
+  - <root>: read failed: Error: Cannot find module '@buape/carbon'\nRequire stack:\n- /root/.local/share/pnpm/global/5/.pnpm/openclaw@2026.4.5_@napi-rs+canvas@0.1.97/node_modules/openclaw/dist/ui-7MjYF8PY.js
+
+Run: openclaw doctor --fix
+[2026-04-09 04:00:31] Skills 更新完成
+[2026-04-09 04:00:31] ===== 生成更新报告 =====
+[2026-04-09 04:00:31] 检测到企业微信配置: CORPID=wwd53ab7d9..., AGENTID=1000006
+[2026-04-09 04:00:32] 📤 更新报告已推送到企业微信
+[2026-04-09 04:00:32] ===== 官方 Auto-Updater 完成 =====
+
