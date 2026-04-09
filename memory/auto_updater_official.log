@@ -167,3 +167,34 @@ Run: openclaw doctor --fix
 [2026-04-09 04:00:32] 📤 更新报告已推送到企业微信
 [2026-04-09 04:00:32] ===== 官方 Auto-Updater 完成 =====
 
+[2026-04-10 04:00:02] ===== 官方 Auto-Updater 开始 =====
+[2026-04-10 04:00:02] OpenClaw 当前版本: OpenClaw 2026.4.5 (3e72c03)
+[2026-04-10 04:00:02] 正在更新 OpenClaw...
+[2026-04-10 04:00:02] 运行 doctor 检查...
+[openclaw] Failed to start CLI: Error: Cannot find module '@buape/carbon'
+Require stack:
+- /root/.local/share/pnpm/global/5/.pnpm/openclaw@2026.4.5_@napi-rs+canvas@0.1.97/node_modules/openclaw/dist/ui-7MjYF8PY.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    at Function.resolve (node:internal/modules/helpers:157:19)
+    at jitiResolve (/root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:148703)
+    at jitiRequire (/root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:150290)
+    at /root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:157987
+    at /root/.local/share/pnpm/global/5/.pnpm/openclaw@2026.4.5_@napi-rs+canvas@0.1.97/node_modules/openclaw/dist/ui-7MjYF8PY.js:14:15
+    at eval_evalModule (/root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:155533)
+    at jitiRequire (/root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:150967)
+    at /root/.local/share/pnpm/global/5/.pnpm/jiti@2.6.1/node_modules/jiti/dist/jiti.cjs:1:157987
+    at /root/.local/share/pnpm/global/5/.pnpm/openclaw@2026.4.5_@napi-rs+canvas@0.1.97/node_modules/openclaw/dist/channel-D0kY3Gd-.js:29:19
+[2026-04-10 04:00:11] OpenClaw 更新后版本: OpenClaw 2026.4.5 (3e72c03)
+[2026-04-10 04:00:11] 正在更新 Skills...
+Config invalid
+File: ~/.openclaw/openclaw.json
+Problem:
+  - <root>: read failed: Error: Cannot find module '@buape/carbon'\nRequire stack:\n- /root/.local/share/pnpm/global/5/.pnpm/openclaw@2026.4.5_@napi-rs+canvas@0.1.97/node_modules/openclaw/dist/ui-7MjYF8PY.js
+
+Run: openclaw doctor --fix
+[2026-04-10 04:00:24] Skills 更新完成
+[2026-04-10 04:00:24] ===== 生成更新报告 =====
+[2026-04-10 04:00:24] 检测到企业微信配置: CORPID=wwd53ab7d9..., AGENTID=1000006
+[2026-04-10 04:00:25] 📤 更新报告已推送到企业微信
+[2026-04-10 04:00:25] ===== 官方 Auto-Updater 完成 =====
+
