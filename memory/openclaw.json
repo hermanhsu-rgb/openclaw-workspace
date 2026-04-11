@@ -1,28 +1,17 @@
 {
   "meta": {
-    "lastTouchedVersion": "2026.3.28",
-    "lastTouchedAt": "2026-04-05T11:25:13.137Z"
+    "lastTouchedVersion": "2026.4.9",
+    "lastTouchedAt": "2026-04-10T02:27:15.977Z"
   },
+  "memory": {},
   "wizard": {
-    "lastRunAt": "2026-03-31T04:13:08.066Z",
+    "lastRunAt": "2026-04-07T01:11:46.000Z",
     "lastRunVersion": "2026.3.28",
-    "lastRunCommand": "onboard",
+    "lastRunCommand": "doctor",
     "lastRunMode": "local"
   },
   "browser": {
-    "enabled": true,
-    "executablePath": "/root/.cache/ms-playwright/chromium-1208/chrome-linux64/chrome",
-    "noSandbox": true,
-    "defaultProfile": "user",
-    "profiles": {
-      "user": {
-        "cdpUrl": "http://localhost:9222",
-        "userDataDir": "/root/.openclaw/browser-existing-session",
-        "driver": "existing-session",
-        "attachOnly": true,
-        "color": "#4285F4"
-      }
-    }
+    "enabled": false
   },
   "models": {
     "mode": "merge",
@@ -416,6 +405,57 @@
             "maxTokens": 8192
           }
         ]
+      },
+      "qwencode": {
+        "baseUrl": "https://coding.dashscope.aliyuncs.com/v1",
+        "apiKey": "sk-9555ea3206304f109be8dfdc47ab4b0c",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "qwen3.6-plus",
+            "name": "Qwen3.6 Plus",
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "qwen3.5-plus",
+            "name": "Qwen3.5 Plus",
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "qwen3-max-2026-01-23",
+            "name": "Qwen3 Max"
+          },
+          {
+            "id": "qwen3-coder-plus",
+            "name": "Qwen3 Coder Plus"
+          },
+          {
+            "id": "MiniMax-M2.5",
+            "name": "MiniMax M2.5"
+          },
+          {
+            "id": "kimi-k2.5",
+            "name": "Kimi K2.5",
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "glm-5",
+            "name": "GLM-5"
+          },
+          {
+            "id": "glm-4.7",
+            "name": "GLM-4.7"
+          }
+        ]
       }
     }
   },
@@ -483,15 +523,21 @@
       "dmPolicy": "pairing",
       "botToken": "8759301931:AAHhZ_gXgM0Dpv8Swl4nKR4bu_wSBpc-NGw",
       "groupPolicy": "allowlist",
-      "streaming": "partial"
+      "streaming": {
+        "mode": "partial"
+      }
     },
     "lightclawbot": {
       "enabled": true,
       "apiKeys": [
         "heng-kaihsu-key",
-        "915aff0c1a78dc7438c9699c476eba2ee587078d"
+        "915aff0c1a78dc7438c9699c476eba2ee587078d",
+        "f8e718596d0b018ffa3b3dd1fbb3428e95e1c0f9"
       ],
-      "dmPolicy": "open"
+      "dmPolicy": "open",
+      "allowFrom": [
+        "*"
+      ]
     },
     "openclaw-weixin": {
       "accounts": {}
@@ -550,14 +596,15 @@
         "config": {}
       },
       "lightclawbot": {
-        "enabled": true,
-        "config": {}
+        "enabled": true
       },
       "feishu": {
         "enabled": true,
         "config": {}
       },
-
+      "browser": {
+        "enabled": true
+      }
     },
     "installs": {
       "memory-tdai": {
@@ -656,7 +703,7 @@
         "spec": "lightclawbot",
         "installPath": "/root/.openclaw/extensions/lightclawbot",
         "version": "1.1.1",
-        "installedAt": "2026-04-02T15:42:39.000Z"
+        "installedAt": "2026-04-10T02:25:46.000Z"
       }
     }
   }

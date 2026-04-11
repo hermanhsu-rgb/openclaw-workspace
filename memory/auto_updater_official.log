@@ -519,3 +519,78 @@ Session store (main): /root/.openclaw/agents/main/sessions/sessions.json (8 entr
 
 [2026-04-11 04:04:25] OpenClaw 更新后版本: OpenClaw 2026.4.9 (0512059)
 [2026-04-11 04:04:25] 正在更新 Skills...
+[plugins] [adp-openclaw] Plugin register() called
+[plugins] [adp-openclaw] Plugin registration complete
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1775851477375 (2026-04-10T20:04:37.375Z)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1775851477375 (2026-04-10T20:04:37.375Z)
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1775851501808 (2026-04-10T20:05:01.808Z)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1775851501808 (2026-04-10T20:05:01.808Z)
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+Downloading tencent-cos-skill@1.1.6 from ClawHub…
+Downloading skill-vetter@1.0.0 from ClawHub…
+Downloading jpeng-self-improving@1.2.11 from ClawHub…
+Downloading ontology@1.0.4 from ClawHub…
+Downloading self-improving@1.2.16 from ClawHub…
+Downloading humanizer@1.0.0 from ClawHub…
+Downloading obsidian@1.0.0 from ClawHub…
+Downloading admapix@1.0.28 from ClawHub…
+Downloading capability-evolver@1.51.2 from ClawHub…
+Downloading nano-banana-pro@1.0.1 from ClawHub…
+Downloading nano-pdf@1.0.0 from ClawHub…
+Downloading playwright-mcp@1.0.0 from ClawHub…
+Downloading wecom@1.0.3 from ClawHub…
+Downloading auto-updater@1.0.0 from ClawHub…
+ClawHub /api/v1/skills/openclaw-tavily-search failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/summarize failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/memory-hygiene failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/github failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/agent-browser-clawdbot failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/tencentcloud-lighthouse-skill failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/tencent-docs failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/tencent-meeting-skill failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/ima-skills failed (404): Skill not found
+ClawHub /api/v1/skills/web-tools-guide failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/find-skills-skill failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+[2026-04-11 04:05:19] Skills 更新完成
+[2026-04-11 04:05:19] ===== 生成更新报告 =====
+[2026-04-11 04:05:19] 检测到企业微信 Webhook 配置
+[2026-04-11 04:05:19] 📤 更新报告已推送到企业微信
+[2026-04-11 04:05:19] ===== 官方 Auto-Updater 完成 =====
+
