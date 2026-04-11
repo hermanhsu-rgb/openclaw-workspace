@@ -462,7 +462,7 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "tencentcodingplan/kimi-k2.5"
+        "primary": "qwencode/qwen3.6-plus"
       },
       "workspace": "/root/.openclaw/workspace",
       "compaction": {
