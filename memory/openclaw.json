@@ -407,8 +407,8 @@
         ]
       },
       "qwencode": {
-        "baseUrl": "https://coding.dashscope.aliyuncs.com/v1",
-        "apiKey": "sk-9555ea3206304f109be8dfdc47ab4b0c",
+        "baseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "apiKey": "sk-be60c2c6fc4a4ee5bcb574c0413a29d6",
         "api": "openai-completions",
         "models": [
           {
