@@ -1,0 +1,26 @@
+interface:
+  display_name: "Push Notifier"
+  short_description: "Deliver proactive messages via configured channels"
+  default_prompt: "Use $push-notifier to send proactive messages through Telegram, WeChat, or other channels"
+
+capabilities:
+  - Multi-channel delivery (Telegram, WeChat, Feishu)
+  - Message formatting
+  - Delivery confirmation
+  - Fallback routing
+
+execution:
+  type: "script"
+  path: "scripts/push_message.sh"
+
+output:
+  format: "json"
+  includes:
+    - delivery_status
+    - channel_used
+    - timestamp
+
+channels:
+  - telegram
+  - wecom
+  - feishu

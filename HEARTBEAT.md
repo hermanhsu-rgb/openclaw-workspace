@@ -1,7 +1,17 @@
-# HEARTBEAT.md Template
+# HEARTBEAT.md - 主动任务配置
 
-```markdown
-# Keep this file empty (or with only comments) to skip heartbeat API calls.
+## 天气推送（每早 7:00）
+如果距离上次推送超过 24 小时：
+  - 获取上海天气
+  - 推送到 Telegram
 
-# Add tasks below when you want the agent to check something periodically.
-```
+## 系统健康（每 8 小时）
+检查：
+  - 磁盘空间
+  - CPU 使用率
+  - 关键服务状态
+
+## 记忆维护（每 24 小时）
+如果距离上次维护超过 24 小时：
+  - 清理过期记忆
+  - 记录到 memory/YYYY-MM-DD.md

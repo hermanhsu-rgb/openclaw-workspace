@@ -1,0 +1,29 @@
+interface:
+  display_name: "Proactive Scheduler"
+  short_description: "Schedule and trigger proactive agent actions at specific times"
+  default_prompt: "Use $proactive-scheduler to set up timed triggers for agent workflows"
+
+capabilities:
+  - Cron-based scheduling
+  - Time-based triggers (morning, evening, custom)
+  - Gateway API integration
+  - Job persistence and recovery
+
+execution:
+  type: "script"
+  path: "scripts/schedule_trigger.sh"
+
+output:
+  format: "json"
+  includes:
+    - job_id
+    - next_run
+    - status
+
+triggers:
+  morning_weather:
+    schedule: "0 9 * * *"
+    action: "weather-push"
+  evening_reminder:
+    schedule: "0 18 * * *"
+    action: "summary-push"
