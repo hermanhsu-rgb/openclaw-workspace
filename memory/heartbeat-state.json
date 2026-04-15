@@ -1,10 +1,10 @@
 {
   "lastChecks": {
-    "weatherPush": 1776119348,
-    "systemHealth": 1776168740,
-    "memoryMaintenance": 1776119348
+    "weatherPush": 1776206637,
+    "systemHealth": 1776197641,
+    "memoryMaintenance": 1776206637
   },
-  "lastHeartbeat": 1776195837,
+  "lastHeartbeat": 1776213784,
   "userChannel": "telegram",
   "defaultLocation": "上海",
   "weatherPushError": "Telegram chat ID not configured"
