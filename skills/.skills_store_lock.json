@@ -84,6 +84,12 @@
       "zip_url": "https://lightmake.site/api/v1/download?slug=excel-xlsx",
       "source": "skillhub",
       "version": "1.0.2"
+    },
+    "skill-creator": {
+      "name": "Skill Creator",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=skill-creator",
+      "source": "skillhub",
+      "version": "0.1.0"
     }
   }
 }

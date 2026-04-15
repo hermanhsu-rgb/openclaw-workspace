@@ -1,0 +1,8 @@
+[2026-04-15 12:23:01] [WARNING] Token消耗速率: 20862 tokens/分钟\n正常范围: 5000 tokens/分钟\n异常倍数: 4倍
+[2026-04-15 12:40:01] [WARNING] Token消耗速率: 15598 tokens/分钟\n正常范围: 5000 tokens/分钟\n异常倍数: 3倍
+[2026-04-15 12:41:01] [WARNING] Token消耗速率: 11718 tokens/分钟\n正常范围: 5000 tokens/分钟\n异常倍数: 2倍
+[2026-04-15 12:42:01] [WARNING] Token消耗速率: 10025 tokens/分钟\n正常范围: 5000 tokens/分钟\n异常倍数: 2倍
+[2026-04-15 12:46:01] [WARNING] Token消耗速率: 15433 tokens/分钟\n正常范围: 5000 tokens/分钟\n异常倍数: 3倍
+[2026-04-15 13:06:01] [CRITICAL] Token消耗速率: 26655 tokens/分钟\n正常范围: 5000 tokens/分钟\n异常倍数: 5倍\n\n这可能是API异常调用或计费错误！
+[2026-04-15 16:29:01] [CRITICAL] Token消耗速率: 219281 tokens/分钟\n正常范围: 5000 tokens/分钟\n异常倍数: 43倍\n\n这可能是API异常调用或计费错误！
+[2026-04-15 17:58:01] [WARNING] Token消耗速率: 12022 tokens/分钟\n正常范围: 5000 tokens/分钟\n异常倍数: 2倍
