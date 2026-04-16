@@ -3,7 +3,7 @@
   "skills": {
     "openclaw-tavily-search": {
       "version": "0.1.0",
-      "installedAt": 1775332870578
+      "installedAt": 1776373444395
     },
     "summarize": {
       "version": "1.0.0",
@@ -83,7 +83,7 @@
     },
     "nano-banana-pro": {
       "version": "1.0.1",
-      "installedAt": 1775417523124
+      "installedAt": 1776300188411
     },
     "nano-pdf": {
       "version": "1.0.0",
@@ -103,7 +103,7 @@
     },
     "zhihu-fetcher": {
       "version": "1.1.0",
-      "installedAt": 1776046865258
+      "installedAt": 1776300202755
     },
     "word-docx": {
       "version": "1.0.2",
@@ -135,11 +135,19 @@
     },
     "runesleo-systematic-debugging": {
       "version": "3.0.0",
-      "installedAt": 1776248641266
+      "installedAt": 1776373380970
     },
     "agentic-coding": {
       "version": "1.0.0",
-      "installedAt": 1776248899244
+      "installedAt": 1776373383066
+    },
+    "cloudbase": {
+      "version": "1.18.0",
+      "installedAt": 1776300162006
+    },
+    "playwright-cli-openclaw": {
+      "version": "1.0.0",
+      "installedAt": 1776300168781
     }
   }
 }

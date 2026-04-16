@@ -2180,3 +2180,700 @@ Skills 更新完成
 [2026-04-16 04:04:42] ===== 官方 Auto-Updater 完成 =====
 ===== 官方 Auto-Updater 完成 =====
 
+[2026-04-17 05:00:02] ===== 官方 Auto-Updater 开始 =====
+===== 官方 Auto-Updater 开始 =====
+[2026-04-17 05:00:02] OpenClaw 当前版本: OpenClaw 2026.4.9 (0512059)
+OpenClaw 当前版本: OpenClaw 2026.4.9 (0512059)
+[2026-04-17 05:00:02] 正在更新 OpenClaw...
+正在更新 OpenClaw...
+[2026-04-17 05:00:02] 备份当前配置...
+备份当前配置...
+[2026-04-17 05:00:02] 运行 doctor 检查...
+运行 doctor 检查...
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+██░▄▄▄░██░▄▄░██░▄▄▄██░▀██░██░▄▄▀██░████░▄▄▀██░███░██
+██░███░██░▀▀░██░▄▄▄██░█░█░██░█████░████░▀▀░██░█░█░██
+██░▀▀▀░██░█████░▀▀▀██░██▄░██░▀▀▄██░▀▀░█░██░██▄▀▄▀▄██
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                  🦞 OPENCLAW 🦞                    
+ 
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+██░▄▄▄░██░▄▄░██░▄▄▄██░▀██░██░▄▄▀██░████░▄▄▀██░███░██
+██░███░██░▀▀░██░▄▄▄██░█░█░██░█████░████░▀▀░██░█░█░██
+██░▀▀▀░██░█████░▀▀▀██░██▄░██░▀▀▄██░▀▀░█░██░██▄▀▄▀▄██
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                  🦞 OPENCLAW 🦞                    
+ 
+┌  OpenClaw doctor
+┌  OpenClaw doctor
+│
+◇  Startup optimization ─────────────────────────────────────────────────╮
+│                                                                        │
+│  - NODE_COMPILE_CACHE is not set; repeated CLI runs can be slower on   │
+│    small hosts (Pi/VM).                                                │
+│  - OPENCLAW_NO_RESPAWN is not set to 1; set it to avoid extra startup  │
+│    overhead from self-respawn.                                         │
+│  - Suggested env for low-power hosts:                                  │
+│    export NODE_COMPILE_CACHE=/var/tmp/openclaw-compile-cache           │
+│    mkdir -p /var/tmp/openclaw-compile-cache                            │
+│    export OPENCLAW_NO_RESPAWN=1                                        │
+│                                                                        │
+├────────────────────────────────────────────────────────────────────────╯
+│
+◇  Startup optimization ─────────────────────────────────────────────────╮
+│                                                                        │
+│  - NODE_COMPILE_CACHE is not set; repeated CLI runs can be slower on   │
+│    small hosts (Pi/VM).                                                │
+│  - OPENCLAW_NO_RESPAWN is not set to 1; set it to avoid extra startup  │
+│    overhead from self-respawn.                                         │
+│  - Suggested env for low-power hosts:                                  │
+│    export NODE_COMPILE_CACHE=/var/tmp/openclaw-compile-cache           │
+│    mkdir -p /var/tmp/openclaw-compile-cache                            │
+│    export OPENCLAW_NO_RESPAWN=1                                        │
+│                                                                        │
+├────────────────────────────────────────────────────────────────────────╯
+[plugins] [adp-openclaw] Plugin register() called
+[plugins] [adp-openclaw] Plugin register() called
+[plugins] [adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373227603 (2026-04-16T21:00:27.603Z)
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373227603 (2026-04-16T21:00:27.603Z)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373227603 (2026-04-16T21:00:27.603Z)
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373227603 (2026-04-16T21:00:27.603Z)
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[qqbot-remind] Registered QQBot remind tool
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373245530 (2026-04-16T21:00:45.530Z)
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373245530 (2026-04-16T21:00:45.530Z)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373245530 (2026-04-16T21:00:45.530Z)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373245530 (2026-04-16T21:00:45.530Z)
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[qqbot-remind] Registered QQBot remind tool
+│
+◇  Doctor warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - channels.telegram: Telegram is in first-time setup mode. DMs use     │
+│    pairing mode, so new senders must start a chat and be approved       │
+│    before regular messages are accepted. Group messages stay blocked    │
+│    until you add allowed chats under channels.telegram.groups (and      │
+│    optional sender IDs under channels.telegram.groupAllowFrom), or set  │
+│    channels.telegram.groupPolicy to "open" if you want broad group      │
+│    access.                                                              │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+│
+◇  Doctor warnings ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - channels.telegram: Telegram is in first-time setup mode. DMs use     │
+│    pairing mode, so new senders must start a chat and be approved       │
+│    before regular messages are accepted. Group messages stay blocked    │
+│    until you add allowed chats under channels.telegram.groups (and      │
+│    optional sender IDs under channels.telegram.groupAllowFrom), or set  │
+│    channels.telegram.groupPolicy to "open" if you want broad group      │
+│    access.                                                              │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+│
+◇  State integrity ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - Config file is group/world readable (~/.openclaw/openclaw.json).     │
+│    Recommend chmod 600.                                                 │
+│  - 2/5 recent sessions are missing transcripts.                         │
+│    Verify sessions in store: openclaw sessions --store                  │
+│    "/root/.openclaw/agents/main/sessions/sessions.json"                 │
+│    Preview cleanup impact: openclaw sessions cleanup --store            │
+│    "/root/.openclaw/agents/main/sessions/sessions.json" --dry-run       │
+│    Prune missing entries: openclaw sessions cleanup --store             │
+│    "/root/.openclaw/agents/main/sessions/sessions.json" --enforce       │
+│    --fix-missing                                                        │
+│  - Found 1 orphan transcript file in ~/.openclaw/agents/main/sessions.  │
+│    These .jsonl files are no longer referenced by sessions.json, so     │
+│    they are not part of any active session history.                     │
+│    Doctor can archive them safely by renaming each file to              │
+│    *.deleted.<timestamp>.                                               │
+│    Examples: 102ebd39-4b6c-4e16-b4d3-e373dddd9b81.jsonl                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+│
+◇  State integrity ───────────────────────────────────────────────────────╮
+│                                                                         │
+│  - Config file is group/world readable (~/.openclaw/openclaw.json).     │
+│    Recommend chmod 600.                                                 │
+│  - 2/5 recent sessions are missing transcripts.                         │
+│    Verify sessions in store: openclaw sessions --store                  │
+│    "/root/.openclaw/agents/main/sessions/sessions.json"                 │
+│    Preview cleanup impact: openclaw sessions cleanup --store            │
+│    "/root/.openclaw/agents/main/sessions/sessions.json" --dry-run       │
+│    Prune missing entries: openclaw sessions cleanup --store             │
+│    "/root/.openclaw/agents/main/sessions/sessions.json" --enforce       │
+│    --fix-missing                                                        │
+│  - Found 1 orphan transcript file in ~/.openclaw/agents/main/sessions.  │
+│    These .jsonl files are no longer referenced by sessions.json, so     │
+│    they are not part of any active session history.                     │
+│    Doctor can archive them safely by renaming each file to              │
+│    *.deleted.<timestamp>.                                               │
+│    Examples: 102ebd39-4b6c-4e16-b4d3-e373dddd9b81.jsonl                 │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+│
+◇  Doctor changes ──────────────────────────────────────────────────────╮
+│                                                                       │
+│  - Tightened permissions on ~/.openclaw/openclaw.json to 600          │
+│  - Archived 1 orphan transcript file in                               │
+│    ~/.openclaw/agents/main/sessions as .deleted timestamped backups.  │
+│                                                                       │
+├───────────────────────────────────────────────────────────────────────╯
+│
+◇  Doctor changes ──────────────────────────────────────────────────────╮
+│                                                                       │
+│  - Tightened permissions on ~/.openclaw/openclaw.json to 600          │
+│  - Archived 1 orphan transcript file in                               │
+│    ~/.openclaw/agents/main/sessions as .deleted timestamped backups.  │
+│                                                                       │
+├───────────────────────────────────────────────────────────────────────╯
+│
+◇  Session locks ──────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  - Found 1 session lock file.                                                │
+│  - ~/.openclaw/agents/main/sessions/102ebd39-4b6c-4e16-b4d3-e373dddd9b81.js  │
+│  onl.lock                                                                    │
+│    pid=1803108 (alive) age=35s stale=no                                      │
+│                                                                              │
+├──────────────────────────────────────────────────────────────────────────────╯
+│
+◇  Session locks ──────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  - Found 1 session lock file.                                                │
+│  - ~/.openclaw/agents/main/sessions/102ebd39-4b6c-4e16-b4d3-e373dddd9b81.js  │
+│  onl.lock                                                                    │
+│    pid=1803108 (alive) age=35s stale=no                                      │
+│                                                                              │
+├──────────────────────────────────────────────────────────────────────────────╯
+│
+◇  Gateway service config ─────────────────────────────────────────────────╮
+│                                                                          │
+│  - Gateway service PATH includes version managers or package managers;   │
+│    recommend a minimal PATH. (/root/.nvm/versions/node/v22.22.2/bin)     │
+│  - Gateway service uses Node from a version manager; it can break after  │
+│    upgrades. (/root/.nvm/versions/node/v22.22.2/bin/node)                │
+│                                                                          │
+├──────────────────────────────────────────────────────────────────────────╯
+│
+◇  Gateway service config ─────────────────────────────────────────────────╮
+│                                                                          │
+│  - Gateway service PATH includes version managers or package managers;   │
+│    recommend a minimal PATH. (/root/.nvm/versions/node/v22.22.2/bin)     │
+│  - Gateway service uses Node from a version manager; it can break after  │
+│    upgrades. (/root/.nvm/versions/node/v22.22.2/bin/node)                │
+│                                                                          │
+├──────────────────────────────────────────────────────────────────────────╯
+Gateway service update failed: Error: systemctl --user unavailable: Failed to connect to bus: No medium found
+Gateway service update failed: Error: systemctl --user unavailable: Failed to connect to bus: No medium found
+│
+◇  Security ────────────────────────────────────────────────────────────╮
+│                                                                       │
+│  - WARNING: Gateway bound to "lan" (0.0.0.0) (network-accessible).    │
+│    Ensure your auth credentials are strong and not exposed.           │
+│    Safer remote access: keep bind loopback and use Tailscale          │
+│    Serve/Funnel or an SSH tunnel.                                     │
+│    Example tunnel: ssh -N -L 18789:127.0.0.1:18789 user@gateway-host  │
+│    Docs: https://docs.openclaw.ai/gateway/remote                      │
+│  - Run: openclaw security audit --deep                                │
+│                                                                       │
+├───────────────────────────────────────────────────────────────────────╯
+│
+◇  Security ────────────────────────────────────────────────────────────╮
+│                                                                       │
+│  - WARNING: Gateway bound to "lan" (0.0.0.0) (network-accessible).    │
+│    Ensure your auth credentials are strong and not exposed.           │
+│    Safer remote access: keep bind loopback and use Tailscale          │
+│    Serve/Funnel or an SSH tunnel.                                     │
+│    Example tunnel: ssh -N -L 18789:127.0.0.1:18789 user@gateway-host  │
+│    Docs: https://docs.openclaw.ai/gateway/remote                      │
+│  - Run: openclaw security audit --deep                                │
+│                                                                       │
+├───────────────────────────────────────────────────────────────────────╯
+│
+◇  Skills status ────────────╮
+│                            │
+│  Eligible: 57              │
+│  Missing requirements: 37  │
+│  Blocked by allowlist: 0   │
+│                            │
+├────────────────────────────╯
+│
+◇  Skills status ────────────╮
+│                            │
+│  Eligible: 57              │
+│  Missing requirements: 37  │
+│  Blocked by allowlist: 0   │
+│                            │
+├────────────────────────────╯
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[plugins] feishu_bitable: Registered bitable tools
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373250025 (2026-04-16T21:00:50.025Z)
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373250025 (2026-04-16T21:00:50.025Z)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373250025 (2026-04-16T21:00:50.025Z)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373250025 (2026-04-16T21:00:50.025Z)
+│
+◇  Plugins ──────╮
+│                │
+│  Loaded: 60    │
+│  Imported: 64  │
+│  Disabled: 46  │
+│  Errors: 0     │
+│                │
+├────────────────╯
+│
+◇  Plugins ──────╮
+│                │
+│  Loaded: 60    │
+│  Imported: 64  │
+│  Disabled: 46  │
+│  Errors: 0     │
+│                │
+├────────────────╯
+│
+◇  Plugin diagnostics ─────────────────────────────────────────────────╮
+│                                                                      │
+│  - WARN lossless-claw: loaded without install/load-path provenance;  │
+│    treat as untracked local code and pin trust via plugins.allow or  │
+│    install records                                                   │
+│    (/root/.openclaw/extensions/lossless-claw/dist/index.js)          │
+│                                                                      │
+├──────────────────────────────────────────────────────────────────────╯
+│
+◇  Plugin diagnostics ─────────────────────────────────────────────────╮
+│                                                                      │
+│  - WARN lossless-claw: loaded without install/load-path provenance;  │
+│    treat as untracked local code and pin trust via plugins.allow or  │
+│    install records                                                   │
+│    (/root/.openclaw/extensions/lossless-claw/dist/index.js)          │
+│                                                                      │
+├──────────────────────────────────────────────────────────────────────╯
+│
+◇  Shell completion ──────────────────────────────────────────────╮
+│                                                                 │
+│  Failed to generate completion cache. Run `openclaw completion  │
+│  --write-state` manually.                                       │
+│                                                                 │
+├─────────────────────────────────────────────────────────────────╯
+│
+◇  Shell completion ──────────────────────────────────────────────╮
+│                                                                 │
+│  Failed to generate completion cache. Run `openclaw completion  │
+│  --write-state` manually.                                       │
+│                                                                 │
+├─────────────────────────────────────────────────────────────────╯
+Telegram: ok (@hermansingaporebot) (379ms)
+LightClawBot: configured
+Telegram: ok (@hermansingaporebot) (379ms)
+LightClawBot: configured
+Feishu: ok
+Feishu: ok
+openclaw-weixin: configured
+openclaw-weixin: configured
+WeCom: ok
+WeCom: ok
+Agents: main (default)
+Agents: main (default)
+Heartbeat interval: 30m (main)
+Heartbeat interval: 30m (main)
+Session store (main): /root/.openclaw/agents/main/sessions/sessions.json (26 entries)
+Session store (main): /root/.openclaw/agents/main/sessions/sessions.json (26 entries)
+- agent:main:cron:daily-auto-update (1m ago)
+- agent:main:cron:daily-auto-update (1m ago)
+- agent:main:cron:daily-auto-update:run:102ebd39-4b6c-4e16-b4d3-e373dddd9b81 (1m ago)
+- agent:main:cron:daily-auto-update:run:102ebd39-4b6c-4e16-b4d3-e373dddd9b81 (1m ago)
+- agent:main:main (17m ago)
+- agent:main:main (17m ago)
+- agent:main:cron:log-cleaner (121m ago)
+- agent:main:cron:log-cleaner (121m ago)
+- agent:main:cron:log-cleaner:run:840acc52-8708-417c-b592-4ff1275c2a92 (121m ago)
+- agent:main:cron:log-cleaner:run:840acc52-8708-417c-b592-4ff1275c2a92 (121m ago)
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), lightclawbot (/root/.openclaw/extensions/lightclawbot/dist/index.js), lossless-claw (/root/.openclaw/extensions/lossless-claw/dist/index.js), memory-tdai (/root/.openclaw/extensions/memory-tdai/index.ts), openclaw-plugin-yuanbao (/root/.openclaw/extensions/openclaw-plugin-yuanbao/dist/index.js) (+3 more). Set plugins.allow to explicit trusted ids.
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), lightclawbot (/root/.openclaw/extensions/lightclawbot/dist/index.js), lossless-claw (/root/.openclaw/extensions/lossless-claw/dist/index.js), memory-tdai (/root/.openclaw/extensions/memory-tdai/index.ts), openclaw-plugin-yuanbao (/root/.openclaw/extensions/openclaw-plugin-yuanbao/dist/index.js) (+3 more). Set plugins.allow to explicit trusted ids.
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[plugins] feishu_bitable: Registered bitable tools
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373270943 (2026-04-16T21:01:10.943Z)
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373270943 (2026-04-16T21:01:10.943Z)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373270943 (2026-04-16T21:01:10.943Z)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373270943 (2026-04-16T21:01:10.943Z)
+[plugins] lossless-claw: loaded without install/load-path provenance; treat as untracked local code and pin trust via plugins.allow or install records (/root/.openclaw/extensions/lossless-claw/dist/index.js)
+[plugins] lossless-claw: loaded without install/load-path provenance; treat as untracked local code and pin trust via plugins.allow or install records (/root/.openclaw/extensions/lossless-claw/dist/index.js)
+│
+◇  Memory search ──────────────────────────────────────────────────────────╮
+│                                                                          │
+│  Memory search is enabled, but no embedding provider is ready.           │
+│  Semantic recall needs at least one embedding provider.                  │
+│  Gateway memory probe for default agent is not ready: No API key found   │
+│  for provider "openai". Auth store:                                      │
+│  /root/.openclaw/agents/main/agent/auth-profiles.json (agentDir:         │
+│  /root/.openclaw/agents/main/agent). Configure auth for this agent       │
+│  (openclaw agents add <id>) or copy auth-profiles.json from the main     │
+│  agentDir.                                                               │
+│                                                                          │
+│  No API key found for provider "google". Auth store:                     │
+│  /root/.openclaw/agents/main/agent/auth-profiles.json (agentDir:         │
+│  /root/.openclaw/agents/main/agent). Configure auth for this agent       │
+│  (openclaw agents add <id>) or copy auth-profiles.json from the main     │
+│  agentDir.                                                               │
+│                                                                          │
+│  No API key found for provider "voyage". Auth store:                     │
+│  /root/.openclaw/agents/main/agent/auth-profiles.json (agentDir:         │
+│  /root/.openclaw/agents/main/agent). Configure auth for this agent       │
+│  (openclaw agents add <id>) or copy auth-profiles.json from the main     │
+│  agentDir.                                                               │
+│                                                                          │
+│  No API key found for provider "mistral". Auth store:                    │
+│  /root/.openclaw/agents/main/agent/auth-profiles.json (agentDir:         │
+│  /root/.openclaw/agents/main/agent). Configure auth for this agent       │
+│  (openclaw agents add <id>) or copy auth-profiles.json from the main     │
+│  agentDir.                                                               │
+│                                                                          │
+│  Fix (pick one):                                                         │
+│  - Set OPENAI_API_KEY, GEMINI_API_KEY, GOOGLE_API_KEY, VOYAGE_API_KEY,   │
+│    MISTRAL_API_KEY in your environment                                   │
+│  - Configure credentials: openclaw configure --section model             │
+│  - For local embeddings: configure                                       │
+│    agents.defaults.memorySearch.provider and local model path            │
+│  - To disable: openclaw config set agents.defaults.memorySearch.enabled  │
+│    false                                                                 │
+│                                                                          │
+│  Verify: openclaw memory status --deep                                   │
+│                                                                          │
+├──────────────────────────────────────────────────────────────────────────╯
+│
+◇  Memory search ──────────────────────────────────────────────────────────╮
+│                                                                          │
+│  Memory search is enabled, but no embedding provider is ready.           │
+│  Semantic recall needs at least one embedding provider.                  │
+│  Gateway memory probe for default agent is not ready: No API key found   │
+│  for provider "openai". Auth store:                                      │
+│  /root/.openclaw/agents/main/agent/auth-profiles.json (agentDir:         │
+│  /root/.openclaw/agents/main/agent). Configure auth for this agent       │
+│  (openclaw agents add <id>) or copy auth-profiles.json from the main     │
+│  agentDir.                                                               │
+│                                                                          │
+│  No API key found for provider "google". Auth store:                     │
+│  /root/.openclaw/agents/main/agent/auth-profiles.json (agentDir:         │
+│  /root/.openclaw/agents/main/agent). Configure auth for this agent       │
+│  (openclaw agents add <id>) or copy auth-profiles.json from the main     │
+│  agentDir.                                                               │
+│                                                                          │
+│  No API key found for provider "voyage". Auth store:                     │
+│  /root/.openclaw/agents/main/agent/auth-profiles.json (agentDir:         │
+│  /root/.openclaw/agents/main/agent). Configure auth for this agent       │
+│  (openclaw agents add <id>) or copy auth-profiles.json from the main     │
+│  agentDir.                                                               │
+│                                                                          │
+│  No API key found for provider "mistral". Auth store:                    │
+│  /root/.openclaw/agents/main/agent/auth-profiles.json (agentDir:         │
+│  /root/.openclaw/agents/main/agent). Configure auth for this agent       │
+│  (openclaw agents add <id>) or copy auth-profiles.json from the main     │
+│  agentDir.                                                               │
+│                                                                          │
+│  Fix (pick one):                                                         │
+│  - Set OPENAI_API_KEY, GEMINI_API_KEY, GOOGLE_API_KEY, VOYAGE_API_KEY,   │
+│    MISTRAL_API_KEY in your environment                                   │
+│  - Configure credentials: openclaw configure --section model             │
+│  - For local embeddings: configure                                       │
+│    agents.defaults.memorySearch.provider and local model path            │
+│  - To disable: openclaw config set agents.defaults.memorySearch.enabled  │
+│    false                                                                 │
+│                                                                          │
+│  Verify: openclaw memory status --deep                                   │
+│                                                                          │
+├──────────────────────────────────────────────────────────────────────────╯
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373281985 (2026-04-16T21:01:21.985Z)
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373281985 (2026-04-16T21:01:21.985Z)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373281985 (2026-04-16T21:01:21.985Z)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373281985 (2026-04-16T21:01:21.985Z)
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[qqbot-remind] Registered QQBot remind tool
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373282603 (2026-04-16T21:01:22.603Z)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373282603 (2026-04-16T21:01:22.603Z)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373282603 (2026-04-16T21:01:22.603Z)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373282603 (2026-04-16T21:01:22.603Z)
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[qqbot-remind] Registered QQBot remind tool
+│
+└  Doctor complete.
+
+│
+└  Doctor complete.
+
+[2026-04-17 05:01:26] OpenClaw 更新后版本: OpenClaw 2026.4.9 (0512059)
+OpenClaw 更新后版本: OpenClaw 2026.4.9 (0512059)
+[2026-04-17 05:01:26] 正在更新 Skills...
+正在更新 Skills...
+[plugins] [adp-openclaw] Plugin register() called
+[plugins] [adp-openclaw] Plugin registration complete
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373315680 (2026-04-16T21:01:55.680Z)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373315680 (2026-04-16T21:01:55.680Z)
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373333699 (2026-04-16T21:02:13.699Z)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373333699 (2026-04-16T21:02:13.699Z)
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+Downloading openclaw-tavily-search@0.1.0 from ClawHub…
+[plugins] [memory-tdai] Registering plugin ... startTimestamp=1776373345556 (2026-04-16T21:02:25.556Z)
+[plugins] [memory-tdai] Config parsed: capture=true, recall=true(maxResults=5), extraction=true(dedup=true, maxMem=10), pipeline=(everyN=5, warmup=true, l1Idle=60s, l2DelayAfterL1=90s, l2Min=300s, l2Max=1800s, activeWindow=24h), persona(triggerEvery=50, backupCount=3, sceneBackupCount=10), memoryCleanup(enabled=false, retentionDays=(disabled), cleanTime=03:00, l0Dir=conversations, l1Dir=records)
+[plugins] [memory-tdai] Data dir: /root/.openclaw/memory-tdai (all subdirectories initialized)
+[plugins] [memory-tdai] Memory cleaner disabled (retentionDays not configured)
+[plugins] [memory-tdai] Registering before_prompt_build hook (auto-recall)
+[plugins] [memory-tdai] Embedding disabled by config, VectorStore will serve as metadata-only store
+[plugins] [memory-tdai][vector-store] FTS5 tables initialized (l1_fts, l0_fts) [schema v2 — jieba segmented]
+[plugins] [memory-tdai][vector-store] Initialized (dimensions=0)
+[plugins] [memory-tdai] VectorStore initialized: /root/.openclaw/memory-tdai/vectors.db (0D, provider=none)
+[plugins] [memory-tdai] [pipeline] Initialized: everyNConversations=5, warmup=enabled, l1IdleTimeout=60s, l2DelayAfterL1=90s, l2MinInterval=300s, l2MaxInterval=1800s, sessionActiveWindow=24h
+[plugins] [memory-tdai] Registering agent_end hook (auto-capture)
+[plugins] [memory-tdai] Plugin registration complete (v3). startTimestamp=1776373345556 (2026-04-16T21:02:25.556Z)
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+Downloading memory-hygiene@1.0.0 from ClawHub…
+Downloading github@1.0.0 from ClawHub…
+Downloading agent-browser-clawdbot@0.1.0 from ClawHub…
+Downloading tencentcloud-lighthouse-skill@1.0.0 from ClawHub…
+Downloading tencent-docs@1.0.27 from ClawHub…
+Downloading tencent-cos-skill@1.1.6 from ClawHub…
+Downloading tencent-meeting-skill@1.0.5 from ClawHub…
+Downloading web-tools-guide@1.0.2 from ClawHub…
+Downloading find-skills-skill@1.0.0 from ClawHub…
+Downloading skill-vetter@1.0.0 from ClawHub…
+Downloading jpeng-self-improving@1.2.11 from ClawHub…
+Downloading ontology@1.0.4 from ClawHub…
+Downloading self-improving@1.2.16 from ClawHub…
+Downloading humanizer@1.0.0 from ClawHub…
+Downloading obsidian@1.0.0 from ClawHub…
+Downloading admapix@1.0.28 from ClawHub…
+Downloading nano-banana-pro@1.0.1 from ClawHub…
+Downloading nano-pdf@1.0.0 from ClawHub…
+Downloading playwright-mcp@1.0.0 from ClawHub…
+Downloading wecom@1.0.3 from ClawHub…
+Downloading auto-updater@1.0.0 from ClawHub…
+Downloading zhihu-fetcher@1.1.0 from ClawHub…
+Downloading word-docx@1.0.2 from ClawHub…
+Downloading mcporter@1.0.0 from ClawHub…
+Downloading agentic-workflow-automation@0.1.0 from ClawHub…
+Downloading weather@1.0.0 from ClawHub…
+Downloading excel-xlsx@1.0.2 from ClawHub…
+Downloading daily-briefing@1.0.5 from ClawHub…
+Downloading skill-creator@0.1.0 from ClawHub…
+Downloading runesleo-systematic-debugging@3.0.0 from ClawHub…
+Installing to /root/.openclaw/workspace/skills/runesleo-systematic-debugging…
+Downloading agentic-coding@1.0.0 from ClawHub…
+Installing to /root/.openclaw/workspace/skills/agentic-coding…
+Downloading cloudbase@1.49.0 from ClawHub…
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/summarize failed (404): Skill not found
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/ima-skills failed (404): Skill not found
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/capability-evolver failed (404): Skill not found
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+runesleo-systematic-debugging already at 3.0.0
+agentic-coding already at 1.0.0
+ClawHub /api/v1/download failed (429): Rate limit exceeded
+ClawHub /api/v1/skills/playwright-cli-openclaw failed (429): Rate limit exceeded
+[2026-04-17 05:03:08] Skills 更新完成
+Skills 更新完成
+[2026-04-17 05:03:08] ===== 生成更新报告 =====
+===== 生成更新报告 =====
+[2026-04-17 05:03:08] 检测到企业微信 Webhook 配置
+检测到企业微信 Webhook 配置
+[2026-04-17 05:03:09] 📤 更新报告已推送到企业微信
+📤 更新报告已推送到企业微信
+[2026-04-17 05:03:09] ===== 官方 Auto-Updater 完成 =====
+===== 官方 Auto-Updater 完成 =====
+

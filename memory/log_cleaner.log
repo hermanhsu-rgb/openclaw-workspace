@@ -13,3 +13,18 @@
   alerts.log: 4.0K
   cron.log: 0
   guard.log: 52K
+[2026-04-17 03:00:01] 开始清理日志...
+[2026-04-17 03:00:01] 裁剪 /root/.openclaw/workspace/memory/token_monitor/rate_history.log (2440行, 112KB) -> 保留1000行
+[2026-04-17 03:00:01] 裁剪 /root/.openclaw/workspace/memory/token_monitor/rate_monitor.log (2439行, 92KB) -> 保留1000行
+[2026-04-17 03:00:01] 裁剪 /root/.openclaw/workspace/memory/api_guard/guard.log (3880行, 196KB) -> 保留1000行
+[2026-04-17 03:00:01] 日志清理完成
+
+当前日志大小:
+  monitor.log: 16K
+  rate_alerts.log: 4.0K
+  rate_history.log: 44K
+  rate_monitor.log: 36K
+  token_history.log: 24K
+  alerts.log: 8.0K
+  cron.log: 0
+  guard.log: 52K

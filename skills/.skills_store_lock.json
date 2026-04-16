@@ -90,6 +90,18 @@
       "zip_url": "https://lightmake.site/api/v1/download?slug=skill-creator",
       "source": "skillhub",
       "version": "0.1.0"
+    },
+    "cloudbase": {
+      "name": "Cloudbase",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=cloudbase",
+      "source": "skillhub",
+      "version": "1.18.0"
+    },
+    "playwright-cli-openclaw": {
+      "name": "Playwright CLI Automation",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=playwright-cli-openclaw",
+      "source": "skillhub",
+      "version": "1.0.0"
     }
   }
 }
