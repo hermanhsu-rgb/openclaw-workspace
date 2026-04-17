@@ -5,15 +5,15 @@
 📋 飞书备份: 已执行（检查 feishu_backup.log）
 
 📊 当前状态:
-• Memory 文件数: 41
+• Memory 文件数: 43
 • UNIFIED_MEMORY: 
 • Scene Blocks: 4
-• 本地备份数: 3
+• 本地备份数: 4
 
 💡 恢复方式:
 1. GitHub: https://github.com/hermanhsu-rgb/openclaw-workspace
-2. 本地恢复: tar -xzf /root/.openclaw/workspace/memory_backups/memory_20260417_050550.tar.gz
+2. 本地恢复: tar -xzf /root/.openclaw/workspace/memory_backups/memory_20260417_220253.tar.gz
 3. 飞书文档: 检查飞书云文档
 
-⏰ 备份时间: 05:05:50
+⏰ 备份时间: 22:02:53
 🔄 下次备份: 明天 04:00
