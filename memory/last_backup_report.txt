@@ -1,19 +1,14 @@
-🧠 Memory 双备份报告 - 2026-04-17
+报告生成时间: 2026-04-19 05:06:35 CST
 
-☁️ GitHub 备份: 成功
-💾 本地版本备份: 成功 (4.9M)
-📋 飞书备份: 已执行（检查 feishu_backup.log）
+=== GitHub备份 ===
+状态: ✅ 成功
+仓库: hermanhsu-rgb/openclaw-workspace
+Commit: 3369337
 
-📊 当前状态:
-• Memory 文件数: 45
-• UNIFIED_MEMORY: 
-• Scene Blocks: 4
-• 本地备份数: 6
+=== 飞书备份 ===
+状态: ✅ 成功
+文档: 共享备忘录
+新增blocks: 45
 
-💡 恢复方式:
-1. GitHub: https://github.com/hermanhsu-rgb/openclaw-workspace
-2. 本地恢复: tar -xzf /root/.openclaw/workspace/memory_backups/memory_20260417_221941.tar.gz
-3. 飞书文档: 检查飞书云文档
-
-⏰ 备份时间: 22:19:41
-🔄 下次备份: 明天 04:00
+=== Memory统计 ===
+文件: 138 | Markdown: 47 | 行数: 57,547 | 大小: 12M

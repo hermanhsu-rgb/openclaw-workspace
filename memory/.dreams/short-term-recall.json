@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-04-18T21:05:19.599Z",
+  "updatedAt": "2026-04-18T23:30:44.895Z",
   "entries": {
     "memory:memory/2026-04-15.md:6:8": {
       "key": "memory:memory/2026-04-15.md:6:8",
@@ -73049,6 +73049,131 @@
         "candidate",
         "user",
         "conversation"
+      ]
+    },
+    "memory:memory/2026-04-19.md:145:176": {
+      "key": "memory:memory/2026-04-19.md:145:176",
+      "path": "memory/2026-04-19.md",
+      "startLine": 145,
+      "endLine": 176,
+      "source": "memory",
+      "snippet": "- evidence: memory/2026-04-18.md:109-112 - recalls: 0 - status: staged - Candidate: 重建后任务列表: | 日志自动清理 | 088d2301-... | 06:00 | | Morning Briefing | 2eec280a-... | 07:30 | | 牙科新闻推送 | f9b53a54-... | 08:00 | | 天气提醒 | f04ae4e5-... | 10:12 | - confidence: 0.62 - evidence: memory/2026-04-18.md:113-116 - recalls: 0 - status: staged - Candidate: 重建后任务列表: | DSD新发展 | 193a563e-... | 10:30 | | 口腔医疗大事 | 858d0919-... | 11:00 | | 交通时间查询 | a3763ed5-... | 18:15 | - confidence: 0.62 - evidence: memory/2026-04-18.md:117-119 - recalls: 0 - status: staged - Candidate: 重建后任务列表: 所有任务delivery配置： - confidence: 0.62 - evidence: memory/2026-04-18.md:121-121 - recalls: 0 - status: staged -",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.9465823918581008,
+      "maxScore": 0.4898881316184997,
+      "firstRecalledAt": "2026-04-18T23:30:21.774Z",
+      "lastRecalledAt": "2026-04-18T23:30:24.045Z",
+      "queryHashes": [
+        "6e6ec370df09",
+        "342045b1ce4a"
+      ],
+      "recallDays": [
+        "2026-04-19"
+      ],
+      "conceptTags": [
+        "memory/2026-04-18.md",
+        "109-112",
+        "0.62",
+        "113-116",
+        "117-119",
+        "121-121",
+        "evidence",
+        "recalls"
+      ]
+    },
+    "memory:memory/2026-04-19.md:70:102": {
+      "key": "memory:memory/2026-04-19.md:70:102",
+      "path": "memory/2026-04-19.md",
+      "startLine": 70,
+      "endLine": 102,
+      "source": "memory",
+      "snippet": "- evidence: memory/2026-04-18.md:44-45 - recalls: 0 - status: staged - Candidate: 新增cron任务: **DSD新发展** (10:30); Tavily搜索Digital Smile Design新进展; ID: 23511a6c-00cd-4477-8c6b-cd70cdb5edb3 - confidence: 0.62 - evidence: memory/2026-04-18.md:49-51 - recalls: 0 - status: staged - Candidate: 新增cron任务: **交通时间查询** (18:15); 尚嘉中心 → 蟠龙天地 驾车时间; ID: e95ad586-01c0-41d2-b7c1-497155369181 - confidence: 0.62 - evidence: memory/2026-04-18.md:53-55 - recalls: 0 - status: staged - Candidate: 新增cron任务: **口腔医疗大事** (11:00); Tavily搜索中国口腔/医疗行业当天大事; ID: 43994fe8-097c-44ba-8593-efdc600c2eca - confidence: 0.62 - evidence: memory/2026-04-18.md:57-59 - recalls: 0 - status: staged - Candidate",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.46379247009754176,
+      "maxScore": 0.46379247009754176,
+      "firstRecalledAt": "2026-04-18T23:30:24.045Z",
+      "lastRecalledAt": "2026-04-18T23:30:24.045Z",
+      "queryHashes": [
+        "342045b1ce4a"
+      ],
+      "recallDays": [
+        "2026-04-19"
+      ],
+      "conceptTags": [
+        "memory/2026-04-18.md",
+        "44-45",
+        "0.62",
+        "49-51",
+        "53-55",
+        "tavily搜索中国口腔/医疗行业当天大事",
+        "57-59",
+        "evidence"
+      ]
+    },
+    "memory:memory/2026-04-16.md:319:337": {
+      "key": "memory:memory/2026-04-16.md:319:337",
+      "path": "memory/2026-04-16.md",
+      "startLine": 319,
+      "endLine": 337,
+      "source": "memory",
+      "snippet": "- evidence: memory/2026-04-14.md:17-20, memory/2026-04-14.md:36-36, memory/.dreams/session-corpus/2026-04-13.txt:2-2 - note: reflection ### Possible Lasting Truths - No strong candidate truths surfaced. <!-- openclaw:dreaming:rem:end --> --- ## 心跳维护 (20:13) ### 执行的任务 1. **天气推送** - 上海 🌦 +17°C（Telegram 推送因 chat ID 未配置跳过） 2. **系统健康** - 磁盘 76%，内存 435MB，负载 0.06，运行 14 天 3. **记忆维护** - 39 个记忆文件在保留期内 ### 状态更新 - 所有时间戳更新为 1776341620",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.45839437842369074,
+      "maxScore": 0.45839437842369074,
+      "firstRecalledAt": "2026-04-18T23:30:24.045Z",
+      "lastRecalledAt": "2026-04-18T23:30:24.045Z",
+      "queryHashes": [
+        "342045b1ce4a"
+      ],
+      "recallDays": [
+        "2026-04-19"
+      ],
+      "conceptTags": [
+        "memory/2026-04-14.md",
+        "17-20",
+        "36-36",
+        "2-2",
+        "0.06",
+        "evidence",
+        "dreams",
+        "corpus"
+      ]
+    },
+    "memory:memory/2026-04-15.md:1:26": {
+      "key": "memory:memory/2026-04-15.md:1:26",
+      "path": "memory/2026-04-15.md",
+      "startLine": 1,
+      "endLine": 26,
+      "source": "memory",
+      "snippet": "# 2026-04-15 Memory Log ## 心跳维护 (06:44) ### 执行的任务 1. **天气推送** - 上海 🌫 +15°C（Telegram 推送仍因 chat ID 未配置而失败） 2. **系统健康** - 跳过（上次检查在 2.5 小时前） 3. **记忆维护** - 完成，32 个记忆文件在 30 天保留期内 ### 状态更新 - `weatherPush`: 1776206637 - `memoryMaintenance`: 1776206637 --- ## 心跳维护 (20:14) ### 执行的任务 1. **天气推送** - 上海 ⛅ +19°C（Telegram 推送因 chat ID 未配置跳过） 2. **系统健康** - 跳过（上次检查在 7.7 小时前） 3. **记忆维护** - 完成，36 个记忆文件在保留期内 ### 状态更新 - `weatherPush`: 1776255241 - `memoryMaintenance`: 1776255241",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.48578838407993313,
+      "maxScore": 0.48578838407993313,
+      "firstRecalledAt": "2026-04-18T23:30:44.895Z",
+      "lastRecalledAt": "2026-04-18T23:30:44.895Z",
+      "queryHashes": [
+        "ea4d1c3c560c"
+      ],
+      "recallDays": [
+        "2026-04-19"
+      ],
+      "conceptTags": [
+        "2.5",
+        "7.7",
+        "log",
+        "心跳",
+        "维护",
+        "执行",
+        "任务",
+        "天气"
       ]
     }
   }
