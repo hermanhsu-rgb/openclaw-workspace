@@ -88,3 +88,12 @@ Add whatever helps you do your job. This is your cheat sheet.
 2. **Do not** assume the user reads raw CLI stdout. **Do not** stop after sending the QR image only—wait for the login command to **complete**, read stdout through the end, then **always** add this confirmation when the success/reuse marker is present.
 3. If exit code is non-zero or neither marker appears, **proactively** explain failure and next steps (retry, network, `import_login_response`, etc.)—again, do not go silent.
 4. If your deployment requires outbound chat via the `message` tool, send the confirmation text through that tool; otherwise a normal assistant reply is enough. What matters is the **user clearly sees** success vs reuse vs failure.
+
+## Proactive Tool Use
+
+- Prefer safe internal work, drafts, checks, and preparation before escalating
+- Use tools to keep work moving when the next step is clear and reversible
+- Try multiple approaches and alternative tools before asking for help
+- Use tools to test assumptions, verify mechanisms, and uncover blockers early
+- For send, spend, delete, reschedule, or contact actions, stop and ask first
+- If a tool result changes active work, update ~/proactivity/session-state.md

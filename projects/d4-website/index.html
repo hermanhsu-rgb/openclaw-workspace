@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D4 Dental - 专业牙科团队</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2C3E50;
+            --accent: #D4AF37;
+            --light: #F8F9FA;
+            --white: #FFFFFF;
+            --text: #333333;
+            --text-light: #666666;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background: var(--white);
+            line-height: 1.6;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--white);
+            padding: 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 2px;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            padding-top: 80px;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+        }
+        
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 72px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+        
+        .hero h1 span {
+            color: var(--accent);
+        }
+        
+        .hero p {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .hero-btn {
+            display: inline-block;
+            padding: 18px 50px;
+            background: var(--accent);
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            border-radius: 50px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+        
+        /* Team Section */
+        .team {
+            padding: 120px 60px;
+            background: var(--light);
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .section-header p {
+            font-size: 18px;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .doctor-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .doctor-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+        }
+        
+        .doctor-photo {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            object-position: center top;
+        }
+        
+        .doctor-info {
+            padding: 30px 25px;
+            text-align: center;
+        }
+        
+        .doctor-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .doctor-title {
+            font-size: 14px;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        
+        .doctor-desc {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+        
+        /* Services Section */
+        .services {
+            padding: 120px 60px;
+            background: var(--white);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .service-card {
+            padding: 50px 40px;
+            background: var(--light);
+            border-radius: 20px;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        
+        .service-card:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .service-card:hover .service-icon {
+            color: var(--accent);
+        }
+        
+        .service-icon {
+            font-size: 48px;
+            color: var(--accent);
+            margin-bottom: 25px;
+        }
+        
+        .service-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .service-card p {
+            font-size: 15px;
+            opacity: 0.8;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--primary);
+            color: var(--white);
+            padding: 80px 60px 40px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-section h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--accent);
+        }
+        
+        .footer-section p, .footer-section a {
+            font-size: 15px;
+            opacity: 0.8;
+            line-height: 2;
+        }
+        
+        .footer-section a {
+            color: var(--white);
+            text-decoration: none;
+            display: block;
+        }
+        
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 60px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 14px;
+            opacity: 0.6;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                padding: 15px 30px;
+            }
+            
+            .nav-links {
+                gap: 20px;
+            }
+            
+            .hero h1 {
+                font-size: 48px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .team, .services {
+                padding: 80px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="logo">D<span>4</span> DENTAL</div>
+        <ul class="nav-links">
+            <li><a href="#home">首页</a></li>
+            <li><a href="#team">团队</a></li>
+            <li><a href="#services">服务</a></li>
+            <li><a href="#contact">联系</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>D<span>4</span> DENTAL</h1>
+            <p>专业 · 精致 · 用心<br>为您打造完美微笑</p>
+            <a href="#team" class="hero-btn">了解我们的团队</a>
+        </div>
+    </section>
+    
+    <!-- Team Section -->
+    <section class="team" id="team">
+        <div class="section-header">
+            <h2>专业团队</h2>
+            <p>我们的医生团队拥有丰富的临床经验和专业资质，致力于为您提供最优质的牙科服务</p>
+        </div>
+        
+        <div class="team-grid">
+            <!-- Dr. 陈嘉珮 -->
+            <div class="doctor-card">
+                <img src="images/doctors/dr-chen.jpg" alt="Dr. 陈嘉珮" class="doctor-photo">
+                <div class="doctor-info">
+                    <h3 class="doctor-name">陈嘉珮</h3>
+                    <p class="doctor-title">正畸专科医生</p>
+                    <p class="doctor-desc">专注于牙齿矫正与美学设计，拥有多年正畸临床经验，擅长各类复杂矫正案例</p>
+                </div>
+            </div>
+            
+            <!-- Dr. 高敏瑄 -->
+            <div class="doctor-card">
+                <img src="images/doctors/dr-gao.jpg" alt="Dr. 高敏瑄" class="doctor-photo">
+                <div class="doctor-info">
+                    <h3 class="doctor-name">高敏瑄</h3>
+                    <p class="doctor-title">全科医生</p>
+                    <p class="doctor-desc">全科牙科专家，提供全面的口腔健康服务，注重患者舒适体验</p>
+                </div>
+            </div>
+            
+            <!-- Dr. 孙庆龄 -->
+            <div class="doctor-card">
+                <img src="images/doctors/dr-sun.jpg" alt="Dr. 孙庆龄" class="doctor-photo">
+                <div class="doctor-info">
+                    <h3 class="doctor-name">孙庆龄</h3>
+                    <p class="doctor-title">全科医生</p>
+                    <p class="doctor-desc">经验丰富的全科牙科医生，擅长修复治疗与美学牙科，为患者提供个性化方案</p>
+                </div>
+            </div>
+            
+            <!-- Dr. 钮赢颖 -->
+            <div class="doctor-card">
+                <img src="images/doctors/dr-niu.jpg" alt="Dr. 钮赢颖" class="doctor-photo">
+                <div class="doctor-info">
+                    <h3 class="doctor-name">钮赢颖</h3>
+                    <p class="doctor-title">全科医生</p>
+                    <p class="doctor-desc">专业全科医生，关注患者口腔健康整体规划，提供细致周到的诊疗服务</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="section-header">
+            <h2>专业服务</h2>
+            <p>我们提供全方位的牙科服务，满足您的各种口腔健康需求</p>
+        </div>
+        
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🦷</div>
+                <h3>正畸治疗</h3>
+                <p>专业牙齿矫正服务，包括传统托槽、隐形矫正等多种方案</p>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">✨</div>
+                <h3>美学修复</h3>
+                <p>贴面、全瓷冠等美学修复方案，重塑完美笑容</p>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🔧</div>
+                <h3>种植牙</h3>
+                <p>先进的种植技术，为您恢复自然咀嚼功能</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>D4 DENTAL</h4>
+                <p>专业牙科团队<br>为您打造完美微笑</p>
+            </div>
+            
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p>上海市静安区<br>南京西路XXX号</p>
+                <p>电话: 021-XXXX-XXXX</p>
+            </div>
+            
+            <div class="footer-section">
+                <h4>营业时间</h4>
+                <p>周一至周五: 9:00 - 18:00<br>周六: 9:00 - 15:00<br>周日: 休息</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            © 2026 D4 Dental. All rights reserved.
+        </div>
+    </footer>
+</body>
+</html>

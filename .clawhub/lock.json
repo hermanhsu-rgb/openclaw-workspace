@@ -42,8 +42,8 @@
       "installedAt": 1774930752559
     },
     "web-tools-guide": {
-      "version": "1.0.0",
-      "installedAt": 1774930755074
+      "version": "1.0.2",
+      "installedAt": 1776474482902
     },
     "find-skills-skill": {
       "version": "1.0.0",
@@ -147,7 +147,11 @@
     },
     "playwright-cli-openclaw": {
       "version": "1.0.0",
-      "installedAt": 1776300168781
+      "installedAt": 1776546121130
+    },
+    "proactivity": {
+      "version": "1.0.1",
+      "installedAt": 1776516902744
     }
   }
 }
