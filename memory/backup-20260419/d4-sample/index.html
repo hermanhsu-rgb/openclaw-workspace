@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D4 Dental Clinic - Digital Smile Design</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --purple-primary: #6B4C9A;
+            --purple-light: #9B7BC9;
+            --purple-dark: #4A3570;
+            --gold: #C9A961;
+            --text-dark: #2C2C2C;
+            --text-gray: #666;
+            --bg-light: #F8F6FA;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            color: var(--text-dark);
+            background: #fff;
+            line-height: 1.6;
+        }
+        
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            min-height: 600px;
+            overflow: hidden;
+        }
+        
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(107, 76, 154, 0.8) 0%, rgba(74, 53, 112, 0.6) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+        }
+        
+        .hero-logo {
+            font-size: 4rem;
+            font-weight: 300;
+            letter-spacing: 0.5em;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+        
+        .hero-tagline {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            color: var(--gold);
+            margin-bottom: 3rem;
+        }
+        
+        .hero-btn {
+            padding: 1rem 3rem;
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            font-size: 1.1rem;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .hero-btn:hover {
+            background: #fff;
+            color: var(--purple-primary);
+        }
+        
+        /* Brand Section */
+        .brand-section {
+            padding: 6rem 2rem;
+            background: var(--bg-light);
+            text-align: center;
+        }
+        
+        .brand-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--purple-primary);
+            margin-bottom: 2rem;
+            letter-spacing: 0.2em;
+        }
+        
+        .brand-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 3rem auto;
+        }
+        
+        .brand-item h3 {
+            font-size: 1.8rem;
+            color: var(--purple-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .brand-item p {
+            color: var(--text-gray);
+            font-size: 1rem;
+        }
+        
+        /* Gallery Section */
+        .gallery-section {
+            padding: 6rem 2rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--purple-primary);
+            text-align: center;
+            margin-bottom: 3rem;
+            letter-spacing: 0.2em;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .gallery-item {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            background: linear-gradient(to top, rgba(74, 53, 112, 0.9), transparent);
+            color: #fff;
+            font-size: 1.1rem;
+            letter-spacing: 0.1em;
+        }
+        
+        /* Team Section */
+        .team-section {
+            padding: 6rem 2rem;
+            background: var(--bg-light);
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .team-member {
+            padding: 2rem;
+        }
+        
+        .team-name {
+            font-size: 1.2rem;
+            color: var(--purple-dark);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .team-title {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+        
+        /* Contact Section */
+        .contact-section {
+            padding: 6rem 2rem;
+            background: var(--purple-dark);
+            color: #fff;
+            text-align: center;
+        }
+        
+        .contact-section h2 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            letter-spacing: 0.2em;
+        }
+        
+        .contact-info {
+            font-size: 1.1rem;
+            line-height: 2;
+            opacity: 0.9;
+        }
+        
+        .contact-info a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 2rem;
+            background: #2C2C2C;
+            color: rgba(255,255,255,0.6);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-logo { font-size: 2.5rem; letter-spacing: 0.3em; }
+            .hero-tagline { font-size: 1rem; }
+            .brand-title, .section-title { font-size: 1.8rem; }
+            .gallery-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <img src="image---eaa3fee9-d9d3-4a9d-8321-57892cc295ed.jpg" alt="D4诊所接待区" class="hero-image">
+        <div class="hero-overlay">
+            <div class="hero-logo">D4</div>
+            <div class="hero-tagline">Digital Smile Design · 数位微笑设计</div>
+            <button class="hero-btn" onclick="document.querySelector('.brand-section').scrollIntoView({behavior:'smooth'})">探索更多</button>
+        </div>
+    </section>
+
+    <!-- Brand Section -->
+    <section class="brand-section">
+        <h2 class="brand-title">D4 理念</h2>
+        <div class="brand-grid">
+            <div class="brand-item">
+                <h3>Delicate</h3>
+                <p>精致细腻的诊疗体验</p>
+            </div>
+            <div class="brand-item">
+                <h3>Digital</h3>
+                <p>数字化精准治疗技术</p>
+            </div>
+            <div class="brand-item">
+                <h3>Dental</h3>
+                <p>专业牙科医疗服务</p>
+            </div>
+            <div class="brand-item">
+                <h3>Design</h3>
+                <p>艺术化空间设计美学</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <h2 class="section-title">诊所环境</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="image---eaa3fee9-d9d3-4a9d-8321-57892cc295ed.jpg" alt="接待候诊区">
+                <div class="gallery-caption">接待候诊区</div>
+            </div>
+            <div class="gallery-item">
+                <img src="image---4a74bd63-9b32-460e-aadb-a004cc9283fa.jpg" alt="艺术装置">
+                <div class="gallery-caption">设计美学 · 立体艺术装置</div>
+            </div>
+            <div class="gallery-item">
+                <img src="image---c134d879-9144-4c6c-9da9-ea4577c55b7a.jpg" alt="茶歇区">
+                <div class="gallery-caption">茶歇区 · 专业资质展示</div>
+            </div>
+            <div class="gallery-item">
+                <img src="image---5d15d9bb-4bfd-4484-8d93-62a9f60d1190.jpg" alt="诊疗室">
+                <div class="gallery-caption">数字化诊疗室</div>
+            </div>
+            <div class="gallery-item">
+                <img src="image---03143002-e05d-4c69-b658-2e6888f2db54.jpg" alt="VIP咨询室">
+                <div class="gallery-caption">VIP咨询室</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <h2 class="section-title">专业团队</h2>
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="team-name">许恒恺</div>
+                <div class="team-title">创始人 · 主治医师</div>
+            </div>
+            <div class="team-member">
+                <div class="team-name">高敏瑄</div>
+                <div class="team-title">主治医师</div>
+            </div>
+            <div class="team-member">
+                <div class="team-name">钮赢颖</div>
+                <div class="team-title">主治医师</div>
+            </div>
+            <div class="team-member">
+                <div class="team-name">陈嘉珮</div>
+                <div class="team-title">主治医师</div>
+            </div>
+            <div class="team-member">
+                <div class="team-name">孙庆龄</div>
+                <div class="team-title">主治医师</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <h2>联系我们</h2>
+        <div class="contact-info">
+            <p>地址：上海市长宁区尚嘉中心3002室</p>
+            <p>预约咨询：请通过官方渠道预约</p>
+            <p>网站：<a href="https://d4.cn">d4.cn</a></p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 D4 Dental Clinic. Digital Smile Design.</p>
+    </footer>
+</body>
+</html>

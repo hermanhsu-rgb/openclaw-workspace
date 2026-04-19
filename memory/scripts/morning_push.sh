@@ -8,7 +8,7 @@ HOUR=$(date +%H)
 MIN=$(date +%M)
 
 # Tavily API Key
-TAVILY_API_KEY="${TAVILY_API_KEY:-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}"
+TAVILY_API_KEY="${TAVILY_API_KEY:-$TAVILY_API_KEY}"
 
 # 判断推送类型
 case "$HOUR:$MIN" in

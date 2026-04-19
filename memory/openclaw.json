@@ -1,17 +1,32 @@
 {
   "meta": {
-    "lastTouchedVersion": "2026.4.9",
-    "lastTouchedAt": "2026-04-10T02:27:15.977Z"
+    "lastTouchedVersion": "2026.4.14",
+    "lastTouchedAt": "2026-04-19T06:34:14.634Z"
   },
   "memory": {},
   "wizard": {
-    "lastRunAt": "2026-04-07T01:11:46.000Z",
-    "lastRunVersion": "2026.3.28",
+    "lastRunAt": "2026-04-16T00:30:00.818Z",
+    "lastRunVersion": "2026.4.9",
     "lastRunCommand": "doctor",
     "lastRunMode": "local"
   },
   "browser": {
-    "enabled": false
+    "enabled": true,
+    "executablePath": "/root/.cache/ms-playwright/chromium-1208/chrome-linux64/chrome",
+    "noSandbox": true,
+    "defaultProfile": "user",
+    "profiles": {
+      "user": {
+        "cdpUrl": "http://localhost:9222",
+        "driver": "existing-session",
+        "attachOnly": true,
+        "color": "#4285F4",
+        "userDataDir": "/root/.openclaw/browser-existing-session"
+      }
+    },
+    "ssrfPolicy": {
+      "dangerouslyAllowPrivateNetwork": true
+    }
   },
   "models": {
     "mode": "merge",
@@ -156,14 +171,14 @@
               "cacheRead": 0,
               "cacheWrite": 0
             },
-            "contextWindow": 200000,
+            "contextWindow": 90000,
             "maxTokens": 8192
           }
         ]
       },
       "gemini": {
         "baseUrl": "https://generativelanguage.googleapis.com/v1beta",
-        "apiKey": "AIzaSyBUezxGx6gIh0wufe4rBM-UzuTAcLkZGys",
+        "apiKey": "AIzaSyDhxyE1du4pZ8oTKYTUTuxPsxy34qhyRpQ",
         "api": "google-generative-ai",
         "models": [
           {
@@ -462,7 +477,7 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "qwencode/qwen3.6-plus"
+        "primary": "tencentcodingplan/glm-5"
       },
       "workspace": "/root/.openclaw/workspace",
       "compaction": {
@@ -476,11 +491,23 @@
         "browser": {
           "enabled": false
         }
+      },
+      "heartbeat": {
+        "target": "none",
+        "directPolicy": "block",
+        "timeoutSeconds": 30,
+        "isolatedSession": true
       }
     }
   },
   "tools": {
-    "profile": "full"
+    "profile": "full",
+    "web": {
+      "search": {
+        "provider": "tavily"
+      }
+    },
+    "deny": []
   },
   "commands": {
     "native": "auto",
@@ -498,6 +525,8 @@
         "connectionMode": "websocket",
         "botId": "aib8sXkRRdjaqNVHGsRrhremKNtYxcllcXY",
         "secret": "cuf4byjgXDnYom5HNVNV6gMBgmwcxCSIJF2UVfwK8EE",
+        "token": "586156b77888cd9ce08bac1802b23fc4",
+        "encodingAESKey": "TIYsZSpx2mVu4eKGuVxuMXbq1pjQTALali6h3PkDhWK",
         "streamPlaceholderContent": "正在思考...",
         "welcomeText": "你好！我是 AI 助手",
         "dm": {
@@ -532,7 +561,9 @@
       "apiKeys": [
         "heng-kaihsu-key",
         "915aff0c1a78dc7438c9699c476eba2ee587078d",
-        "f8e718596d0b018ffa3b3dd1fbb3428e95e1c0f9"
+        "f8e718596d0b018ffa3b3dd1fbb3428e95e1c0f9",
+        "2ebb6df4ac1da4e69e4876468fdefc442d9b7c70",
+        "cc2114bf605de010f6b1b9bea721ccbb939e630b"
       ],
       "dmPolicy": "open",
       "allowFrom": [
@@ -552,8 +583,8 @@
       "allowedOrigins": [
         "http://43.134.118.198:38768"
       ],
-      "allowInsecureAuth": false,
-      "dangerouslyDisableDeviceAuth": false
+      "allowInsecureAuth": true,
+      "dangerouslyDisableDeviceAuth": true
     },
     "auth": {
       "mode": "token",
@@ -570,33 +601,15 @@
     }
   },
   "plugins": {
+    "slots": {
+      "contextEngine": "lossless-claw"
+    },
     "entries": {
-      "memory-tdai": {
+      "lossless-claw": {
         "enabled": true,
-        "config": {}
-      },
-      "openclaw-qqbot": {
-        "enabled": false
-      },
-      "ddingtalk": {
-        "enabled": false
-      },
-      "wecom": {
-        "enabled": true,
-        "config": {}
-      },
-      "adp-openclaw": {
-        "enabled": false
-      },
-      "openclaw-plugin-yuanbao": {
-        "enabled": false
-      },
-      "openclaw-weixin": {
-        "enabled": true,
-        "config": {}
-      },
-      "lightclawbot": {
-        "enabled": true
+        "config": {
+          "contextThreshold": 0.75
+        }
       },
       "feishu": {
         "enabled": true,
@@ -604,106 +617,91 @@
       },
       "browser": {
         "enabled": true
+      },
+      "memory-core": {
+        "config": {
+          "dreaming": {
+            "enabled": true
+          }
+        }
+      },
+      "ddingtalk": {
+        "enabled": false
+      },
+      "wecom": {
+        "enabled": true
+      },
+      "openclaw-plugin-yuanbao": {
+        "enabled": false
+      },
+      "openclaw-weixin": {
+        "enabled": true
+      },
+      "lightclawbot": {
+        "enabled": true
+      },
+      "adp-openclaw": {
+        "enabled": false
+      },
+      "telegram": {
+        "enabled": true
+      },
+      "memory-tencentdb": {
+        "enabled": true
+      },
+      "qqbot": {
+        "enabled": false
       }
     },
     "installs": {
-      "memory-tdai": {
-        "source": "npm",
-        "spec": "@tdai/memory-tdai@latest",
-        "installPath": "/root/.openclaw/extensions/memory-tdai",
-        "version": "0.1.2",
-        "resolvedName": "@tdai/memory-tdai",
-        "resolvedVersion": "0.1.2",
-        "resolvedSpec": "@tdai/memory-tdai@0.1.2",
-        "integrity": "sha512-TOrv+qMGxk9yLuu3eCPlPayTt3B9IjjPmHT7NfyqQk0MiOu/HN5LuE3UxTGscPIdGUoLfAd3SCM1R/fNm34cAQ==",
-        "shasum": "0f9ad8d345a0802fa7b3f0a9f84789269ed920d7",
-        "resolvedAt": "2026-03-31T04:13:19.895Z",
-        "installedAt": "2026-03-31T04:13:44.249Z"
-      },
-      "openclaw-qqbot": {
-        "source": "npm",
-        "spec": "@tencent-connect/openclaw-qqbot@latest",
-        "installPath": "/root/.openclaw/extensions/openclaw-qqbot",
-        "version": "1.6.7",
-        "resolvedName": "@tencent-connect/openclaw-qqbot",
-        "resolvedVersion": "1.6.7",
-        "resolvedSpec": "@tencent-connect/openclaw-qqbot@1.6.7",
-        "integrity": "sha512-0SynvYuS+/QZ5nmX1mTw46zR07Hiqzeo9SZqZPy2T39gLpxbg2Ifey01BfZDhM+KbRzIG+M0k2/R8jj0OzFxVA==",
-        "shasum": "3f2c4e9bff86f0708e694fe2097d5439df253759",
-        "resolvedAt": "2026-03-31T04:13:50.770Z",
-        "installedAt": "2026-03-31T04:14:45.649Z"
-      },
       "ddingtalk": {
         "source": "npm",
-        "spec": "@largezhou/ddingtalk@latest",
+        "spec": "@largezhou/ddingtalk@2.0.1",
         "installPath": "/root/.openclaw/extensions/ddingtalk",
         "version": "2.0.1",
-        "resolvedName": "@largezhou/ddingtalk",
-        "resolvedVersion": "2.0.1",
-        "resolvedSpec": "@largezhou/ddingtalk@2.0.1",
-        "integrity": "sha512-qKDndqVb6nj1CJ+IX+9DF86qhxrjvJYerk3ooir+TfiQD7RI8/HminvGzXf5g8SRsFF/wWP8vF/Gha5HCNfTJQ==",
-        "shasum": "9a8c22c264691f8a7bd6966cab998847c95dfd4d",
-        "resolvedAt": "2026-03-31T04:14:50.748Z",
-        "installedAt": "2026-03-31T04:15:14.480Z"
+        "installedAt": "2026-04-18T01:06:41.000Z"
       },
       "wecom": {
         "source": "npm",
-        "spec": "@mocrane/wecom@latest",
+        "spec": "@mocrane/wecom@2026.3.24",
         "installPath": "/root/.openclaw/extensions/wecom",
         "version": "2026.3.24",
-        "resolvedName": "@mocrane/wecom",
-        "resolvedVersion": "2026.3.24",
-        "resolvedSpec": "@mocrane/wecom@2026.3.24",
-        "integrity": "sha512-RXpA5N6FXxm/4Awwqkqsa54XR9hLjyfg7adr28SWBFczqSDJAjVx+EN66NdpjP+UMR/q9QILMTq3ZhgEAHcHbA==",
-        "shasum": "90a291cd60ce789b52c30b9746c76363a8aa150c",
-        "resolvedAt": "2026-03-31T04:15:59.243Z",
-        "installedAt": "2026-03-31T04:16:42.492Z"
-      },
-      "adp-openclaw": {
-        "source": "npm",
-        "spec": "adp-openclaw@latest",
-        "installPath": "/root/.openclaw/extensions/adp-openclaw",
-        "version": "0.0.77",
-        "resolvedName": "adp-openclaw",
-        "resolvedVersion": "0.0.77",
-        "resolvedSpec": "adp-openclaw@0.0.77",
-        "integrity": "sha512-BwHDHAXE7xACepqWk3Uo4KS6yUhDa09myvGZyu1etz5m1iAdCWAaU+ycUOamCi8k58RoPMogq68n8QvnAV3Elw==",
-        "shasum": "e4e98ee7b743a8a2d195584610dde3849885863c",
-        "resolvedAt": "2026-03-31T04:16:49.482Z",
-        "installedAt": "2026-03-31T04:16:54.315Z"
+        "installedAt": "2026-04-18T01:06:45.000Z"
       },
       "openclaw-plugin-yuanbao": {
         "source": "npm",
-        "spec": "openclaw-plugin-yuanbao@latest",
+        "spec": "openclaw-plugin-yuanbao@2.10.0",
         "installPath": "/root/.openclaw/extensions/openclaw-plugin-yuanbao",
-        "version": "2.4.0",
-        "resolvedName": "openclaw-plugin-yuanbao",
-        "resolvedVersion": "2.4.0",
-        "resolvedSpec": "openclaw-plugin-yuanbao@2.4.0",
-        "integrity": "sha512-s5Loktba18A62S8hog9glFEBpbGanKRWTYFYk2If317qKt/Z8JBGX/z1PNf0bkIdSqvhB8OpfHciFiXJMcaquA==",
-        "shasum": "babf452f305e3965c9bcf681772b0a5efff959ca",
-        "resolvedAt": "2026-03-31T04:16:59.422Z",
-        "installedAt": "2026-03-31T04:17:52.809Z"
+        "version": "2.10.0",
+        "installedAt": "2026-04-18T01:06:51.000Z"
       },
       "openclaw-weixin": {
         "source": "npm",
-        "spec": "@tencent-weixin/openclaw-weixin@latest",
+        "spec": "@tencent-weixin/openclaw-weixin@2.1.8",
         "installPath": "/root/.openclaw/extensions/openclaw-weixin",
-        "version": "2.1.1",
-        "resolvedName": "@tencent-weixin/openclaw-weixin",
-        "resolvedVersion": "2.1.1",
-        "resolvedSpec": "@tencent-weixin/openclaw-weixin@2.1.1",
-        "integrity": "sha512-lSiTI+9eQQuvZXehuteNps3Ia4/ih5zml6QEgICwA2+9xT1sd5z8C+ldgRfrYd8lZTxYWC8ffkLtG0EVo2E7Ag==",
-        "shasum": "574c53a912986bc6b97ae672c1af0327f8be2fcb",
-        "resolvedAt": "2026-03-31T04:18:00.052Z",
-        "installedAt": "2026-03-31T04:18:14.512Z"
+        "version": "2.1.8",
+        "installedAt": "2026-04-18T01:06:54.000Z"
       },
       "lightclawbot": {
         "source": "npm",
-        "spec": "lightclawbot",
+        "spec": "lightclawbot@1.1.2",
         "installPath": "/root/.openclaw/extensions/lightclawbot",
-        "version": "1.1.1",
-        "installedAt": "2026-04-10T02:25:46.000Z"
+        "version": "1.1.2",
+        "installedAt": "2026-04-18T01:06:56.000Z"
+      },
+      "adp-openclaw": {
+        "source": "npm",
+        "spec": "adp-openclaw@0.0.77",
+        "installPath": "/root/.openclaw/extensions/adp-openclaw",
+        "version": "0.0.77",
+        "installedAt": "2026-04-18T01:06:58.000Z"
+      },
+      "memory-tencentdb": {
+        "source": "npm",
+        "spec": "@tencentdb-agent-memory/memory-tencentdb@0.2.0",
+        "installPath": "/root/.openclaw/extensions/memory-tencentdb",
+        "version": "0.2.0",
+        "installedAt": "2026-04-18T01:07:49.000Z"
       }
     }
   }

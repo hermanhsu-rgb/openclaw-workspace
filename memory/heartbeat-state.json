@@ -1,10 +1,10 @@
 {
   "lastChecks": {
     "weatherPush": 1776481260,
-    "systemHealth": 1776515148714,
+    "systemHealth": 1776559178000,
     "memoryMaintenance": 1776481260
   },
-  "lastHeartbeat": 1776527082000,
+  "lastHeartbeat": 1776568140000,
   "lastGatewayFix": "2026-04-16T09:18:00Z",
   "gatewayFixNotes": "降低Node.js内存限制1800MB→1200MB→1500MB，解决系统卡死问题",
   "userChannel": "telegram",

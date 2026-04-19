@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-04-18T23:30:44.895Z",
+  "updatedAt": "2026-04-19T01:08:48.859Z",
   "entries": {
     "memory:memory/2026-04-15.md:6:8": {
       "key": "memory:memory/2026-04-15.md:6:8",
@@ -73174,6 +73174,68 @@
         "执行",
         "任务",
         "天气"
+      ]
+    },
+    "memory:memory/2026-04-19.md:173:192": {
+      "key": "memory:memory/2026-04-19.md:173:192",
+      "path": "memory/2026-04-19.md",
+      "startLine": 173,
+      "endLine": 192,
+      "source": "memory",
+      "snippet": "- Candidate: 验证要点: 检查企业微信是否按时收到推送; 如果announce模式在企业微信有显示问题，再考虑其他方案; 核心原则：不跟系统强碰，按官方规则来 - confidence: 0.62 - evidence: memory/2026-04-18.md:133-135 - recalls: 0 - status: staged - Candidate: 教训: **不要hack系统**：手动改jobs.json会被覆盖，等于白改; **用官方规则**：`--announce`是官方支持的，应该用这个; **少找借口**：不要把问题怪在模块、版本上，先看正确的做法是什么; **行动优先**：用户说\"你就按他规则做\"时，应立即执行，不要继续分析 - confidence: 0.62 - evidence: memory/2026-04-18.md:139-142 - recalls: 0 - status: staged - Candidate: 20:18 EvoMap 配置完成: Node ID: node_49cbac4a08eaaef5; Hub 连接正常，heartbeat 成功; 信用余额: 50; 环境变量已写入 ~/.openclaw/.env（A2A_HUB_URL, A2A_NODE_ID, A2A_NODE_SECRET） - confidence: 0.62 - evidence: memory/2026-04-18.md:145-148 - recalls: 0 - status: st",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.49757824838161463,
+      "maxScore": 0.49757824838161463,
+      "firstRecalledAt": "2026-04-19T01:08:48.859Z",
+      "lastRecalledAt": "2026-04-19T01:08:48.859Z",
+      "queryHashes": [
+        "7d9e128cd895"
+      ],
+      "recallDays": [
+        "2026-04-19"
+      ],
+      "conceptTags": [
+        "0.62",
+        "memory/2026-04-18.md",
+        "133-135",
+        "手动改jobs.json会被覆盖",
+        "139-142",
+        "node-49cbac4a08eaaef5",
+        "a2a-hub-url",
+        "a2a-node-id"
+      ]
+    },
+    "memory:memory/2026-04-19.md:273:287": {
+      "key": "memory:memory/2026-04-19.md:273:287",
+      "path": "memory/2026-04-19.md",
+      "startLine": 273,
+      "endLine": 287,
+      "source": "memory",
+      "snippet": "- Candidate: Assistant: 老板，我发现了！让我总结一下： **好消息：今天早上没有实际token消耗！** - Dreaming的narrative生成**失败了**（\"Plugin runtime subagent methods are only available during a gateway request\"） - 所以没有调用AI生成内容，token是零消耗 - Token监控显示session增长都是**0MB** **问题1：Gateway内存持续过高（1GB）** - 从昨天12:31就开始报警了，一直维持在1025-1132MB - 这 - confidence: 0.58 - evidence: memory/.dreams/session-corpus/2026-04-16.txt:25-25 - recalls: 0 - status: staged - Candidate: User: Conversation info (untrusted metadata): ```json { \"message_id\": \"8c1ddd12d170bc17d0749c7ee882d316\", \"sender_id\": \"heng-kaihsu\", \"sender\": \"heng-kaihsu\" } ``` Sender (untrusted metadata): ```json { \"label\": \"heng-kaihsu\", \"id\": \"heng-kaihsu\", \"name\": \"heng-kaihsu\" } `",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4951272368431091,
+      "maxScore": 0.4951272368431091,
+      "firstRecalledAt": "2026-04-19T01:08:48.859Z",
+      "lastRecalledAt": "2026-04-19T01:08:48.859Z",
+      "queryHashes": [
+        "7d9e128cd895"
+      ],
+      "recallDays": [
+        "2026-04-19"
+      ],
+      "conceptTags": [
+        "gateway",
+        "一直维持在1025-1132mb",
+        "0.58",
+        "25-25",
+        "message-id",
+        "sender-id",
+        "heng-kaihsu",
+        "candidate"
       ]
     }
   }

@@ -9,6 +9,19 @@ metadata: {"clawdbot":{"emoji":"🧾","requires":{"bins":["summarize"]},"install
 
 Fast CLI to summarize URLs, local files, and YouTube links.
 
+## 自动使用规则（OpenClaw配置）
+
+**遇到以下情况时，优先使用summarize处理**：
+- 长文章URL（>1000字预估）
+- PDF文献
+- YouTube视频需要摘要
+- 用户要求"摘要"、"总结"、"提取要点"
+
+**当前配置**：
+- 模型：`openai/glm-5`（腾讯Coding Plan，免费）
+- API endpoint：腾讯Coding Plan
+- 配置文件：`~/.summarize/config.json`
+
 ## Quick start
 
 ```bash
@@ -26,6 +39,9 @@ Set the API key for your chosen provider:
 - Google: `GEMINI_API_KEY` (aliases: `GOOGLE_GENERATIVE_AI_API_KEY`, `GOOGLE_API_KEY`)
 
 Default model is `google/gemini-3-flash-preview` if none is set.
+
+**我们的配置**：模型已改为 `openai/glm-5`（走腾讯Coding Plan，免费），配置在 `~/.summarize/config.json`。
+环境变量在 `~/.bashrc` 中设置：`OPENAI_BASE_URL` 指向腾讯API。
 
 ## Useful flags
 

@@ -13,12 +13,6 @@
       "source": "skillhub",
       "version": "1.0.0"
     },
-    "jpeng-self-improving": {
-      "name": "Self-Improving Agent (Proactive Self-Reflection)",
-      "zip_url": "https://lightmake.site/api/v1/download?slug=jpeng-self-improving",
-      "source": "skillhub",
-      "version": "1.2.11"
-    },
     "ontology": {
       "name": "Ontology",
       "zip_url": "https://lightmake.site/api/v1/download?slug=ontology",
