@@ -1,14 +1,14 @@
 {
   "lastChecks": {
     "weatherPush": 1776481260,
-    "systemHealth": 1776559178000,
+    "systemHealth": 1776592381000,
     "memoryMaintenance": 1776481260
   },
-  "lastHeartbeat": 1776568140000,
+  "lastHeartbeat": 1776592381000,
   "lastGatewayFix": "2026-04-16T09:18:00Z",
   "gatewayFixNotes": "降低Node.js内存限制1800MB→1200MB→1500MB，解决系统卡死问题",
   "userChannel": "telegram",
   "defaultLocation": "上海",
   "weatherPushError": "Telegram chat ID not configured",
-  "notes": "天气已通过企业微信cron推送，Telegram仍需配置chat ID。2026-04-18记录了凌晨故障排查和cron修复。"
+  "notes": "2026-04-19 17:52 心跳：系统健康检查正常（磁盘55%，内存1.4/1.9G，网关活跃）。"
 }
